@@ -1,0 +1,65 @@
+{
+  "entities": {
+    "userData": {
+      "title": "User Financial Profile & Settings",
+      "description": "Stores user liquid balance, invested amount, and overall profile preferences.",
+      "type": "object",
+      "properties": {
+        "liquidBalance": {
+          "type": "number",
+          "description": "User's current liquid cash balance"
+        },
+        "investedAmount": {
+          "type": "number",
+          "description": "User's current invested balance"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp of last update"
+        }
+      },
+      "required": ["liquidBalance", "investedAmount"]
+    },
+    "transactions": {
+      "title": "Transactions",
+      "description": "Collection of user's financial income and expenses.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "category": { "type": "string" },
+        "amount": { "type": "number" },
+        "time": { "type": "string" },
+        "date": { "type": "string" },
+        "colorClass": { "type": "string" },
+        "icon": { "type": "string" },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["title", "category", "amount"]
+    },
+    "recurringExpenses": {
+      "title": "Recurring Fixed Costs",
+      "description": "User's 18 monthly fixed expenses.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "category": { "type": "string" },
+        "amount": { "type": "number" },
+        "dueDate": { "type": "number" },
+        "paidThisMonth": { "type": "boolean" }
+      },
+      "required": ["title", "amount", "dueDate"]
+    },
+    "connections": {
+      "title": "Bank Connections",
+      "description": "Linked bank accounts and Open Finance connections.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "logo": { "type": "string" },
+        "lastSynced": { "type": "string" },
+        "status": { "type": "string" }
+      },
+      "required": ["name", "status"]
+    }
+  }
+}
