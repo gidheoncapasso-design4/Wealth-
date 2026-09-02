@@ -441,42 +441,303 @@ app.get("/api/health", (req, res) => {
   res.json({ status: "ok", port: PORT });
 });
 
-// WhatsApp Notification endpoint
-app.post("/api/whatsapp/send-reminder", (req, res) => {
+// Helper to dispatch WhatsApp message directly through automation providers
+async function dispatchDirectWhatsAppMessage(params: {
+  phoneNumber: string;
+  messageText: string;
+  provider?: string;
+  webhookUrl?: string;
+  zapiInstanceId?: string;
+  zapiToken?: string;
+  zapiClientToken?: string;
+  evolutionEndpoint?: string;
+  evolutionInstance?: string;
+  evolutionApiKey?: string;
+}) {
+  const cleanPhone = params.phoneNumber.replace(/\D/g, "");
+  const fullPhone = cleanPhone.startsWith("55") ? cleanPhone : "55" + cleanPhone;
+
+  // Determine effective provider from params or environment variables
+  const effectiveProvider =
+    params.provider ||
+    process.env.WHATSAPP_PROVIDER ||
+    (params.webhookUrl || process.env.WHATSAPP_WEBHOOK_URL ? "webhook" : "manual");
+
+  if (effectiveProvider === "zapi") {
+    const instance = params.zapiInstanceId || process.env.WHATSAPP_ZAPI_INSTANCE;
+    const token = params.zapiToken || process.env.WHATSAPP_ZAPI_TOKEN;
+    const clientToken = params.zapiClientToken || process.env.WHATSAPP_ZAPI_CLIENT_TOKEN;
+
+    if (!instance || !token) {
+      throw new Error("Z-API requer ID da Instância e Token de Autenticação.");
+    }
+
+    const url = `https://api.z-api.io/instances/${instance}/token/${token}/send-text`;
+    const headers: Record<string, string> = { "Content-Type": "application/json" };
+    if (clientToken) headers["Client-Token"] = clientToken;
+
+    const res = await fetch(url, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        phone: fullPhone,
+        message: params.messageText,
+      }),
+    });
+    const data: any = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(data.message || data.error || `Erro na Z-API (Status ${res.status})`);
+    }
+    return { success: true, provider: "zapi", data };
+  }
+
+  if (effectiveProvider === "evolution") {
+    const endpoint = (params.evolutionEndpoint || process.env.WHATSAPP_EVOLUTION_ENDPOINT || "").replace(/\/$/, "");
+    const instance = params.evolutionInstance || process.env.WHATSAPP_EVOLUTION_INSTANCE;
+    const apiKey = params.evolutionApiKey || process.env.WHATSAPP_EVOLUTION_APIKEY;
+
+    if (!endpoint || !instance || !apiKey) {
+      throw new Error("Evolution API requer URL do Endpoint, Nome da Instância e Chave API.");
+    }
+
+    const url = `${endpoint}/message/sendText/${instance}`;
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": apiKey,
+      },
+      body: JSON.stringify({
+        number: fullPhone,
+        text: params.messageText,
+      }),
+    });
+    const data: any = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(data.message || data.error || `Erro na Evolution API (Status ${res.status})`);
+    }
+    return { success: true, provider: "evolution", data };
+  }
+
+  if (effectiveProvider === "webhook") {
+    const targetUrl = params.webhookUrl || process.env.WHATSAPP_WEBHOOK_URL;
+    if (!targetUrl) {
+      throw new Error("URL do Webhook (Make / n8n / Zapier) não configurada.");
+    }
+
+    const res = await fetch(targetUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        phone: fullPhone,
+        message: params.messageText,
+        source: "Wealth Finance App",
+        timestamp: new Date().toISOString(),
+      }),
+    });
+
+    const data: any = await res.json().catch(() => ({ status: res.status }));
+    if (!res.ok) {
+      throw new Error(`Webhook retornou erro HTTP ${res.status}`);
+    }
+    return { success: true, provider: "webhook", data };
+  }
+
+  return {
+    success: false,
+    provider: "manual",
+    reason: "Nenhum provedor de automação configurado. Use o link de envio manual de 1-clique.",
+  };
+}
+
+// WhatsApp Notification endpoint (Single bill reminder)
+app.post("/api/whatsapp/send-reminder", async (req, res) => {
   try {
-    const { phoneNumber, title, amount, dueDate, daysAhead } = req.body;
+    const { phoneNumber, title, amount, dueDate, whatsappConfig } = req.body;
     
     if (!phoneNumber) {
       return res.status(400).json({ error: "Número do WhatsApp é obrigatório." });
     }
 
-    // Clean phone number (only digits)
     const cleanPhone = phoneNumber.replace(/\D/g, "");
     const formattedAmount = amount
       ? amount.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
       : "R$ 0,00";
 
-    const messageText = `🔔 *Lembrete de Vencimento Wealth*\n\n` +
+    const origin = req.headers.origin || "https://ais-dev-kuxts4gfhrrbfdzt7jkjjt-848157551135.us-east1.run.app";
+    const messageText =
+      `🔔 *Lembrete de Vencimento Wealth*\n\n` +
       `Olá! ⚠️ Lembrete de pagamento:\n` +
       `• *Conta*: ${title}\n` +
       `• *Valor*: ${formattedAmount}\n` +
       `• *Vencimento*: Dia ${dueDate} (Vence amanhã!)\n\n` +
-      `👉 *Marque como pago no seu app*: ${req.headers.origin || "https://ais-dev-kuxts4gfhrrbfdzt7jkjjt-848157551135.us-east1.run.app"}`;
+      `👉 *Acesse o app para marcar como pago*: ${origin}`;
 
     const encodedMessage = encodeURIComponent(messageText);
     const whatsappUrl = `https://api.whatsapp.com/send?phone=${cleanPhone.startsWith("55") ? cleanPhone : "55" + cleanPhone}&text=${encodedMessage}`;
 
+    let directResult: any = null;
+    let directSent = false;
+    let directError = null;
+
+    // Attempt direct dispatch if automated provider is configured
+    if (whatsappConfig?.provider && whatsappConfig.provider !== "manual") {
+      try {
+        directResult = await dispatchDirectWhatsAppMessage({
+          phoneNumber: cleanPhone,
+          messageText,
+          provider: whatsappConfig.provider,
+          webhookUrl: whatsappConfig.webhookUrl,
+          zapiInstanceId: whatsappConfig.zapiInstanceId,
+          zapiToken: whatsappConfig.zapiToken,
+          zapiClientToken: whatsappConfig.zapiClientToken,
+          evolutionEndpoint: whatsappConfig.evolutionEndpoint,
+          evolutionInstance: whatsappConfig.evolutionInstance,
+          evolutionApiKey: whatsappConfig.evolutionApiKey,
+        });
+        if (directResult.success) {
+          directSent = true;
+        }
+      } catch (err: any) {
+        directError = err.message;
+      }
+    }
+
     return res.json({
       success: true,
+      directSent,
+      directError,
+      provider: whatsappConfig?.provider || "manual",
       whatsappUrl,
       cleanPhone,
       messageText,
-      hasWebhook: !!process.env.WHATSAPP_WEBHOOK_URL,
     });
   } catch (error: any) {
     return res.status(500).json({ error: error.message });
   }
 });
+
+// WhatsApp Direct Test endpoint
+app.post("/api/whatsapp/test-direct", async (req, res) => {
+  try {
+    const { phoneNumber, whatsappConfig } = req.body;
+    if (!phoneNumber) {
+      return res.status(400).json({ error: "Número do WhatsApp é obrigatório." });
+    }
+
+    const testMessage = `📱 *Wealth Finance - Teste de Conexão Automática*\n\n` +
+      `✅ Parabéns! A conexão direta com o seu WhatsApp está 100% ativa e funcionando.\n` +
+      `Você receberá alertas automáticos 1 dia antes do vencimento das suas contas sem precisar clicar em nada!\n\n` +
+      `⏰ Data/Hora do Teste: ${new Date().toLocaleString("pt-BR")}`;
+
+    const result = await dispatchDirectWhatsAppMessage({
+      phoneNumber,
+      messageText: testMessage,
+      provider: whatsappConfig?.provider,
+      webhookUrl: whatsappConfig?.webhookUrl,
+      zapiInstanceId: whatsappConfig?.zapiInstanceId,
+      zapiToken: whatsappConfig?.zapiToken,
+      zapiClientToken: whatsappConfig?.zapiClientToken,
+      evolutionEndpoint: whatsappConfig?.evolutionEndpoint,
+      evolutionInstance: whatsappConfig?.evolutionInstance,
+      evolutionApiKey: whatsappConfig?.evolutionApiKey,
+    });
+
+    return res.json({
+      success: true,
+      provider: result.provider,
+      message: "Mensagem de teste enviada com sucesso para o seu WhatsApp!",
+    });
+  } catch (error: any) {
+    return res.status(400).json({
+      success: false,
+      error: error.message || "Erro ao disparar mensagem via WhatsApp.",
+    });
+  }
+});
+
+// WhatsApp Check and Auto-Dispatch Due Tomorrow endpoint
+app.post("/api/whatsapp/auto-check", async (req, res) => {
+  try {
+    const { recurringExpenses, whatsappConfig } = req.body;
+    if (!whatsappConfig?.enabled) {
+      return res.json({ dispatched: false, reason: "Alertas WhatsApp desativados nas configurações." });
+    }
+
+    if (!whatsappConfig?.phoneNumber) {
+      return res.status(400).json({ error: "Número do WhatsApp não configurado." });
+    }
+
+    const currentDay = new Date().getDate();
+    const tomorrow = currentDay >= 30 ? 1 : currentDay + 1;
+
+    // Filter unpaid bills due tomorrow
+    const billsDueTomorrow = (recurringExpenses || []).filter(
+      (item: any) => !item.paidThisMonth && item.dueDate === tomorrow
+    );
+
+    if (billsDueTomorrow.length === 0) {
+      return res.json({
+        dispatched: false,
+        dueCount: 0,
+        message: "Nenhuma conta vencendo amanhã. Nenhum alerta necessário.",
+      });
+    }
+
+    const totalAmount = billsDueTomorrow.reduce((acc: number, item: any) => acc + (item.amount || 0), 0);
+    const formattedTotal = totalAmount.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+
+    const origin = req.headers.origin || "https://ais-dev-kuxts4gfhrrbfdzt7jkjjt-848157551135.us-east1.run.app";
+    const billItemsText = billsDueTomorrow
+      .map((b: any) => `• *${b.title}*: ${b.amount.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`)
+      .join("\n");
+
+    const messageText =
+      `🔔 *Alerta de Vencimento Wealth - Amanhã (Dia ${tomorrow})*\n\n` +
+      `Olá! Identificamos ${billsDueTomorrow.length} conta(s) com vencimento para amanhã:\n\n` +
+      `${billItemsText}\n\n` +
+      `💰 *Total a Pagar*: ${formattedTotal}\n\n` +
+      `👉 *Acesse seu app para conferir e marcar como pago*:\n${origin}`;
+
+    if (whatsappConfig?.provider && whatsappConfig.provider !== "manual") {
+      const dispatchResult = await dispatchDirectWhatsAppMessage({
+        phoneNumber: whatsappConfig.phoneNumber,
+        messageText,
+        provider: whatsappConfig.provider,
+        webhookUrl: whatsappConfig.webhookUrl,
+        zapiInstanceId: whatsappConfig.zapiInstanceId,
+        zapiToken: whatsappConfig.zapiToken,
+        zapiClientToken: whatsappConfig.zapiClientToken,
+        evolutionEndpoint: whatsappConfig.evolutionEndpoint,
+        evolutionInstance: whatsappConfig.evolutionInstance,
+        evolutionApiKey: whatsappConfig.evolutionApiKey,
+      });
+
+      return res.json({
+        dispatched: true,
+        directSent: true,
+        dueCount: billsDueTomorrow.length,
+        totalAmount,
+        provider: dispatchResult.provider,
+        message: `Alerta automático enviado com sucesso para ${whatsappConfig.phoneNumber}!`,
+      });
+    } else {
+      const cleanPhone = whatsappConfig.phoneNumber.replace(/\D/g, "");
+      const whatsappUrl = `https://api.whatsapp.com/send?phone=${cleanPhone.startsWith("55") ? cleanPhone : "55" + cleanPhone}&text=${encodeURIComponent(messageText)}`;
+      return res.json({
+        dispatched: false,
+        directSent: false,
+        dueCount: billsDueTomorrow.length,
+        totalAmount,
+        whatsappUrl,
+        message: "Contas identificadas. Provedor automático não configurado (disponível via 1-clique).",
+      });
+    }
+  } catch (error: any) {
+    return res.status(500).json({ error: error.message });
+  }
+});
+
 
 
 async function startServer() {
