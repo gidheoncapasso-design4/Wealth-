@@ -1,8 +1,18 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    // Restricted to the app's single authenticated owner. Anyone else who
+    // discovers this project's public web config (always extractable from
+    // client-side JS — it is NOT a secret) is denied by this check, since
+    // they cannot forge a Firebase Auth token for this e-mail.
+    //
+    // IMPORTANT: editing this file alone does nothing. It must be published
+    // manually in the Firebase Console (Firestore Database > Rules > paste
+    // this content > Publish), or via `firebase deploy --only firestore:rules`
+    // if you have the Firebase CLI set up.
     match /{document=**} {
-      allow read, write: if true;
+      allow read, write: if request.auth != null
+        && request.auth.token.email == "gidheoncapasso@gmail.com";
     }
   }
 }

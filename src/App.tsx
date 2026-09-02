@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { LayoutGrid, CreditCard, Bot, TrendingUp, Landmark, X, Plus, AlertCircle, Sparkles } from "lucide-react";
+import { onAuthStateChanged, signOut, type User } from "firebase/auth";
 import { USER_PROFILE, INITIAL_TRANSACTIONS, CONNECTED_BANKS, INITIAL_RECURRING_EXPENSES } from "./data";
 import { Transaction, ChatMessage, BankConnection, RecurringExpense, WhatsAppConfig } from "./types";
 import Header from "./components/Header";
@@ -10,7 +11,8 @@ import InvestmentsView from "./components/InvestmentsView";
 import ConnectionsView from "./components/ConnectionsView";
 import LoginView from "./components/LoginView";
 import StatementImportModal from "./components/StatementImportModal";
-import { subscribeCloudAppData, saveCloudAppData } from "./lib/firebase";
+import { subscribeCloudAppData, saveCloudAppData, auth } from "./lib/firebase";
+import { autoSanitizeTransactions, calculateDizimo } from "./lib/financeUtils";
 
 const LOCAL_STORAGE_KEY = "wealth_app_data_v2";
 
@@ -46,8 +48,17 @@ const getInitialLocalData = () => {
 };
 
 export default function App() {
-  // Authentication State
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // Authentication State (real Firebase Auth session, not a local boolean)
+  const [authUser, setAuthUser] = useState<User | null>(null);
+  const [authChecked, setAuthChecked] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setAuthUser(user);
+      setAuthChecked(true);
+    });
+    return () => unsubscribe();
+  }, []);
 
   // Screen Tabs
   const [activeTab, setActiveTab] = useState<
@@ -71,116 +82,12 @@ export default function App() {
   // Track if cloud data has been loaded or initialized
   const isCloudLoaded = useRef(false);
 
-  // Auto-correct transactions and guarantee all main income streams exist
-  const autoSanitizeTransactions = (txs: Transaction[]): Transaction[] => {
-    let sanitized = txs.map((tx) => {
-      const titleLower = (tx.title || "").toLowerCase();
-      const isInvoiceOrPayment =
-        titleLower.includes("pagamento") ||
-        titleLower.includes("fatura") ||
-        titleLower.includes("débito automático") ||
-        titleLower.includes("debito automatico") ||
-        titleLower.includes("cartão") ||
-        titleLower.includes("cartao");
-      const isRefund = titleLower.includes("estorno") || titleLower.includes("devolução") || titleLower.includes("recebido");
-
-      if (isInvoiceOrPayment && !isRefund && tx.amount > 0) {
-        return {
-          ...tx,
-          amount: -Math.abs(tx.amount),
-          colorClass: "text-rose-400 bg-rose-500/10 border-rose-500/20",
-          icon: "creditCard",
-        };
-      }
-      return tx;
-    });
-
-    // Ensure Salário Elo, Ajuda de custo igreja Gidheon, and Mentoria Gidheon are present and positive
-    const hasElo = sanitized.some((t) => t.title.toLowerCase().includes("elo") && (t.title.toLowerCase().includes("salário") || t.title.toLowerCase().includes("salario")));
-    const hasChurch = sanitized.some((t) => t.title.toLowerCase().includes("igreja"));
-    const hasMentoria = sanitized.some((t) => t.title.toLowerCase().includes("mentoria"));
-
-    if (!hasElo) {
-      sanitized.unshift({
-        id: "tx-salario-elo",
-        title: "Salário - Elo",
-        category: "Receita / Salário",
-        amount: 19500.00,
-        date: "Recorrente Mensal",
-        time: "08:00",
-        icon: "briefcase",
-        colorClass: "text-[#4edea3] bg-[#4edea3]/10 border-[#4edea3]/20",
-        isRecurring: true,
-      });
-    }
-
-    if (!hasChurch) {
-      sanitized.unshift({
-        id: "tx-igreja-gidheon",
-        title: "Ajuda de custo igreja - Gidheon",
-        category: "Receita / Salário",
-        amount: 3150.00,
-        date: "Recorrente Mensal",
-        time: "08:00",
-        icon: "landmark",
-        colorClass: "text-[#4edea3] bg-[#4edea3]/10 border-[#4edea3]/20",
-        isRecurring: true,
-      });
-    }
-
-    if (!hasMentoria) {
-      sanitized.unshift({
-        id: "tx-mentoria-gidheon",
-        title: "Mentoria - Gidheon",
-        category: "Receita / Mentoria",
-        amount: 700.00,
-        date: "Recorrente Mensal",
-        time: "09:00",
-        icon: "sparkles",
-        colorClass: "text-[#4edea3] bg-[#4edea3]/10 border-[#4edea3]/20",
-        isRecurring: true,
-      });
-    }
-
-    // Automatically calculate 10% Dízimo from total inflows
-    const totalInflow = sanitized
-      .filter((t) => t.amount > 0 && !t.title.toLowerCase().includes("dízimo") && !t.title.toLowerCase().includes("dizimo"))
-      .reduce((sum, t) => sum + t.amount, 0);
-
-    const dizimoVal = Math.round(totalInflow * 0.10 * 100) / 100;
-
-    const dizimoIdx = sanitized.findIndex(
-      (t) => t.id === "tx-dizimo-10" || t.title.toLowerCase().includes("dízimo") || t.title.toLowerCase().includes("dizimo")
-    );
-
-    if (dizimoIdx >= 0) {
-      sanitized[dizimoIdx] = {
-        ...sanitized[dizimoIdx],
-        title: "Dízimo (10% das Receitas)",
-        amount: -dizimoVal,
-        category: "Dízimo & Doações",
-        colorClass: "text-purple-400 bg-purple-500/10 border-purple-500/20",
-        isRecurring: true,
-      };
-    } else {
-      sanitized.push({
-        id: "tx-dizimo-10",
-        title: "Dízimo (10% das Receitas)",
-        category: "Dízimo & Doações",
-        amount: -dizimoVal,
-        date: "Recorrente Mensal",
-        time: "10:00",
-        icon: "heart",
-        colorClass: "text-purple-400 bg-purple-500/10 border-purple-500/20",
-        isRecurring: true,
-      });
-    }
-
-    return sanitized;
-  };
-
-  // Subscribe to real-time Firestore database updates on mount
+  // Subscribe to real-time Firestore database updates once the user is authenticated
+  // (Firestore rules require an authenticated session, so subscribing earlier would
+  // just fail with permission-denied).
   useEffect(() => {
+    if (!authUser) return;
+
     const unsubscribe = subscribeCloudAppData((data) => {
       if (data) {
         // If cloud has transactions, update state
@@ -220,10 +127,12 @@ export default function App() {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [authUser]);
 
   // Save changes to both LocalStorage and Firestore cloud immediately
   useEffect(() => {
+    if (!authUser) return;
+
     const payload = {
       liquidBalance,
       investedAmount,
@@ -247,7 +156,7 @@ export default function App() {
     }, 400);
 
     return () => clearTimeout(timer);
-  }, [liquidBalance, investedAmount, transactions, recurringExpenses, connections, whatsappConfig]);
+  }, [authUser, liquidBalance, investedAmount, transactions, recurringExpenses, connections, whatsappConfig]);
 
 
   // Chat State
@@ -272,6 +181,9 @@ export default function App() {
 
   // Goal notification state
   const [goalAlert, setGoalAlert] = useState<string | null>(null);
+
+  // Last statement import batch (enables "undo" instead of deleting one by one)
+  const [lastImportBatch, setLastImportBatch] = useState<{ batchId: string; count: number } | null>(null);
 
   // Bottom Nav items helper
   const navItems = [
@@ -298,7 +210,7 @@ export default function App() {
       .filter((t) => t.amount > 0 && !t.title.toLowerCase().includes("dízimo") && !t.title.toLowerCase().includes("dizimo"))
       .reduce((sum, t) => sum + t.amount, 0);
 
-    const dizimoVal = Math.round(totalInflow * 0.10 * 100) / 100;
+    const dizimoVal = calculateDizimo(totalInflow);
 
     setRecurringExpenses((prev) => {
       let hasDizimo = false;
@@ -383,6 +295,7 @@ export default function App() {
     let balanceDelta = 0;
     const timeNow = new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
     const dayNow = "Hoje, " + new Date().toLocaleDateString("pt-BR", { day: "numeric", month: "short" });
+    const batchId = `batch-${Date.now()}`;
 
     const newTxs: Transaction[] = imported.map((item, idx) => {
       if (!item.isRejected) {
@@ -402,6 +315,7 @@ export default function App() {
           : "text-[#4edea3] bg-[#4edea3]/10 border-[#4edea3]/20",
         icon: item.icon || (item.amount > 0 ? "payments" : "shopping"),
         isRejected: !!item.isRejected,
+        importBatchId: batchId,
       };
     });
 
@@ -430,11 +344,29 @@ export default function App() {
 
     const savedInCloud = await saveCloudAppData(payload);
 
+    setLastImportBatch({ batchId, count: imported.length });
+
     if (savedInCloud) {
       setGoalAlert(`✅ ${imported.length} lançamentos gravados e confirmados no banco de dados na nuvem (Firestore)!`);
     } else {
       setGoalAlert(`💾 ${imported.length} lançamentos salvos localmente no dispositivo.`);
     }
+  };
+
+  // Undo an entire import batch at once (instead of deleting transactions one by one
+  // if the AI categorization came out wrong). Recomputes the balance delta from the
+  // transactions still present (rather than the value captured at import time), so
+  // it stays correct even if some items from the batch were already deleted/restored
+  // individually before the user clicks "Desfazer".
+  const handleUndoImportBatch = () => {
+    if (!lastImportBatch) return;
+    const batchTxs = transactions.filter((t) => t.importBatchId === lastImportBatch.batchId);
+    const remainingDelta = batchTxs.reduce((sum, t) => sum + (t.isRejected ? 0 : t.amount), 0);
+
+    setTransactions((prev) => prev.filter((t) => t.importBatchId !== lastImportBatch.batchId));
+    setLiquidBalance((prev) => prev - remainingDelta);
+    setGoalAlert(`↩️ Importação de ${batchTxs.length} lançamentos desfeita.`);
+    setLastImportBatch(null);
   };
 
   // Delete a transaction from flow
@@ -730,8 +662,13 @@ export default function App() {
     }
   };
 
-  if (!isAuthenticated) {
-    return <LoginView onLoginSuccess={() => setIsAuthenticated(true)} />;
+  // Avoid flashing the login screen while Firebase is still resolving the session
+  if (!authChecked) {
+    return <div className="min-h-screen bg-black" />;
+  }
+
+  if (!authUser) {
+    return <LoginView />;
   }
 
   return (
@@ -743,7 +680,7 @@ export default function App() {
           setActiveTab("smart_toy");
           handleSendMessage("Como posso otimizar meus investimentos hoje?");
         }}
-        onLogoutClick={() => setIsAuthenticated(false)}
+        onLogoutClick={() => signOut(auth)}
       />
 
       {/* Goal alerts banner */}
@@ -756,6 +693,26 @@ export default function App() {
           <button onClick={() => setGoalAlert(null)} className="text-[#8b90a0] hover:text-white cursor-pointer p-0.5">
             <X size={14} />
           </button>
+        </div>
+      )}
+
+      {/* Undo last statement import batch */}
+      {lastImportBatch && (
+        <div className="mx-6 mt-4 p-3.5 bg-[#adc6ff]/10 border border-[#adc6ff]/20 rounded-xl flex items-center justify-between text-left animate-fade-in z-40">
+          <div className="flex items-center gap-2 text-xs font-semibold text-white">
+            <span>{lastImportBatch.count} lançamentos importados. Categorização saiu errada?</span>
+          </div>
+          <div className="flex items-center gap-3 shrink-0">
+            <button
+              onClick={handleUndoImportBatch}
+              className="text-xs font-bold text-[#adc6ff] hover:underline cursor-pointer"
+            >
+              Desfazer importação
+            </button>
+            <button onClick={() => setLastImportBatch(null)} className="text-[#8b90a0] hover:text-white cursor-pointer p-0.5">
+              <X size={14} />
+            </button>
+          </div>
         </div>
       )}
 

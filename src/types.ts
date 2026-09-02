@@ -12,6 +12,7 @@ export interface Transaction {
   installment?: string;
   isRejected?: boolean;
   isRecurring?: boolean;
+  importBatchId?: string;
 }
 
 export interface ChatMessage {

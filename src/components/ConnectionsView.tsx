@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Landmark, Shield, RefreshCw, CheckCircle, ChevronRight, Plus, X, Lock, ExternalLink, FileSpreadsheet, UploadCloud } from "lucide-react";
+import { Landmark, Shield, RefreshCw, ChevronRight, Plus, X, Lock, ExternalLink, FileSpreadsheet, UploadCloud, AlertTriangle } from "lucide-react";
 import { BankConnection } from "../types";
 
 interface ConnectionsViewProps {
@@ -65,13 +65,23 @@ export default function ConnectionsView({
         </p>
       </header>
 
+      {/* Demo disclaimer: this screen does not perform any real bank connection yet */}
+      <div className="p-4 bg-amber-500/10 border border-amber-500/30 rounded-2xl flex items-start gap-3">
+        <AlertTriangle size={18} className="text-amber-400 shrink-0 mt-0.5" />
+        <div>
+          <p className="text-xs font-bold text-amber-300">Tela de demonstração</p>
+          <p className="text-[11px] text-amber-200/80 mt-0.5 leading-relaxed">
+            A conexão com bancos abaixo é uma simulação (não usa Open Finance real e não lê dados de nenhum banco).
+            Para lançar seus dados reais, use <strong>Importar Extrato</strong> ou cadastre a transação manualmente na aba Extrato.
+          </p>
+        </div>
+      </div>
+
       {/* Connectivity Status Card */}
       <section className="glass-card rounded-2xl p-6 relative overflow-hidden hover:border-white/12 transition-all">
         <div className="absolute top-0 right-0 p-4">
-          <span className="flex items-center gap-2 px-3 py-1 bg-[#00a572]/15 border border-[#00a572]/30 rounded-full">
-            <span className="w-2 h-2 bg-[#4edea3] rounded-full animate-ping"></span>
-            <span className="w-2 h-2 bg-[#4edea3] rounded-full"></span>
-            <span className="text-[9px] font-bold text-[#4edea3] uppercase tracking-widest font-mono">Real-time</span>
+          <span className="flex items-center gap-2 px-3 py-1 bg-amber-500/15 border border-amber-500/30 rounded-full">
+            <span className="text-[9px] font-bold text-amber-400 uppercase tracking-widest font-mono">Simulado</span>
           </span>
         </div>
 
@@ -80,8 +90,8 @@ export default function ConnectionsView({
             <RefreshCw size={22} className="animate-spin" style={{ animationDuration: "12s" }} />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-white">Sincronização Ativa</h3>
-            <p className="text-xs text-[#8b90a0] font-mono mt-0.5">Open Finance v3.0</p>
+            <h3 className="text-lg font-bold text-white">Sincronização (Demonstração)</h3>
+            <p className="text-xs text-[#8b90a0] font-mono mt-0.5">Open Finance v3.0 — nenhuma conexão real está ativa</p>
           </div>
         </div>
 
@@ -105,10 +115,9 @@ export default function ConnectionsView({
               >
                 <span className="text-[9px] font-bold text-[#8b90a0] uppercase tracking-wider">{item.name}</span>
                 <div className="flex items-center gap-1.5">
-                  <span className={`text-xs font-semibold ${isComing ? "text-[#8b90a0] italic" : "text-[#4edea3]"}`}>
-                    {isComing ? "Em breve" : "Ativo"}
+                  <span className={`text-xs font-semibold ${isComing ? "text-[#8b90a0] italic" : "text-amber-400"}`}>
+                    {isComing ? "Em breve" : "Demonstração"}
                   </span>
-                  {!isComing && <CheckCircle size={12} className="text-[#4edea3]" />}
                 </div>
               </div>
             );
@@ -151,14 +160,13 @@ export default function ConnectionsView({
       {/* Connected Banks List */}
       <section className="space-y-4">
         <div className="flex justify-between items-center px-1">
-          <h4 className="text-xs font-bold text-[#8b90a0] uppercase tracking-widest">Bancos Conectados</h4>
-          <span className="text-xs font-bold text-[#adc6ff] hover:underline cursor-pointer">Ver Tudo</span>
+          <h4 className="text-xs font-bold text-[#8b90a0] uppercase tracking-widest">Bancos Conectados (Demonstração)</h4>
         </div>
 
         <div className="space-y-3">
           {connections.length === 0 ? (
             <div className="glass-card rounded-2xl p-6 text-center text-[#8b90a0] text-xs">
-              Nenhuma instituição financeira conectada ainda. Conecte sua conta abaixo ou importe seu extrato bancário em PDF/OFX.
+              Nenhuma instituição de demonstração adicionada ainda. Para dados reais, use Importar Extrato ou cadastre a transação manualmente na aba Extrato.
             </div>
           ) : (
             connections.map((bank) => (
@@ -192,11 +200,11 @@ export default function ConnectionsView({
           className="w-full h-14 bg-[#adc6ff] text-[#002e69] rounded-2xl font-bold flex items-center justify-center gap-2 hover:opacity-90 active:scale-[0.98] transition-all shadow-lg shadow-[#adc6ff]/10 cursor-pointer text-sm"
         >
           <Plus size={18} strokeWidth={2.5} />
-          <span>Conectar Novo Banco</span>
+          <span>Conectar Novo Banco (Demonstração)</span>
         </button>
         <div className="flex items-center justify-center gap-1.5 text-[#8b90a0] text-xs font-semibold">
           <Lock size={12} />
-          <span>Protegido por criptografia AES-256 e LGPD.</span>
+          <span>Nenhum dado bancário real é acessado nesta simulação.</span>
         </div>
       </section>
 
@@ -207,7 +215,7 @@ export default function ConnectionsView({
             <div className="flex justify-between items-center">
               <h3 className="text-lg font-bold text-white flex items-center gap-2">
                 <Landmark size={20} className="text-[#adc6ff]" />
-                Conexão Open Finance
+                Conexão Open Finance (Demonstração)
               </h3>
               <button
                 onClick={() => {
@@ -223,14 +231,14 @@ export default function ConnectionsView({
               <div className="py-8 flex flex-col items-center gap-4 text-center">
                 <RefreshCw size={40} className="text-[#adc6ff] animate-spin" />
                 <div className="space-y-1">
-                  <p className="text-sm font-bold text-white">Autenticando com {selectedBank}...</p>
-                  <p className="text-xs text-[#8b90a0]">Estabelecendo túnel de segurança TLS 1.3</p>
+                  <p className="text-sm font-bold text-white">Simulando conexão com {selectedBank}...</p>
+                  <p className="text-xs text-[#8b90a0]">Nenhum dado real está sendo transmitido</p>
                 </div>
               </div>
             ) : (
               <div className="space-y-4">
                 <p className="text-xs text-[#c1c6d7] leading-relaxed">
-                  Selecione uma das instituições autorizadas para compartilhar seus dados de saldos, faturas e investimentos com a Wealth AI.
+                  Simulação: nenhuma conexão real é feita com o banco selecionado, e nenhum dado de saldo/fatura é importado de verdade. Use <strong>Importar Extrato</strong> na tela de Extrato para lançar dados reais.
                 </p>
 
                 <div className="space-y-2">
@@ -262,7 +270,7 @@ export default function ConnectionsView({
                     disabled={!selectedBank}
                     className="flex-1 py-3 bg-[#adc6ff] text-[#002e69] hover:opacity-90 rounded-xl font-bold text-xs disabled:opacity-30 cursor-pointer"
                   >
-                    Autorizar Compartilhamento
+                    Simular Conexão
                   </button>
                 </div>
               </div>

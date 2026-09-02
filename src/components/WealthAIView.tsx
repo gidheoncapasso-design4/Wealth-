@@ -245,10 +245,16 @@ export default function WealthAIView({
                 <h3 className="text-sm font-bold text-white tracking-tight">
                   Google Gemini 3.7 Flash
                 </h3>
-                <span className="inline-flex items-center gap-1 text-[10px] text-[#4edea3] bg-[#4edea3]/10 border border-[#4edea3]/30 px-2 py-0.5 rounded-full font-medium">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#4edea3] animate-ping"></span>
-                  <span>Conectado em tempo real</span>
-                </span>
+                {apiWarning ? (
+                  <span className="inline-flex items-center gap-1 text-[10px] text-amber-400 bg-amber-500/10 border border-amber-500/30 px-2 py-0.5 rounded-full font-medium">
+                    <span>Modo simulado</span>
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1 text-[10px] text-[#4edea3] bg-[#4edea3]/10 border border-[#4edea3]/30 px-2 py-0.5 rounded-full font-medium">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#4edea3] animate-ping"></span>
+                    <span>Conectado em tempo real</span>
+                  </span>
+                )}
                 {currentlySpeakingId && (
                   <span className="inline-flex items-center gap-1 text-[10px] text-[#4edea3] bg-[#4edea3]/10 border border-[#4edea3]/30 px-2 py-0.5 rounded-full animate-pulse">
                     <Volume2 size={11} />

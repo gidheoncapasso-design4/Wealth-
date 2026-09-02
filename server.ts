@@ -5,11 +5,12 @@ import crypto from "crypto";
 import dotenv from "dotenv";
 import { createServer as createViteServer } from "vite";
 import { GoogleGenAI, Type } from "@google/genai";
-import { initializeApp, getApps, type FirebaseApp } from "firebase/app";
-import { initializeFirestore, doc, getDoc, setDoc, type Firestore } from "firebase/firestore";
+import { initializeApp as initAdminApp, cert, getApps as getAdminApps } from "firebase-admin/app";
+import { getFirestore as getAdminFirestore, type Firestore as AdminFirestore } from "firebase-admin/firestore";
 import nodemailer from "nodemailer";
 import { google } from "googleapis";
 import firebaseConfig from "./firebase-applet-config.json";
+import { getTomorrowDayOfMonth } from "./src/lib/dateUtils";
 
 dotenv.config();
 
@@ -19,52 +20,58 @@ const PORT = 3000;
 app.use(express.json({ limit: "20mb" }));
 
 // ---------------------------------------------------------------------------
-// Server-side Firestore access (used by the daily reminders cron job).
-// Uses a dedicated named app + forced long-polling, which is the standard
-// workaround for running the Firebase Web SDK inside Node/Cloud Run instead
-// of a browser (the default gRPC/WebChannel transport is unreliable there).
+// Google service account credentials, shared by Firestore Admin access and
+// the Google Calendar integration below. Accepts either the raw JSON string
+// or that JSON base64-encoded (handy when the hosting platform's secrets UI
+// doesn't like multi-line values).
 // ---------------------------------------------------------------------------
-const SERVER_FIREBASE_APP_NAME = "wealth-server";
-let serverDb: Firestore | null = null;
+function getServiceAccountCredentials(): any {
+  const rawKey = process.env.GOOGLE_SERVICE_ACCOUNT_KEY;
+  if (!rawKey) {
+    throw new Error("GOOGLE_SERVICE_ACCOUNT_KEY não configurada no servidor.");
+  }
+  const decoded = rawKey.trim().startsWith("{")
+    ? rawKey
+    : Buffer.from(rawKey, "base64").toString("utf-8");
+  return JSON.parse(decoded);
+}
 
-function getServerDb(): Firestore {
-  if (!serverDb) {
-    const existingApp = getApps().find((a) => a.name === SERVER_FIREBASE_APP_NAME);
-    const serverApp: FirebaseApp =
-      existingApp || initializeApp(firebaseConfig as any, SERVER_FIREBASE_APP_NAME);
+// ---------------------------------------------------------------------------
+// Server-side Firestore access (used by the daily reminders cron job), via
+// the Firebase Admin SDK. Admin credentials bypass Firestore security rules
+// by design — unlike the client SDK, this keeps working even though
+// firestore.rules now requires a real signed-in browser session, since the
+// server is a trusted backend, not a browser.
+// ---------------------------------------------------------------------------
+let adminDb: AdminFirestore | null = null;
+
+function getServerDb(): AdminFirestore {
+  if (!adminDb) {
+    const adminApp =
+      getAdminApps()[0] ||
+      initAdminApp({
+        credential: cert(getServiceAccountCredentials()),
+        projectId: firebaseConfig.projectId,
+      });
     const databaseId =
       firebaseConfig.firestoreDatabaseId && firebaseConfig.firestoreDatabaseId !== "(default)"
         ? firebaseConfig.firestoreDatabaseId
         : undefined;
-    serverDb = initializeFirestore(
-      serverApp,
-      { experimentalForceLongPolling: true },
-      databaseId
-    );
+    adminDb = databaseId ? getAdminFirestore(adminApp, databaseId) : getAdminFirestore(adminApp);
   }
-  return serverDb;
+  return adminDb;
 }
 
 const MAIN_PROFILE_COLLECTION = "appData";
 const MAIN_PROFILE_DOC_ID = "main_profile";
 
 async function readMainProfile(): Promise<Record<string, any> | null> {
-  const ref = doc(getServerDb(), MAIN_PROFILE_COLLECTION, MAIN_PROFILE_DOC_ID);
-  const snap = await getDoc(ref);
-  return snap.exists() ? (snap.data() as Record<string, any>) : null;
+  const snap = await getServerDb().collection(MAIN_PROFILE_COLLECTION).doc(MAIN_PROFILE_DOC_ID).get();
+  return snap.exists ? (snap.data() as Record<string, any>) : null;
 }
 
 async function updateMainProfile(partial: Record<string, any>): Promise<void> {
-  const ref = doc(getServerDb(), MAIN_PROFILE_COLLECTION, MAIN_PROFILE_DOC_ID);
-  await setDoc(ref, partial, { merge: true });
-}
-
-// Correctly rolls over month/year boundaries (fixes the old ">=30 ? 1" hack
-// which broke for 31-day months and produced false negatives/positives).
-function getTomorrowDayOfMonth(): number {
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  return tomorrow.getDate();
+  await getServerDb().collection(MAIN_PROFILE_COLLECTION).doc(MAIN_PROFILE_DOC_ID).set(partial, { merge: true });
 }
 
 function getTodayISODate(): string {
@@ -296,6 +303,7 @@ ${txsList || "  Extrato de movimentações sem transações ativas no momento."}
       return res.json({
         text: simulatedText,
         isRealAPI: false,
+        warning: "Modo simulado: a GEMINI_API_KEY não está configurada (ou falhou), então esta resposta veio de um conjunto de respostas prontas, não da IA Gemini real. Configure a chave em Secrets para respostas reais.",
       });
     }
   } catch (error: any) {
@@ -648,14 +656,7 @@ let calendarClientCache: ReturnType<typeof google.calendar> | null = null;
 
 function getGoogleCalendarClient() {
   if (!calendarClientCache) {
-    const rawKey = process.env.GOOGLE_SERVICE_ACCOUNT_KEY;
-    if (!rawKey) {
-      throw new Error("GOOGLE_SERVICE_ACCOUNT_KEY não configurada no servidor.");
-    }
-    const decoded = rawKey.trim().startsWith("{")
-      ? rawKey
-      : Buffer.from(rawKey, "base64").toString("utf-8");
-    const credentials = JSON.parse(decoded);
+    const credentials = getServiceAccountCredentials();
     const auth = new google.auth.JWT({
       email: credentials.client_email,
       key: credentials.private_key,
