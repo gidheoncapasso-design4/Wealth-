@@ -1,9 +1,15 @@
 import express from "express";
 import path from "path";
 import fs from "fs";
+import crypto from "crypto";
 import dotenv from "dotenv";
 import { createServer as createViteServer } from "vite";
 import { GoogleGenAI, Type } from "@google/genai";
+import { initializeApp, getApps, type FirebaseApp } from "firebase/app";
+import { initializeFirestore, doc, getDoc, setDoc, type Firestore } from "firebase/firestore";
+import nodemailer from "nodemailer";
+import { google } from "googleapis";
+import firebaseConfig from "./firebase-applet-config.json";
 
 dotenv.config();
 
@@ -11,6 +17,59 @@ const app = express();
 const PORT = 3000;
 
 app.use(express.json({ limit: "20mb" }));
+
+// ---------------------------------------------------------------------------
+// Server-side Firestore access (used by the daily reminders cron job).
+// Uses a dedicated named app + forced long-polling, which is the standard
+// workaround for running the Firebase Web SDK inside Node/Cloud Run instead
+// of a browser (the default gRPC/WebChannel transport is unreliable there).
+// ---------------------------------------------------------------------------
+const SERVER_FIREBASE_APP_NAME = "wealth-server";
+let serverDb: Firestore | null = null;
+
+function getServerDb(): Firestore {
+  if (!serverDb) {
+    const existingApp = getApps().find((a) => a.name === SERVER_FIREBASE_APP_NAME);
+    const serverApp: FirebaseApp =
+      existingApp || initializeApp(firebaseConfig as any, SERVER_FIREBASE_APP_NAME);
+    const databaseId =
+      firebaseConfig.firestoreDatabaseId && firebaseConfig.firestoreDatabaseId !== "(default)"
+        ? firebaseConfig.firestoreDatabaseId
+        : undefined;
+    serverDb = initializeFirestore(
+      serverApp,
+      { experimentalForceLongPolling: true },
+      databaseId
+    );
+  }
+  return serverDb;
+}
+
+const MAIN_PROFILE_COLLECTION = "appData";
+const MAIN_PROFILE_DOC_ID = "main_profile";
+
+async function readMainProfile(): Promise<Record<string, any> | null> {
+  const ref = doc(getServerDb(), MAIN_PROFILE_COLLECTION, MAIN_PROFILE_DOC_ID);
+  const snap = await getDoc(ref);
+  return snap.exists() ? (snap.data() as Record<string, any>) : null;
+}
+
+async function updateMainProfile(partial: Record<string, any>): Promise<void> {
+  const ref = doc(getServerDb(), MAIN_PROFILE_COLLECTION, MAIN_PROFILE_DOC_ID);
+  await setDoc(ref, partial, { merge: true });
+}
+
+// Correctly rolls over month/year boundaries (fixes the old ">=30 ? 1" hack
+// which broke for 31-day months and produced false negatives/positives).
+function getTomorrowDayOfMonth(): number {
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  return tomorrow.getDate();
+}
+
+function getTodayISODate(): string {
+  return new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+}
 
 // Lazy-loaded Gemini Client
 let aiInstance: any = null;
@@ -550,6 +609,128 @@ async function dispatchDirectWhatsAppMessage(params: {
   };
 }
 
+// ---------------------------------------------------------------------------
+// Gmail (Google) email notification channel
+// ---------------------------------------------------------------------------
+let gmailTransport: ReturnType<typeof nodemailer.createTransport> | null = null;
+
+function getGmailTransport() {
+  if (!gmailTransport) {
+    const user = process.env.GMAIL_USER;
+    const pass = process.env.GMAIL_APP_PASSWORD;
+    if (!user || !pass) {
+      throw new Error("GMAIL_USER e GMAIL_APP_PASSWORD não configurados no servidor.");
+    }
+    gmailTransport = nodemailer.createTransport({
+      service: "gmail",
+      auth: { user, pass },
+    });
+  }
+  return gmailTransport;
+}
+
+async function sendGmailReminder(params: { to: string; subject: string; text: string; html?: string }) {
+  const transport = getGmailTransport();
+  const from = process.env.GMAIL_USER as string;
+  await transport.sendMail({
+    from: `Wealth Finance <${from}>`,
+    to: params.to,
+    subject: params.subject,
+    text: params.text,
+    html: params.html,
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Google Calendar (Google) recurring due-date reminders
+// ---------------------------------------------------------------------------
+let calendarClientCache: ReturnType<typeof google.calendar> | null = null;
+
+function getGoogleCalendarClient() {
+  if (!calendarClientCache) {
+    const rawKey = process.env.GOOGLE_SERVICE_ACCOUNT_KEY;
+    if (!rawKey) {
+      throw new Error("GOOGLE_SERVICE_ACCOUNT_KEY não configurada no servidor.");
+    }
+    const decoded = rawKey.trim().startsWith("{")
+      ? rawKey
+      : Buffer.from(rawKey, "base64").toString("utf-8");
+    const credentials = JSON.parse(decoded);
+    const auth = new google.auth.JWT({
+      email: credentials.client_email,
+      key: credentials.private_key,
+      scopes: ["https://www.googleapis.com/auth/calendar"],
+    });
+    calendarClientCache = google.calendar({ version: "v3", auth });
+  }
+  return calendarClientCache;
+}
+
+// Calendar event IDs must match ^[a-v0-9]{5,1024}$ (lowercase base32hex charset) —
+// hash the expense id into that alphabet so each fixed expense maps to one stable,
+// deterministic event that gets updated in place instead of duplicated every sync.
+function toCalendarEventId(expenseId: string): string {
+  return "wl" + crypto.createHash("sha1").update(expenseId).digest("hex").slice(0, 24);
+}
+
+// Upserts one recurring (monthly) Calendar event per fixed expense, each with a
+// popup reminder 24h before — so the "1 dia antes" notification comes straight from
+// Google Calendar itself and keeps working even if a daily cron run is missed.
+async function upsertCalendarEventsForRecurringExpenses(
+  recurringExpenses: Array<{ id: string; title: string; category: string; amount: number; dueDate: number }>
+): Promise<{ synced: number; errors: string[] }> {
+  const calendarId = process.env.GOOGLE_CALENDAR_ID;
+  if (!calendarId) {
+    throw new Error("GOOGLE_CALENDAR_ID não configurado no servidor.");
+  }
+  const calendar = getGoogleCalendarClient();
+  const errors: string[] = [];
+  let synced = 0;
+
+  for (const expense of recurringExpenses) {
+    try {
+      const eventId = toCalendarEventId(expense.id);
+      const now = new Date();
+      let year = now.getFullYear();
+      let month = now.getMonth();
+      if (expense.dueDate < now.getDate()) {
+        month += 1; // next occurrence already happened this month
+      }
+      const startDate = new Date(year, month, expense.dueDate, 9, 0, 0);
+      const endDate = new Date(startDate.getTime() + 30 * 60 * 1000);
+      const formattedAmount = expense.amount.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+
+      const eventBody = {
+        summary: `💰 Vencimento: ${expense.title} (${formattedAmount})`,
+        description: `Conta fixa "${expense.title}" (${expense.category}) no valor de ${formattedAmount}, gerenciada automaticamente pelo app Wealth.`,
+        start: { dateTime: startDate.toISOString(), timeZone: "America/Sao_Paulo" },
+        end: { dateTime: endDate.toISOString(), timeZone: "America/Sao_Paulo" },
+        recurrence: [`RRULE:FREQ=MONTHLY;BYMONTHDAY=${expense.dueDate}`],
+        reminders: {
+          useDefault: false,
+          overrides: [{ method: "popup", minutes: 24 * 60 }],
+        },
+      };
+
+      try {
+        await calendar.events.update({ calendarId, eventId, requestBody: eventBody });
+      } catch (updateErr: any) {
+        const status = updateErr?.code || updateErr?.response?.status;
+        if (status === 404) {
+          await calendar.events.insert({ calendarId, requestBody: { ...eventBody, id: eventId } });
+        } else {
+          throw updateErr;
+        }
+      }
+      synced++;
+    } catch (err: any) {
+      errors.push(`${expense.title}: ${err.message || "erro desconhecido"}`);
+    }
+  }
+
+  return { synced, errors };
+}
+
 // WhatsApp Notification endpoint (Single bill reminder)
 app.post("/api/whatsapp/send-reminder", async (req, res) => {
   try {
@@ -668,8 +849,7 @@ app.post("/api/whatsapp/auto-check", async (req, res) => {
       return res.status(400).json({ error: "Número do WhatsApp não configurado." });
     }
 
-    const currentDay = new Date().getDate();
-    const tomorrow = currentDay >= 30 ? 1 : currentDay + 1;
+    const tomorrow = getTomorrowDayOfMonth();
 
     // Filter unpaid bills due tomorrow
     const billsDueTomorrow = (recurringExpenses || []).filter(
@@ -738,7 +918,144 @@ app.post("/api/whatsapp/auto-check", async (req, res) => {
   }
 });
 
+// ---------------------------------------------------------------------------
+// Fully automatic daily reminders cron endpoint.
+//
+// Unlike the endpoints above (which only fire when the user has the app open
+// and clicks a button), this reads the user's data directly from Firestore
+// and is meant to be triggered once a day by an external scheduler (e.g. the
+// GitHub Actions workflow in .github/workflows/daily-reminders.yml) so bills
+// due tomorrow get dispatched even if nobody opens the app that day.
+//
+// Protected by a shared secret so it can't be triggered by strangers.
+// ---------------------------------------------------------------------------
+app.post("/api/cron/daily-reminders", async (req, res) => {
+  try {
+    const cronSecret = process.env.CRON_SECRET;
+    if (!cronSecret) {
+      return res.status(500).json({ error: "CRON_SECRET não configurado no servidor." });
+    }
+    if (req.headers["x-cron-secret"] !== cronSecret) {
+      return res.status(401).json({ error: "Não autorizado." });
+    }
 
+    const profile = await readMainProfile();
+    if (!profile) {
+      return res.json({ ran: false, reason: "Nenhum dado encontrado no Firestore (appData/main_profile)." });
+    }
+
+    const recurringExpenses: any[] = Array.isArray(profile.recurringExpenses) ? profile.recurringExpenses : [];
+    const whatsappConfig: any = profile.whatsappConfig || {};
+    const todayISO = getTodayISODate();
+
+    const result: {
+      dueCount: number;
+      whatsappSent: boolean;
+      whatsappError: string | null;
+      emailSent: boolean;
+      emailError: string | null;
+      calendarSynced: number;
+      calendarErrors: string[];
+      skippedAlreadySentToday: boolean;
+    } = {
+      dueCount: 0,
+      whatsappSent: false,
+      whatsappError: null,
+      emailSent: false,
+      emailError: null,
+      calendarSynced: 0,
+      calendarErrors: [],
+      skippedAlreadySentToday: false,
+    };
+
+    // --- 1. WhatsApp + E-mail: bills due tomorrow, sent at most once per day ---
+    const tomorrow = getTomorrowDayOfMonth();
+    const billsDueTomorrow = recurringExpenses.filter(
+      (item) => !item.paidThisMonth && item.dueDate === tomorrow
+    );
+    result.dueCount = billsDueTomorrow.length;
+
+    if (billsDueTomorrow.length > 0 && whatsappConfig.lastAutoCheckDate === todayISO) {
+      result.skippedAlreadySentToday = true;
+    } else if (billsDueTomorrow.length > 0) {
+      const totalAmount = billsDueTomorrow.reduce((acc, item) => acc + (item.amount || 0), 0);
+      const formattedTotal = totalAmount.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+      const billItemsText = billsDueTomorrow
+        .map((b) => `• ${b.title}: ${b.amount.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`)
+        .join("\n");
+      const appUrl = process.env.APP_URL || req.headers.origin || "";
+
+      if (whatsappConfig.enabled && whatsappConfig.phoneNumber) {
+        const whatsappText =
+          `🔔 *Alerta de Vencimento Wealth - Amanhã (Dia ${tomorrow})*\n\n` +
+          `Olá! Identificamos ${billsDueTomorrow.length} conta(s) com vencimento para amanhã:\n\n` +
+          `${billItemsText}\n\n` +
+          `💰 *Total a Pagar*: ${formattedTotal}\n\n` +
+          (appUrl ? `👉 *Acesse seu app para conferir e marcar como pago*:\n${appUrl}` : "");
+
+        try {
+          if (whatsappConfig.provider && whatsappConfig.provider !== "manual") {
+            await dispatchDirectWhatsAppMessage({
+              phoneNumber: whatsappConfig.phoneNumber,
+              messageText: whatsappText,
+              provider: whatsappConfig.provider,
+              webhookUrl: whatsappConfig.webhookUrl,
+              zapiInstanceId: whatsappConfig.zapiInstanceId,
+              zapiToken: whatsappConfig.zapiToken,
+              zapiClientToken: whatsappConfig.zapiClientToken,
+              evolutionEndpoint: whatsappConfig.evolutionEndpoint,
+              evolutionInstance: whatsappConfig.evolutionInstance,
+              evolutionApiKey: whatsappConfig.evolutionApiKey,
+            });
+            result.whatsappSent = true;
+          } else {
+            result.whatsappError = "Modo 'manual' (1-clique) não pode ser disparado sem interação humana. Configure Z-API, Evolution API ou um webhook.";
+          }
+        } catch (err: any) {
+          result.whatsappError = err.message || "Erro ao enviar WhatsApp.";
+        }
+      }
+
+      if (whatsappConfig.emailEnabled && whatsappConfig.notificationEmail) {
+        const billItemsHtml = billsDueTomorrow
+          .map((b) => `<li><strong>${b.title}</strong>: ${b.amount.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</li>`)
+          .join("");
+        try {
+          await sendGmailReminder({
+            to: whatsappConfig.notificationEmail,
+            subject: `🔔 Contas vencendo amanhã (dia ${tomorrow}) — Total ${formattedTotal}`,
+            text: `Contas vencendo amanhã (dia ${tomorrow}):\n\n${billItemsText}\n\nTotal: ${formattedTotal}\n\n${appUrl}`,
+            html: `<p>Olá! Identificamos <strong>${billsDueTomorrow.length}</strong> conta(s) com vencimento para amanhã (dia ${tomorrow}):</p><ul>${billItemsHtml}</ul><p><strong>Total a pagar: ${formattedTotal}</strong></p>${appUrl ? `<p><a href="${appUrl}">Acesse seu app Wealth</a></p>` : ""}`,
+          });
+          result.emailSent = true;
+        } catch (err: any) {
+          result.emailError = err.message || "Erro ao enviar e-mail.";
+        }
+      }
+
+      if (result.whatsappSent || result.emailSent) {
+        await updateMainProfile({
+          whatsappConfig: { ...whatsappConfig, lastAutoCheckDate: todayISO },
+        });
+      }
+    }
+
+    // --- 2. Google Calendar: keep recurring events in sync (independent of "due tomorrow") ---
+    if (whatsappConfig.calendarEnabled && recurringExpenses.length > 0) {
+      try {
+        const { synced, errors } = await upsertCalendarEventsForRecurringExpenses(recurringExpenses);
+        result.calendarSynced = synced;
+        result.calendarErrors = errors;
+      } catch (err: any) {
+        result.calendarErrors = [err.message || "Erro ao sincronizar Google Agenda."];
+      }
+    }
+
+    return res.json({ ran: true, ...result });
+  } catch (error: any) {
+    return res.status(500).json({ error: error.message });
+  }
+});
 
 async function startServer() {
   const isProduction = process.env.NODE_ENV === "production" || process.argv[1]?.includes("dist");

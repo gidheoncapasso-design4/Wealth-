@@ -57,6 +57,9 @@ export default function TransactionsView({
   const [evolutionEndpoint, setEvolutionEndpoint] = useState(whatsappConfig.evolutionEndpoint || "");
   const [evolutionInstance, setEvolutionInstance] = useState(whatsappConfig.evolutionInstance || "");
   const [evolutionApiKey, setEvolutionApiKey] = useState(whatsappConfig.evolutionApiKey || "");
+  const [emailEnabled, setEmailEnabled] = useState(whatsappConfig.emailEnabled ?? false);
+  const [notificationEmail, setNotificationEmail] = useState(whatsappConfig.notificationEmail || "");
+  const [calendarEnabled, setCalendarEnabled] = useState(whatsappConfig.calendarEnabled ?? false);
   const [isTestingDirect, setIsTestingDirect] = useState(false);
   const [testResult, setTestResult] = useState<{ success: boolean; message: string } | null>(null);
   const [isAutoDispatching, setIsAutoDispatching] = useState(false);
@@ -74,6 +77,9 @@ export default function TransactionsView({
       if (whatsappConfig.evolutionEndpoint) setEvolutionEndpoint(whatsappConfig.evolutionEndpoint);
       if (whatsappConfig.evolutionInstance) setEvolutionInstance(whatsappConfig.evolutionInstance);
       if (whatsappConfig.evolutionApiKey) setEvolutionApiKey(whatsappConfig.evolutionApiKey);
+      setEmailEnabled(whatsappConfig.emailEnabled ?? false);
+      if (whatsappConfig.notificationEmail) setNotificationEmail(whatsappConfig.notificationEmail);
+      setCalendarEnabled(whatsappConfig.calendarEnabled ?? false);
     }
   }, [whatsappConfig]);
 
@@ -213,8 +219,10 @@ export default function TransactionsView({
   };
 
   // Current date calculations for 1-day before WhatsApp reminders
-  const currentDayOfMonth = new Date().getDate();
-  const tomorrowDayOfMonth = currentDayOfMonth >= 30 ? 1 : currentDayOfMonth + 1;
+  // (uses real Date rollover instead of a hardcoded ">=30" check, which broke on 31-day months)
+  const tomorrowDate = new Date();
+  tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+  const tomorrowDayOfMonth = tomorrowDate.getDate();
 
   // Bills due tomorrow or in 1 day that are unpaid
   const billsDueTomorrow = recurringExpenses.filter(
@@ -376,6 +384,9 @@ export default function TransactionsView({
         evolutionEndpoint: evolutionEndpoint.trim() || undefined,
         evolutionInstance: evolutionInstance.trim() || undefined,
         evolutionApiKey: evolutionApiKey.trim() || undefined,
+        emailEnabled,
+        notificationEmail: notificationEmail.trim() || undefined,
+        calendarEnabled,
       });
     }
     setWhatsappStatusMessage("Configurações do WhatsApp salvas na nuvem com sucesso!");
@@ -1434,8 +1445,8 @@ export default function TransactionsView({
                   <MessageSquare size={18} />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-white">Alertas de Vencimento no WhatsApp</h3>
-                  <p className="text-[11px] text-[#8b90a0]">Receba aviso 1 dia antes das contas vencerem</p>
+                  <h3 className="text-base font-bold text-white">Alertas de Vencimento</h3>
+                  <p className="text-[11px] text-[#8b90a0]">Receba aviso 1 dia antes das contas vencerem por WhatsApp, E-mail e Google Agenda</p>
                 </div>
               </div>
               <button
@@ -1684,6 +1695,57 @@ export default function TransactionsView({
                   </div>
                 </div>
               )}
+
+              {/* Google Channels: E-mail (Gmail) & Google Agenda */}
+              <div className="space-y-2 pt-1 border-t border-[#353534]/30">
+                <label className="text-xs text-[#8b90a0] font-semibold uppercase tracking-wider flex items-center gap-1.5">
+                  <Bell size={13} className="text-[#adc6ff]" />
+                  <span>Canais Google (Enviados pelo Servidor Automaticamente)</span>
+                </label>
+
+                <div className="p-4 bg-[#1c1b1b] rounded-2xl border border-[#353534]/50 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-xs font-bold text-white">E-mail via Gmail</p>
+                      <p className="text-[11px] text-[#8b90a0]">Manda um e-mail formatado 1 dia antes de cada vencimento</p>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={emailEnabled}
+                      onChange={(e) => setEmailEnabled(e.target.checked)}
+                      className="w-4 h-4 accent-[#adc6ff] rounded cursor-pointer shrink-0"
+                    />
+                  </div>
+                  {emailEnabled && (
+                    <input
+                      type="email"
+                      placeholder="seuemail@gmail.com"
+                      value={notificationEmail}
+                      onChange={(e) => setNotificationEmail(e.target.value)}
+                      className="w-full bg-[#131313] border border-[#353534]/60 rounded-xl px-3.5 py-2 text-xs text-white font-mono focus:border-[#adc6ff] outline-none"
+                    />
+                  )}
+                </div>
+
+                <div className="p-4 bg-[#1c1b1b] rounded-2xl border border-[#353534]/50 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-xs font-bold text-white">Sincronizar com Google Agenda</p>
+                      <p className="text-[11px] text-[#8b90a0]">Cria um evento mensal recorrente para cada conta fixa, com lembrete/notificação 1 dia antes</p>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={calendarEnabled}
+                      onChange={(e) => setCalendarEnabled(e.target.checked)}
+                      className="w-4 h-4 accent-[#adc6ff] rounded cursor-pointer shrink-0"
+                    />
+                  </div>
+                </div>
+
+                <p className="text-[11px] text-[#8b90a0] leading-relaxed">
+                  💡 Esses dois canais dependem de credenciais configuradas no servidor (Senha de App do Gmail e Conta de Serviço do Google Calendar) e de uma rotina diária automática — não exigem nenhum clique seu depois de ativados aqui.
+                </p>
+              </div>
 
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-3 pt-2">

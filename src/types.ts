@@ -82,5 +82,9 @@ export interface WhatsAppConfig {
   evolutionInstance?: string;
   evolutionApiKey?: string;
   lastAutoCheckDate?: string;
+  // Google notification channels (sent by the server-side daily cron job)
+  emailEnabled?: boolean;
+  notificationEmail?: string;
+  calendarEnabled?: boolean;
 }
 
