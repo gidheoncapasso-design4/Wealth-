@@ -1,0 +1,47 @@
+# Render "Blueprint" — lets Render auto-configure this web service instead of
+# filling in build/start commands by hand. In the Render dashboard: New +
+# -> Blueprint -> pick this repo -> Render reads this file automatically.
+#
+# Every env var below is left blank on purpose (sync: false) — Render will
+# prompt for each one during setup. Get the values from wherever you were
+# already using them (AI Studio Secrets panel, or your own notes):
+#   GEMINI_API_KEY              - optional, Wealth AI chat falls back to a
+#                                  canned responder without it
+#   APP_URL                     - fill in AFTER first deploy, with the
+#                                  https://xxxx.onrender.com URL Render gives you
+#   CRON_SECRET                 - any long random string you make up
+#   GOOGLE_SERVICE_ACCOUNT_KEY  - service account JSON (raw or base64),
+#                                  required for the daily reminders cron
+#   GOOGLE_CALENDAR_ID          - optional, skips Google Calendar sync if blank
+#   GMAIL_USER / GMAIL_APP_PASSWORD - optional, skips the e-mail channel if blank
+#   WHATSAPP_META_PHONE_NUMBER_ID / WHATSAPP_META_ACCESS_TOKEN - optional
+#                                  server-side fallback; normally set inside
+#                                  the app's own WhatsApp settings instead
+services:
+  - type: web
+    name: wealth-finance
+    env: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: APP_URL
+        sync: false
+      - key: CRON_SECRET
+        sync: false
+      - key: GOOGLE_SERVICE_ACCOUNT_KEY
+        sync: false
+      - key: GOOGLE_CALENDAR_ID
+        sync: false
+      - key: GMAIL_USER
+        sync: false
+      - key: GMAIL_APP_PASSWORD
+        sync: false
+      - key: WHATSAPP_META_PHONE_NUMBER_ID
+        sync: false
+      - key: WHATSAPP_META_ACCESS_TOKEN
+        sync: false
