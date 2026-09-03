@@ -520,6 +520,8 @@ async function dispatchDirectWhatsAppMessage(params: {
   evolutionEndpoint?: string;
   evolutionInstance?: string;
   evolutionApiKey?: string;
+  metaPhoneNumberId?: string;
+  metaAccessToken?: string;
 }) {
   const cleanPhone = params.phoneNumber.replace(/\D/g, "");
   const fullPhone = cleanPhone.startsWith("55") ? cleanPhone : "55" + cleanPhone;
@@ -584,6 +586,37 @@ async function dispatchDirectWhatsAppMessage(params: {
       throw new Error(data.message || data.error || `Erro na Evolution API (Status ${res.status})`);
     }
     return { success: true, provider: "evolution", data };
+  }
+
+  if (effectiveProvider === "meta") {
+    const phoneNumberId = params.metaPhoneNumberId || process.env.WHATSAPP_META_PHONE_NUMBER_ID;
+    const accessToken = params.metaAccessToken || process.env.WHATSAPP_META_ACCESS_TOKEN;
+
+    if (!phoneNumberId || !accessToken) {
+      throw new Error("A API oficial do WhatsApp (Meta) requer Phone Number ID e Access Token.");
+    }
+
+    const url = `https://graph.facebook.com/v21.0/${phoneNumberId}/messages`;
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({
+        messaging_product: "whatsapp",
+        to: fullPhone,
+        type: "text",
+        text: { body: params.messageText },
+      }),
+    });
+    const data: any = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      // Meta's most common failure here: the recipient isn't on the app's test
+      // number allow-list yet, or the temporary access token (24h) has expired.
+      throw new Error(data.error?.message || `Erro na API do WhatsApp da Meta (Status ${res.status})`);
+    }
+    return { success: true, provider: "meta", data };
   }
 
   if (effectiveProvider === "webhook") {
@@ -776,6 +809,8 @@ app.post("/api/whatsapp/send-reminder", async (req, res) => {
           evolutionEndpoint: whatsappConfig.evolutionEndpoint,
           evolutionInstance: whatsappConfig.evolutionInstance,
           evolutionApiKey: whatsappConfig.evolutionApiKey,
+          metaPhoneNumberId: whatsappConfig.metaPhoneNumberId,
+          metaAccessToken: whatsappConfig.metaAccessToken,
         });
         if (directResult.success) {
           directSent = true;
@@ -823,6 +858,8 @@ app.post("/api/whatsapp/test-direct", async (req, res) => {
       evolutionEndpoint: whatsappConfig?.evolutionEndpoint,
       evolutionInstance: whatsappConfig?.evolutionInstance,
       evolutionApiKey: whatsappConfig?.evolutionApiKey,
+      metaPhoneNumberId: whatsappConfig?.metaPhoneNumberId,
+      metaAccessToken: whatsappConfig?.metaAccessToken,
     });
 
     return res.json({
@@ -892,6 +929,8 @@ app.post("/api/whatsapp/auto-check", async (req, res) => {
         evolutionEndpoint: whatsappConfig.evolutionEndpoint,
         evolutionInstance: whatsappConfig.evolutionInstance,
         evolutionApiKey: whatsappConfig.evolutionApiKey,
+        metaPhoneNumberId: whatsappConfig.metaPhoneNumberId,
+        metaAccessToken: whatsappConfig.metaAccessToken,
       });
 
       return res.json({
@@ -1007,6 +1046,8 @@ app.post("/api/cron/daily-reminders", async (req, res) => {
               evolutionEndpoint: whatsappConfig.evolutionEndpoint,
               evolutionInstance: whatsappConfig.evolutionInstance,
               evolutionApiKey: whatsappConfig.evolutionApiKey,
+              metaPhoneNumberId: whatsappConfig.metaPhoneNumberId,
+              metaAccessToken: whatsappConfig.metaAccessToken,
             });
             result.whatsappSent = true;
           } else {

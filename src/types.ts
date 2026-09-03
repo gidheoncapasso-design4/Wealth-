@@ -74,7 +74,7 @@ export interface WhatsAppConfig {
   phoneNumber: string;
   enabled: boolean;
   daysAhead: number; // 1 day before
-  provider?: "manual" | "webhook" | "zapi" | "evolution";
+  provider?: "manual" | "webhook" | "zapi" | "evolution" | "meta";
   webhookUrl?: string;
   zapiInstanceId?: string;
   zapiToken?: string;
@@ -82,6 +82,8 @@ export interface WhatsAppConfig {
   evolutionEndpoint?: string;
   evolutionInstance?: string;
   evolutionApiKey?: string;
+  metaPhoneNumberId?: string;
+  metaAccessToken?: string;
   lastAutoCheckDate?: string;
   // Google notification channels (sent by the server-side daily cron job)
   emailEnabled?: boolean;

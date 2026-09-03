@@ -17,7 +17,7 @@ export default function AlertsSettingsModal({
 }: AlertsSettingsModalProps) {
   const [whatsappPhone, setWhatsappPhone] = useState(whatsappConfig.phoneNumber || "");
   const [whatsappEnabled, setWhatsappEnabled] = useState(whatsappConfig.enabled ?? true);
-  const [whatsappProvider, setWhatsappProvider] = useState<"manual" | "webhook" | "zapi" | "evolution">(whatsappConfig.provider || "manual");
+  const [whatsappProvider, setWhatsappProvider] = useState<"manual" | "webhook" | "zapi" | "evolution" | "meta">(whatsappConfig.provider || "manual");
   const [webhookUrl, setWebhookUrl] = useState(whatsappConfig.webhookUrl || "");
   const [zapiInstanceId, setZapiInstanceId] = useState(whatsappConfig.zapiInstanceId || "");
   const [zapiToken, setZapiToken] = useState(whatsappConfig.zapiToken || "");
@@ -25,6 +25,8 @@ export default function AlertsSettingsModal({
   const [evolutionEndpoint, setEvolutionEndpoint] = useState(whatsappConfig.evolutionEndpoint || "");
   const [evolutionInstance, setEvolutionInstance] = useState(whatsappConfig.evolutionInstance || "");
   const [evolutionApiKey, setEvolutionApiKey] = useState(whatsappConfig.evolutionApiKey || "");
+  const [metaPhoneNumberId, setMetaPhoneNumberId] = useState(whatsappConfig.metaPhoneNumberId || "");
+  const [metaAccessToken, setMetaAccessToken] = useState(whatsappConfig.metaAccessToken || "");
   const [emailEnabled, setEmailEnabled] = useState(whatsappConfig.emailEnabled ?? false);
   const [notificationEmail, setNotificationEmail] = useState(whatsappConfig.notificationEmail || "");
   const [calendarEnabled, setCalendarEnabled] = useState(whatsappConfig.calendarEnabled ?? false);
@@ -44,6 +46,8 @@ export default function AlertsSettingsModal({
       if (whatsappConfig.evolutionEndpoint) setEvolutionEndpoint(whatsappConfig.evolutionEndpoint);
       if (whatsappConfig.evolutionInstance) setEvolutionInstance(whatsappConfig.evolutionInstance);
       if (whatsappConfig.evolutionApiKey) setEvolutionApiKey(whatsappConfig.evolutionApiKey);
+      if (whatsappConfig.metaPhoneNumberId) setMetaPhoneNumberId(whatsappConfig.metaPhoneNumberId);
+      if (whatsappConfig.metaAccessToken) setMetaAccessToken(whatsappConfig.metaAccessToken);
       setEmailEnabled(whatsappConfig.emailEnabled ?? false);
       if (whatsappConfig.notificationEmail) setNotificationEmail(whatsappConfig.notificationEmail);
       setCalendarEnabled(whatsappConfig.calendarEnabled ?? false);
@@ -81,6 +85,8 @@ export default function AlertsSettingsModal({
             evolutionEndpoint,
             evolutionInstance,
             evolutionApiKey,
+            metaPhoneNumberId,
+            metaAccessToken,
           },
         }),
       });
@@ -121,6 +127,8 @@ export default function AlertsSettingsModal({
       evolutionEndpoint: evolutionEndpoint.trim() || undefined,
       evolutionInstance: evolutionInstance.trim() || undefined,
       evolutionApiKey: evolutionApiKey.trim() || undefined,
+      metaPhoneNumberId: metaPhoneNumberId.trim() || undefined,
+      metaAccessToken: metaAccessToken.trim() || undefined,
       emailEnabled,
       notificationEmail: notificationEmail.trim() || undefined,
       calendarEnabled,
@@ -291,6 +299,24 @@ export default function AlertsSettingsModal({
                   100% Automático. Para instâncias Evolution API próprias ou hospedadas.
                 </p>
               </button>
+
+              <button
+                type="button"
+                onClick={() => setWhatsappProvider("meta")}
+                className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
+                  whatsappProvider === "meta"
+                    ? "bg-[#25D366]/15 border-[#25D366] text-white"
+                    : "bg-[#1c1b1b] border-[#353534]/50 text-[#8b90a0] hover:text-white"
+                }`}
+              >
+                <p className="text-xs font-bold text-white flex items-center justify-between">
+                  <span>Meta / Facebook (Oficial)</span>
+                  {whatsappProvider === "meta" && <Check size={14} className="text-[#25D366]" />}
+                </p>
+                <p className="text-[11px] text-[#8b90a0] mt-1">
+                  100% Automático. API oficial do WhatsApp Business (developers.facebook.com).
+                </p>
+              </button>
             </div>
           </div>
 
@@ -389,6 +415,35 @@ export default function AlertsSettingsModal({
                   />
                 </div>
               </div>
+            </div>
+          )}
+
+          {/* Meta / Facebook Official WhatsApp Cloud API Configuration Fields */}
+          {whatsappProvider === "meta" && (
+            <div className="p-4 bg-[#1c1b1b] rounded-2xl border border-[#353534]/50 space-y-3 animate-fade-in">
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-white">Phone Number ID</label>
+                <input
+                  type="text"
+                  placeholder="Ex: 109876543210987"
+                  value={metaPhoneNumberId}
+                  onChange={(e) => setMetaPhoneNumberId(e.target.value)}
+                  className="w-full bg-[#131313] border border-[#353534]/60 rounded-xl px-3.5 py-2 text-xs text-white font-mono focus:border-[#25D366] outline-none"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-white">Access Token</label>
+                <input
+                  type="password"
+                  placeholder="Token de acesso do app (Meta for Developers)"
+                  value={metaAccessToken}
+                  onChange={(e) => setMetaAccessToken(e.target.value)}
+                  className="w-full bg-[#131313] border border-[#353534]/60 rounded-xl px-3.5 py-2 text-xs text-white font-mono focus:border-[#25D366] outline-none"
+                />
+              </div>
+              <p className="text-[11px] text-[#8b90a0] leading-relaxed">
+                💡 Encontre os dois valores em <strong>developers.facebook.com</strong> → seu app → WhatsApp → API Setup. O token padrão expira em 24h — para uso contínuo, crie um "System User" com token permanente em Configurações do Negócio. Enquanto o app estiver em modo de desenvolvimento, a Meta só permite enviar para números cadastrados na lista "To" dessa mesma página.
+              </p>
             </div>
           )}
 
