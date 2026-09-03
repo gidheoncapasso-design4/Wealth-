@@ -65,6 +65,11 @@ function getServerDb(): AdminFirestore {
 const MAIN_PROFILE_COLLECTION = "appData";
 const MAIN_PROFILE_DOC_ID = "main_profile";
 
+// The app's actual public URL, linked in reminder messages. Prefer the
+// APP_URL env var (also what the GitHub Actions cron uses to reach this
+// server) or the request's own origin; this is only the last-resort fallback.
+const DEFAULT_APP_URL = "https://ais-dev-kuxts4gfhrrbfdzt7jkjjt-848157551135.us-east1.run.app";
+
 async function readMainProfile(): Promise<Record<string, any> | null> {
   const snap = await getServerDb().collection(MAIN_PROFILE_COLLECTION).doc(MAIN_PROFILE_DOC_ID).get();
   return snap.exists ? (snap.data() as Record<string, any>) : null;
@@ -813,7 +818,7 @@ app.post("/api/whatsapp/send-reminder", async (req, res) => {
       ? amount.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
       : "R$ 0,00";
 
-    const origin = req.headers.origin || "https://ais-dev-kuxts4gfhrrbfdzt7jkjjt-848157551135.us-east1.run.app";
+    const origin = process.env.APP_URL || req.headers.origin || DEFAULT_APP_URL;
     const messageText =
       `🔔 *Lembrete de Vencimento Wealth*\n\n` +
       `Olá! ⚠️ Lembrete de pagamento:\n` +
@@ -845,7 +850,7 @@ app.post("/api/whatsapp/send-reminder", async (req, res) => {
           evolutionApiKey: whatsappConfig.evolutionApiKey,
           metaPhoneNumberId: whatsappConfig.metaPhoneNumberId,
           metaAccessToken: whatsappConfig.metaAccessToken,
-          metaTemplateParams: [String(title || ""), formattedAmount, String(dueDate || "")],
+          metaTemplateParams: [String(title || ""), formattedAmount, String(dueDate || ""), origin],
         });
         if (directResult.success) {
           directSent = true;
@@ -933,7 +938,7 @@ async function dispatchWhatsAppBillReminders(
         provider: "meta",
         metaPhoneNumberId: whatsappConfig.metaPhoneNumberId,
         metaAccessToken: whatsappConfig.metaAccessToken,
-        metaTemplateParams: [bill.title, formattedAmount, String(bill.dueDate)],
+        metaTemplateParams: [bill.title, formattedAmount, String(bill.dueDate), appUrl || DEFAULT_APP_URL],
       });
     }
     return lastResult;
@@ -992,7 +997,7 @@ app.post("/api/whatsapp/auto-check", async (req, res) => {
     }
 
     const totalAmount = billsDueTomorrow.reduce((acc: number, item: any) => acc + (item.amount || 0), 0);
-    const origin = req.headers.origin || "https://ais-dev-kuxts4gfhrrbfdzt7jkjjt-848157551135.us-east1.run.app";
+    const origin = process.env.APP_URL || req.headers.origin || DEFAULT_APP_URL;
 
     if (whatsappConfig?.provider && whatsappConfig.provider !== "manual") {
       const dispatchResult = await dispatchWhatsAppBillReminders(whatsappConfig, billsDueTomorrow, tomorrow, origin);
