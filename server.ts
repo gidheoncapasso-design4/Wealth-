@@ -522,6 +522,12 @@ async function dispatchDirectWhatsAppMessage(params: {
   evolutionApiKey?: string;
   metaPhoneNumberId?: string;
   metaAccessToken?: string;
+  // When set, a single bill reminder is sent through this approved WhatsApp
+  // message template instead of free-form text (see the "meta" branch below
+  // for why free text alone isn't reliable for unattended daily reminders).
+  metaTemplateName?: string;
+  metaTemplateLanguage?: string;
+  metaTemplateParams?: string[];
 }) {
   const cleanPhone = params.phoneNumber.replace(/\D/g, "");
   const fullPhone = cleanPhone.startsWith("55") ? cleanPhone : "55" + cleanPhone;
@@ -597,23 +603,51 @@ async function dispatchDirectWhatsAppMessage(params: {
     }
 
     const url = `https://graph.facebook.com/v21.0/${phoneNumberId}/messages`;
+
+    // WhatsApp's official Cloud API only allows free-form text ("type": "text")
+    // inside an active 24h customer-service session (i.e. the recipient messaged
+    // the business number recently). A scheduled reminder nobody replies to has
+    // no such session, so it must go through a pre-approved message template
+    // instead — which works at any time, no window required. Falls back to
+    // Meta's built-in "hello_world" sample template (always pre-approved, no
+    // setup needed) when no bill-specific data was given, e.g. a plain
+    // connection test.
+    const requestBody = params.metaTemplateParams && params.metaTemplateParams.length > 0
+      ? {
+          messaging_product: "whatsapp",
+          to: fullPhone,
+          type: "template",
+          template: {
+            name: params.metaTemplateName || "lembrete_vencimento",
+            language: { code: params.metaTemplateLanguage || "pt_BR" },
+            components: [
+              {
+                type: "body",
+                parameters: params.metaTemplateParams.map((text) => ({ type: "text", text })),
+              },
+            ],
+          },
+        }
+      : {
+          messaging_product: "whatsapp",
+          to: fullPhone,
+          type: "template",
+          template: { name: "hello_world", language: { code: "en_US" } },
+        };
+
     const res = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${accessToken}`,
       },
-      body: JSON.stringify({
-        messaging_product: "whatsapp",
-        to: fullPhone,
-        type: "text",
-        text: { body: params.messageText },
-      }),
+      body: JSON.stringify(requestBody),
     });
     const data: any = await res.json().catch(() => ({}));
     if (!res.ok) {
-      // Meta's most common failure here: the recipient isn't on the app's test
-      // number allow-list yet, or the temporary access token (24h) has expired.
+      // Common failures here: the recipient isn't on the app's test number
+      // allow-list yet, the temporary access token (24h) has expired, or the
+      // custom template isn't approved yet (still "Em análise").
       throw new Error(data.error?.message || `Erro na API do WhatsApp da Meta (Status ${res.status})`);
     }
     return { success: true, provider: "meta", data };
@@ -811,6 +845,7 @@ app.post("/api/whatsapp/send-reminder", async (req, res) => {
           evolutionApiKey: whatsappConfig.evolutionApiKey,
           metaPhoneNumberId: whatsappConfig.metaPhoneNumberId,
           metaAccessToken: whatsappConfig.metaAccessToken,
+          metaTemplateParams: [String(title || ""), formattedAmount, String(dueDate || "")],
         });
         if (directResult.success) {
           directSent = true;
@@ -876,6 +911,60 @@ app.post("/api/whatsapp/test-direct", async (req, res) => {
 });
 
 // WhatsApp Check and Auto-Dispatch Due Tomorrow endpoint
+// Dispatches the "bills due tomorrow" WhatsApp alert, shared by the manual
+// auto-check endpoint and the daily cron. Meta's official API can only fill
+// one bill's data into the approved template per message (it has exactly 3
+// fixed variables), so with that provider we send one template message per
+// bill instead of the single combined summary text used by every other
+// provider (which has no such per-message data limit).
+async function dispatchWhatsAppBillReminders(
+  whatsappConfig: any,
+  billsDueTomorrow: Array<{ title: string; amount: number; dueDate: number }>,
+  tomorrow: number,
+  appUrl: string
+): Promise<{ provider: string; data?: any }> {
+  if (whatsappConfig.provider === "meta") {
+    let lastResult: { provider: string; data?: any } = { provider: "meta" };
+    for (const bill of billsDueTomorrow) {
+      const formattedAmount = bill.amount.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+      lastResult = await dispatchDirectWhatsAppMessage({
+        phoneNumber: whatsappConfig.phoneNumber,
+        messageText: "",
+        provider: "meta",
+        metaPhoneNumberId: whatsappConfig.metaPhoneNumberId,
+        metaAccessToken: whatsappConfig.metaAccessToken,
+        metaTemplateParams: [bill.title, formattedAmount, String(bill.dueDate)],
+      });
+    }
+    return lastResult;
+  }
+
+  const totalAmount = billsDueTomorrow.reduce((acc, item) => acc + (item.amount || 0), 0);
+  const formattedTotal = totalAmount.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  const billItemsText = billsDueTomorrow
+    .map((b) => `• *${b.title}*: ${b.amount.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`)
+    .join("\n");
+  const messageText =
+    `🔔 *Alerta de Vencimento Wealth - Amanhã (Dia ${tomorrow})*\n\n` +
+    `Olá! Identificamos ${billsDueTomorrow.length} conta(s) com vencimento para amanhã:\n\n` +
+    `${billItemsText}\n\n` +
+    `💰 *Total a Pagar*: ${formattedTotal}\n\n` +
+    (appUrl ? `👉 *Acesse seu app para conferir e marcar como pago*:\n${appUrl}` : "");
+
+  return dispatchDirectWhatsAppMessage({
+    phoneNumber: whatsappConfig.phoneNumber,
+    messageText,
+    provider: whatsappConfig.provider,
+    webhookUrl: whatsappConfig.webhookUrl,
+    zapiInstanceId: whatsappConfig.zapiInstanceId,
+    zapiToken: whatsappConfig.zapiToken,
+    zapiClientToken: whatsappConfig.zapiClientToken,
+    evolutionEndpoint: whatsappConfig.evolutionEndpoint,
+    evolutionInstance: whatsappConfig.evolutionInstance,
+    evolutionApiKey: whatsappConfig.evolutionApiKey,
+  });
+}
+
 app.post("/api/whatsapp/auto-check", async (req, res) => {
   try {
     const { recurringExpenses, whatsappConfig } = req.body;
@@ -903,35 +992,10 @@ app.post("/api/whatsapp/auto-check", async (req, res) => {
     }
 
     const totalAmount = billsDueTomorrow.reduce((acc: number, item: any) => acc + (item.amount || 0), 0);
-    const formattedTotal = totalAmount.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-
     const origin = req.headers.origin || "https://ais-dev-kuxts4gfhrrbfdzt7jkjjt-848157551135.us-east1.run.app";
-    const billItemsText = billsDueTomorrow
-      .map((b: any) => `• *${b.title}*: ${b.amount.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`)
-      .join("\n");
-
-    const messageText =
-      `🔔 *Alerta de Vencimento Wealth - Amanhã (Dia ${tomorrow})*\n\n` +
-      `Olá! Identificamos ${billsDueTomorrow.length} conta(s) com vencimento para amanhã:\n\n` +
-      `${billItemsText}\n\n` +
-      `💰 *Total a Pagar*: ${formattedTotal}\n\n` +
-      `👉 *Acesse seu app para conferir e marcar como pago*:\n${origin}`;
 
     if (whatsappConfig?.provider && whatsappConfig.provider !== "manual") {
-      const dispatchResult = await dispatchDirectWhatsAppMessage({
-        phoneNumber: whatsappConfig.phoneNumber,
-        messageText,
-        provider: whatsappConfig.provider,
-        webhookUrl: whatsappConfig.webhookUrl,
-        zapiInstanceId: whatsappConfig.zapiInstanceId,
-        zapiToken: whatsappConfig.zapiToken,
-        zapiClientToken: whatsappConfig.zapiClientToken,
-        evolutionEndpoint: whatsappConfig.evolutionEndpoint,
-        evolutionInstance: whatsappConfig.evolutionInstance,
-        evolutionApiKey: whatsappConfig.evolutionApiKey,
-        metaPhoneNumberId: whatsappConfig.metaPhoneNumberId,
-        metaAccessToken: whatsappConfig.metaAccessToken,
-      });
+      const dispatchResult = await dispatchWhatsAppBillReminders(whatsappConfig, billsDueTomorrow, tomorrow, origin);
 
       return res.json({
         dispatched: true,
@@ -942,6 +1006,15 @@ app.post("/api/whatsapp/auto-check", async (req, res) => {
         message: `Alerta automático enviado com sucesso para ${whatsappConfig.phoneNumber}!`,
       });
     } else {
+      const billItemsText = billsDueTomorrow
+        .map((b: any) => `• *${b.title}*: ${b.amount.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`)
+        .join("\n");
+      const messageText =
+        `🔔 *Alerta de Vencimento Wealth - Amanhã (Dia ${tomorrow})*\n\n` +
+        `Olá! Identificamos ${billsDueTomorrow.length} conta(s) com vencimento para amanhã:\n\n` +
+        `${billItemsText}\n\n` +
+        `💰 *Total a Pagar*: ${totalAmount.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}\n\n` +
+        `👉 *Acesse seu app para conferir e marcar como pago*:\n${origin}`;
       const cleanPhone = whatsappConfig.phoneNumber.replace(/\D/g, "");
       const whatsappUrl = `https://api.whatsapp.com/send?phone=${cleanPhone.startsWith("55") ? cleanPhone : "55" + cleanPhone}&text=${encodeURIComponent(messageText)}`;
       return res.json({
@@ -1026,29 +1099,9 @@ app.post("/api/cron/daily-reminders", async (req, res) => {
       const appUrl = process.env.APP_URL || req.headers.origin || "";
 
       if (whatsappConfig.enabled && whatsappConfig.phoneNumber) {
-        const whatsappText =
-          `🔔 *Alerta de Vencimento Wealth - Amanhã (Dia ${tomorrow})*\n\n` +
-          `Olá! Identificamos ${billsDueTomorrow.length} conta(s) com vencimento para amanhã:\n\n` +
-          `${billItemsText}\n\n` +
-          `💰 *Total a Pagar*: ${formattedTotal}\n\n` +
-          (appUrl ? `👉 *Acesse seu app para conferir e marcar como pago*:\n${appUrl}` : "");
-
         try {
           if (whatsappConfig.provider && whatsappConfig.provider !== "manual") {
-            await dispatchDirectWhatsAppMessage({
-              phoneNumber: whatsappConfig.phoneNumber,
-              messageText: whatsappText,
-              provider: whatsappConfig.provider,
-              webhookUrl: whatsappConfig.webhookUrl,
-              zapiInstanceId: whatsappConfig.zapiInstanceId,
-              zapiToken: whatsappConfig.zapiToken,
-              zapiClientToken: whatsappConfig.zapiClientToken,
-              evolutionEndpoint: whatsappConfig.evolutionEndpoint,
-              evolutionInstance: whatsappConfig.evolutionInstance,
-              evolutionApiKey: whatsappConfig.evolutionApiKey,
-              metaPhoneNumberId: whatsappConfig.metaPhoneNumberId,
-              metaAccessToken: whatsappConfig.metaAccessToken,
-            });
+            await dispatchWhatsAppBillReminders(whatsappConfig, billsDueTomorrow, tomorrow, appUrl);
             result.whatsappSent = true;
           } else {
             result.whatsappError = "Modo 'manual' (1-clique) não pode ser disparado sem interação humana. Configure Z-API, Evolution API ou um webhook.";
