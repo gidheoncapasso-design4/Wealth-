@@ -1,23 +1,17 @@
 import React, { useState } from "react";
-import { ShieldCheck, Eye, EyeOff, AlertCircle, CheckCircle2 } from "lucide-react";
-import {
-  signInWithEmailAndPassword,
-  sendPasswordResetEmail,
-  AuthError,
-} from "firebase/auth";
+import { ShieldCheck, AlertCircle } from "lucide-react";
+import { signInWithPopup, GoogleAuthProvider, type AuthError } from "firebase/auth";
 import { auth } from "../lib/firebase";
-import { USER_PROFILE } from "../data";
+
+const googleProvider = new GoogleAuthProvider();
 
 function translateAuthError(error: AuthError): string {
   switch (error.code) {
-    case "auth/invalid-credential":
-    case "auth/wrong-password":
-    case "auth/user-not-found":
-      return "E-mail ou senha incorretos.";
-    case "auth/too-many-requests":
-      return "Muitas tentativas. Aguarde alguns minutos e tente novamente.";
-    case "auth/invalid-email":
-      return "Digite um e-mail válido.";
+    case "auth/popup-closed-by-user":
+    case "auth/cancelled-popup-request":
+      return ""; // user just closed the popup, not a real error
+    case "auth/popup-blocked":
+      return "Seu navegador bloqueou a janela de login. Permita pop-ups para este site e tente novamente.";
     case "auth/network-request-failed":
       return "Falha de conexão. Verifique sua internet.";
     default:
@@ -25,42 +19,33 @@ function translateAuthError(error: AuthError): string {
   }
 }
 
+// Google G logo (brand mark, not available in lucide-react's generic icon set)
+function GoogleIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24">
+      <path fill="#4285F4" d="M23.52 12.27c0-.85-.08-1.67-.22-2.45H12v4.64h6.47a5.53 5.53 0 0 1-2.4 3.63v3h3.88c2.27-2.09 3.57-5.17 3.57-8.82z" />
+      <path fill="#34A853" d="M12 24c3.24 0 5.96-1.07 7.95-2.91l-3.88-3c-1.08.72-2.45 1.15-4.07 1.15-3.13 0-5.78-2.11-6.73-4.96H1.27v3.1A12 12 0 0 0 12 24z" />
+      <path fill="#FBBC05" d="M5.27 14.28A7.2 7.2 0 0 1 4.89 12c0-.79.14-1.56.38-2.28v-3.1H1.27A12 12 0 0 0 0 12c0 1.94.46 3.77 1.27 5.38z" />
+      <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.44-3.44C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.69 1.27 6.62l4 3.1C6.22 6.86 8.87 4.75 12 4.75z" />
+    </svg>
+  );
+}
+
 export default function LoginView() {
-  const [email, setEmail] = useState(USER_PROFILE.email || "");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
-  const [resetMessage, setResetMessage] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleGoogleSignIn = async () => {
     setError("");
-    setResetMessage("");
     setIsSubmitting(true);
     try {
-      await signInWithEmailAndPassword(auth, email.trim(), password);
+      await signInWithPopup(auth, googleProvider);
       // No need to call any callback here: App.tsx listens to Firebase's
       // onAuthStateChanged and re-renders automatically once this resolves.
     } catch (err) {
       setError(translateAuthError(err as AuthError));
     } finally {
       setIsSubmitting(false);
-    }
-  };
-
-  const handleForgotPassword = async () => {
-    setError("");
-    setResetMessage("");
-    if (!email.trim()) {
-      setError("Digite seu e-mail acima para receber o link de redefinição de senha.");
-      return;
-    }
-    try {
-      await sendPasswordResetEmail(auth, email.trim());
-      setResetMessage("Enviamos um link de redefinição de senha para o seu e-mail.");
-    } catch (err) {
-      setError(translateAuthError(err as AuthError));
     }
   };
 
@@ -83,81 +68,24 @@ export default function LoginView() {
         </div>
       </div>
 
-      {/* Real Firebase Authentication form */}
-      <div className="w-full max-w-sm flex flex-col items-center space-y-6">
-        <form onSubmit={handleSubmit} className="w-full space-y-4 text-left">
-          <div className="space-y-1">
-            <label className="text-[10px] text-[#8b90a0] font-semibold uppercase tracking-wider pl-1">E-mail</label>
-            <input
-              type="email"
-              required
-              autoComplete="email"
-              placeholder="seuemail@gmail.com"
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-                setError("");
-                setResetMessage("");
-              }}
-              className="w-full bg-[#1c1b1b] border border-[#353534]/50 rounded-xl px-4 py-3 text-sm text-white focus:border-[#adc6ff] outline-none font-mono"
-            />
+      {/* Google Sign-In */}
+      <div className="w-full max-w-sm flex flex-col items-center space-y-4">
+        {error && (
+          <div className="w-full flex items-start gap-2 p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-xs text-rose-400">
+            <AlertCircle size={14} className="shrink-0 mt-0.5" />
+            <span>{error}</span>
           </div>
+        )}
 
-          <div className="space-y-1 relative">
-            <label className="text-[10px] text-[#8b90a0] font-semibold uppercase tracking-wider pl-1">Senha</label>
-            <div className="relative">
-              <input
-                type={showPassword ? "text" : "password"}
-                required
-                autoComplete="current-password"
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  setError("");
-                  setResetMessage("");
-                }}
-                className="w-full bg-[#1c1b1b] border border-[#353534]/50 rounded-xl pl-4 pr-10 py-3 text-sm text-white focus:border-[#adc6ff] outline-none"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8b90a0] hover:text-white p-0.5 cursor-pointer"
-              >
-                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
-            </div>
-          </div>
-
-          {error && (
-            <div className="flex items-start gap-2 p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-xs text-rose-400">
-              <AlertCircle size={14} className="shrink-0 mt-0.5" />
-              <span>{error}</span>
-            </div>
-          )}
-
-          {resetMessage && (
-            <div className="flex items-start gap-2 p-3 bg-[#4edea3]/10 border border-[#4edea3]/20 rounded-xl text-xs text-[#4edea3]">
-              <CheckCircle2 size={14} className="shrink-0 mt-0.5" />
-              <span>{resetMessage}</span>
-            </div>
-          )}
-
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full bg-[#adc6ff] text-[#002e69] py-3.5 rounded-xl font-bold text-xs hover:opacity-90 active:scale-95 transition-all cursor-pointer shadow-lg shadow-[#adc6ff]/5 mt-4 disabled:opacity-50"
-          >
-            {isSubmitting ? "Entrando..." : "Entrar"}
-          </button>
-
-          <button
-            type="button"
-            onClick={handleForgotPassword}
-            className="w-full text-center text-[11px] text-[#8b90a0] hover:text-white transition-colors cursor-pointer pt-1"
-          >
-            Esqueci minha senha
-          </button>
-        </form>
+        <button
+          type="button"
+          onClick={handleGoogleSignIn}
+          disabled={isSubmitting}
+          className="w-full bg-white text-[#1f1f1f] py-3.5 rounded-xl font-bold text-sm hover:opacity-90 active:scale-95 transition-all cursor-pointer shadow-lg flex items-center justify-center gap-3 disabled:opacity-50"
+        >
+          <GoogleIcon />
+          <span>{isSubmitting ? "Entrando..." : "Entrar com o Google"}</span>
+        </button>
       </div>
 
       {/* Safety message */}
