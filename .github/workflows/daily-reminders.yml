@@ -1,0 +1,48 @@
+name: Daily Bill Reminders
+
+# Calls the app's /api/cron/daily-reminders endpoint once a day so bills due
+# tomorrow get sent via WhatsApp/E-mail/Google Calendar automatically, without
+# anyone needing to open the app and click a button.
+#
+# Required repository secrets (Settings > Secrets and variables > Actions):
+#   APP_URL     - the deployed app's public base URL, e.g. https://your-app.example.com
+#   CRON_SECRET - must match the CRON_SECRET env var configured on the server
+
+on:
+  schedule:
+    # 11:00 UTC = 08:00 America/Sao_Paulo (UTC-3, no DST currently observed)
+    - cron: "0 11 * * *"
+  workflow_dispatch: {}
+
+permissions: {}
+concurrency:
+  group: wealth-daily-reminders
+  cancel-in-progress: false
+
+jobs:
+  trigger-reminders:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Call daily reminders endpoint
+        env:
+          APP_URL: ${{ secrets.APP_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          set -euo pipefail
+          if [ -z "$APP_URL" ] || [ -z "$CRON_SECRET" ]; then
+            echo "::error::APP_URL and/or CRON_SECRET repository secrets are not set."
+            exit 1
+          fi
+          [[ "$APP_URL" == https://* ]] || { echo "::error::APP_URL must use HTTPS"; exit 1; }
+          # Wake the free service first. Only this read-only request is retried.
+          curl -fsS --retry 3 --retry-delay 15 --max-time 180 "${APP_URL%/}/" -o /dev/null
+          http_code=$(curl -sS --max-time 240 -o response.json -w "%{http_code}" -X POST \
+            "${APP_URL%/}/api/cron/daily-reminders" \
+            -H "x-cron-secret: $CRON_SECRET")
+          echo "HTTP status: $http_code"
+          if [ "$http_code" != "200" ]; then
+            exit 1
+          fi
+          # Public logs must not contain bills, phone numbers or provider errors.
+          node -e 'const r=JSON.parse(require("fs").readFileSync("response.json","utf8")); if(r.ran!==true || r.whatsappError || r.emailError || r.calendarErrors?.length) { console.error("Reminder run failed; check server configuration."); process.exit(1); } console.log("Reminder run completed.");'
