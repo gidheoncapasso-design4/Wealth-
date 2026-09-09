@@ -96,7 +96,8 @@ app.use("/api/whatsapp", async (req, res, next) => {
       return res.status(403).json({ error: "Conta não autorizada." });
     }
     next();
-  } catch {
+  } catch (error: any) {
+    console.error("[WhatsApp auth] Firebase token validation failed:", error?.message || error);
     return res.status(401).json({ error: "Não foi possível validar sua sessão. Confira a configuração do Firebase no servidor." });
   }
 });
