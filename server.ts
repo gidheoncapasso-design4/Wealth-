@@ -11,11 +11,14 @@ import nodemailer from "nodemailer";
 import { google } from "googleapis";
 import firebaseConfig from "./firebase-applet-config.json";
 import { getTomorrowDayOfMonth } from "./src/lib/dateUtils";
+import { getAuth as getAdminAuth } from "firebase-admin/auth";
+import { greenApiRequest, sendGreenApiMessage } from "./src/lib/greenApi";
+import { reminderDate } from "./src/lib/reminderDate";
 
 dotenv.config();
 
 const app = express();
-const PORT = 3000;
+const PORT = Number(process.env.PORT) || 3000;
 
 app.use(express.json({ limit: "20mb" }));
 
@@ -80,8 +83,32 @@ async function updateMainProfile(partial: Record<string, any>): Promise<void> {
 }
 
 function getTodayISODate(): string {
-  return new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo" }).format(new Date());
 }
+
+app.use("/api/whatsapp", async (req, res, next) => {
+  const bearer = req.headers.authorization?.match(/^Bearer (.+)$/)?.[1];
+  if (!bearer) return res.status(401).json({ error: "Entre na sua conta para enviar alertas." });
+  try {
+    getServerDb();
+    const token = await getAdminAuth().verifyIdToken(bearer, true);
+    if (token.email !== "gidheoncapasso@gmail.com" || !token.email_verified) {
+      return res.status(403).json({ error: "Conta não autorizada." });
+    }
+    next();
+  } catch {
+    return res.status(401).json({ error: "Não foi possível validar sua sessão. Confira a configuração do Firebase no servidor." });
+  }
+});
+
+app.get("/api/whatsapp/status", async (_req, res) => {
+  try {
+    const result = await greenApiRequest("getStateInstance");
+    return res.json({ provider: "greenapi", state: result.stateInstance });
+  } catch (error: any) {
+    return res.status(503).json({ error: error.message });
+  }
+});
 
 // Lazy-loaded Gemini Client
 let aiInstance: any = null;
@@ -542,6 +569,10 @@ async function dispatchDirectWhatsAppMessage(params: {
     params.provider ||
     process.env.WHATSAPP_PROVIDER ||
     (params.webhookUrl || process.env.WHATSAPP_WEBHOOK_URL ? "webhook" : "manual");
+
+  if (effectiveProvider === "greenapi") {
+    return sendGreenApiMessage(params.phoneNumber, params.messageText);
+  }
 
   if (effectiveProvider === "zapi") {
     const instance = params.zapiInstanceId || process.env.WHATSAPP_ZAPI_INSTANCE;
@@ -1048,6 +1079,8 @@ app.post("/api/whatsapp/auto-check", async (req, res) => {
 // Protected by a shared secret so it can't be triggered by strangers.
 // ---------------------------------------------------------------------------
 app.post("/api/cron/daily-reminders", async (req, res) => {
+  let runRef: FirebaseFirestore.DocumentReference | undefined;
+  let lockHeld = false;
   try {
     const cronSecret = process.env.CRON_SECRET;
     if (!cronSecret) {
@@ -1065,6 +1098,16 @@ app.post("/api/cron/daily-reminders", async (req, res) => {
     const recurringExpenses: any[] = Array.isArray(profile.recurringExpenses) ? profile.recurringExpenses : [];
     const whatsappConfig: any = profile.whatsappConfig || {};
     const todayISO = getTodayISODate();
+    runRef = getServerDb().collection("reminderRuns").doc(todayISO);
+    const runState = await getServerDb().runTransaction(async (tx) => {
+      const snapshot = await tx.get(runRef!);
+      const state = snapshot.data() || {};
+      if (state.lockUntil > Date.now()) return null;
+      tx.set(runRef!, { lockUntil: Date.now() + 10 * 60 * 1000 }, { merge: true });
+      return state;
+    });
+    if (!runState) return res.status(409).json({ error: "Execução diária já em andamento." });
+    lockHeld = true;
 
     const result: {
       dueCount: number;
@@ -1087,13 +1130,13 @@ app.post("/api/cron/daily-reminders", async (req, res) => {
     };
 
     // --- 1. WhatsApp + E-mail: bills due tomorrow, sent at most once per day ---
-    const tomorrow = getTomorrowDayOfMonth();
+    const tomorrow = reminderDate().tomorrowDay;
     const billsDueTomorrow = recurringExpenses.filter(
       (item) => !item.paidThisMonth && item.dueDate === tomorrow
     );
     result.dueCount = billsDueTomorrow.length;
 
-    if (billsDueTomorrow.length > 0 && whatsappConfig.lastAutoCheckDate === todayISO) {
+    if (billsDueTomorrow.length > 0 && runState.whatsappSent && (!whatsappConfig.emailEnabled || runState.emailSent)) {
       result.skippedAlreadySentToday = true;
     } else if (billsDueTomorrow.length > 0) {
       const totalAmount = billsDueTomorrow.reduce((acc, item) => acc + (item.amount || 0), 0);
@@ -1103,11 +1146,12 @@ app.post("/api/cron/daily-reminders", async (req, res) => {
         .join("\n");
       const appUrl = process.env.APP_URL || req.headers.origin || "";
 
-      if (whatsappConfig.enabled && whatsappConfig.phoneNumber) {
+      if (whatsappConfig.enabled && whatsappConfig.phoneNumber && !runState.whatsappSent) {
         try {
           if (whatsappConfig.provider && whatsappConfig.provider !== "manual") {
             await dispatchWhatsAppBillReminders(whatsappConfig, billsDueTomorrow, tomorrow, appUrl);
             result.whatsappSent = true;
+            await runRef.set({ whatsappSent: true }, { merge: true });
           } else {
             result.whatsappError = "Modo 'manual' (1-clique) não pode ser disparado sem interação humana. Configure Z-API, Evolution API ou um webhook.";
           }
@@ -1116,7 +1160,7 @@ app.post("/api/cron/daily-reminders", async (req, res) => {
         }
       }
 
-      if (whatsappConfig.emailEnabled && whatsappConfig.notificationEmail) {
+      if (whatsappConfig.emailEnabled && whatsappConfig.notificationEmail && !runState.emailSent) {
         const billItemsHtml = billsDueTomorrow
           .map((b) => `<li><strong>${b.title}</strong>: ${b.amount.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</li>`)
           .join("");
@@ -1128,6 +1172,7 @@ app.post("/api/cron/daily-reminders", async (req, res) => {
             html: `<p>Olá! Identificamos <strong>${billsDueTomorrow.length}</strong> conta(s) com vencimento para amanhã (dia ${tomorrow}):</p><ul>${billItemsHtml}</ul><p><strong>Total a pagar: ${formattedTotal}</strong></p>${appUrl ? `<p><a href="${appUrl}">Acesse seu app Wealth</a></p>` : ""}`,
           });
           result.emailSent = true;
+          await runRef.set({ emailSent: true }, { merge: true });
         } catch (err: any) {
           result.emailError = err.message || "Erro ao enviar e-mail.";
         }
@@ -1151,9 +1196,11 @@ app.post("/api/cron/daily-reminders", async (req, res) => {
       }
     }
 
-    return res.json({ ran: true, ...result });
+    return res.status(result.whatsappError || result.emailError || result.calendarErrors.length ? 502 : 200).json({ ran: true, ...result });
   } catch (error: any) {
     return res.status(500).json({ error: error.message });
+  } finally {
+    if (lockHeld && runRef) await runRef.set({ lockUntil: 0 }, { merge: true }).catch(() => {});
   }
 });
 

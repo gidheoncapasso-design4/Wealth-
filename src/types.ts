@@ -74,7 +74,7 @@ export interface WhatsAppConfig {
   phoneNumber: string;
   enabled: boolean;
   daysAhead: number; // 1 day before
-  provider?: "manual" | "webhook" | "zapi" | "evolution" | "meta";
+  provider?: "manual" | "webhook" | "zapi" | "evolution" | "meta" | "greenapi";
   webhookUrl?: string;
   zapiInstanceId?: string;
   zapiToken?: string;

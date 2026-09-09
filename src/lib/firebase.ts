@@ -52,7 +52,7 @@ export async function saveCloudAppData(data: CloudAppData) {
   try {
     const docRef = doc(db, "appData", PROFILE_DOC_ID);
     await setDoc(docRef, {
-      ...data,
+      ...JSON.parse(JSON.stringify(data)),
       lastUpdated: new Date().toISOString(),
     }, { merge: true });
     return true;

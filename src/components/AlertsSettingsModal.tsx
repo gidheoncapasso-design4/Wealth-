@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { X, MessageSquare, Sparkles, Check, Send, Bell } from "lucide-react";
 import { WhatsAppConfig } from "../types";
+import { authFetch } from "../lib/authFetch";
 
 interface AlertsSettingsModalProps {
   isOpen: boolean;
@@ -17,7 +18,7 @@ export default function AlertsSettingsModal({
 }: AlertsSettingsModalProps) {
   const [whatsappPhone, setWhatsappPhone] = useState(whatsappConfig.phoneNumber || "");
   const [whatsappEnabled, setWhatsappEnabled] = useState(whatsappConfig.enabled ?? true);
-  const [whatsappProvider, setWhatsappProvider] = useState<"manual" | "webhook" | "zapi" | "evolution" | "meta">(whatsappConfig.provider || "manual");
+  const [whatsappProvider, setWhatsappProvider] = useState<NonNullable<WhatsAppConfig["provider"]>>(whatsappConfig.provider || "manual");
   const [webhookUrl, setWebhookUrl] = useState(whatsappConfig.webhookUrl || "");
   const [zapiInstanceId, setZapiInstanceId] = useState(whatsappConfig.zapiInstanceId || "");
   const [zapiToken, setZapiToken] = useState(whatsappConfig.zapiToken || "");
@@ -71,7 +72,7 @@ export default function AlertsSettingsModal({
     }
 
     try {
-      const res = await fetch("/api/whatsapp/test-direct", {
+      const res = await authFetch("/api/whatsapp/test-direct", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -228,6 +229,11 @@ export default function AlertsSettingsModal({
             </label>
 
             <div className="grid grid-cols-2 gap-2">
+              <button type="button" onClick={() => setWhatsappProvider("greenapi")}
+                className={`p-3 rounded-xl border text-left cursor-pointer ${whatsappProvider === "greenapi" ? "bg-[#25D366]/15 border-[#25D366] text-white" : "bg-[#1c1b1b] border-[#353534]/50 text-[#8b90a0]"}`}>
+                <p className="text-xs font-bold">GREEN-API {whatsappProvider === "greenapi" ? "✓" : ""}</p>
+                <p className="text-[11px] mt-1">Envio automático. Vincule seu WhatsApp na GREEN-API. Credenciais configuradas no Render.</p>
+              </button>
               <button
                 type="button"
                 onClick={() => setWhatsappProvider("manual")}

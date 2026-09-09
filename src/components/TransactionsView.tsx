@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Search, Filter, Download, Plus, Paperclip, FileText, ShoppingBag, Utensils, CreditCard, Plane, ShieldAlert, Heart, Landmark, RefreshCw, X, Calendar, CheckCircle, Clock, Trash2, Check, UploadCloud, Sparkles, MessageSquare, Bell, Send, Edit3, Tag, Layers } from "lucide-react";
 import { Transaction, RecurringExpense, WhatsAppConfig } from "../types";
 import AlertsSettingsModal from "./AlertsSettingsModal";
+import { authFetch } from "../lib/authFetch";
 import { getTomorrowDayOfMonth } from "../lib/dateUtils";
 
 interface TransactionsViewProps {
@@ -201,7 +202,7 @@ export default function TransactionsView({
     const formattedAmount = expense.amount.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
     try {
-      const res = await fetch("/api/whatsapp/send-reminder", {
+      const res = await authFetch("/api/whatsapp/send-reminder", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -235,7 +236,7 @@ export default function TransactionsView({
   const handleAutoDispatchDueTomorrow = async () => {
     setIsAutoDispatching(true);
     try {
-      const res = await fetch("/api/whatsapp/auto-check", {
+      const res = await authFetch("/api/whatsapp/auto-check", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ recurringExpenses, whatsappConfig }),
