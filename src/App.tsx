@@ -1,18 +1,19 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { lazy, Suspense, useState, useEffect, useRef } from "react";
 import { LayoutGrid, CreditCard, Bot, TrendingUp, Landmark, X, Plus, AlertCircle, Sparkles } from "lucide-react";
 import { onAuthStateChanged, signOut, type User } from "firebase/auth";
 import { USER_PROFILE, INITIAL_TRANSACTIONS, CONNECTED_BANKS, INITIAL_RECURRING_EXPENSES } from "./data";
 import { Transaction, ChatMessage, BankConnection, RecurringExpense, WhatsAppConfig } from "./types";
 import Header from "./components/Header";
 import DashboardView from "./components/DashboardView";
-import TransactionsView from "./components/TransactionsView";
-import WealthAIView from "./components/WealthAIView";
-import InvestmentsView from "./components/InvestmentsView";
-import ConnectionsView from "./components/ConnectionsView";
 import LoginView from "./components/LoginView";
-import StatementImportModal from "./components/StatementImportModal";
 import { subscribeCloudAppData, saveCloudAppData, auth } from "./lib/firebase";
 import { autoSanitizeTransactions, calculateDizimo } from "./lib/financeUtils";
+
+const TransactionsView = lazy(() => import("./components/TransactionsView"));
+const WealthAIView = lazy(() => import("./components/WealthAIView"));
+const InvestmentsView = lazy(() => import("./components/InvestmentsView"));
+const ConnectionsView = lazy(() => import("./components/ConnectionsView"));
+const StatementImportModal = lazy(() => import("./components/StatementImportModal"));
 
 const LOCAL_STORAGE_KEY = "wealth_app_data_v2";
 
@@ -466,6 +467,7 @@ export default function App() {
 
   // Full Month Simulation Handler (Simulates paying only the user's 18 real fixed costs)
   const handleSimulateFullMonth = () => {
+    if (!window.confirm("Isso criará no extrato os pagamentos de todas as despesas fixas pendentes e as marcará como pagas. Deseja continuar?")) return;
     const simulatedTxs: Transaction[] = recurringExpenses.map((exp, idx) => ({
       id: `sim-rec-${idx}`,
       title: `Quitac. ${exp.title}`,
@@ -726,12 +728,17 @@ export default function App() {
             liquidBalance={liquidBalance}
             investedAmount={investedAmount}
             transactions={transactions}
+            recurringExpenses={recurringExpenses}
+            whatsappConfig={whatsappConfig}
             onSimulateFullMonth={handleSimulateFullMonth}
             onNavigateToTransactions={() => setActiveTab("payments")}
+            onNewIncome={() => setActiveTab("payments")}
+            onNewExpense={() => setActiveTab("payments")}
             onUpdateBalances={handleUpdateBalances}
           />
         )}
         
+        <Suspense fallback={<div className="py-16 text-center text-sm text-[#8b90a0]">Carregando…</div>}>
         {activeTab === "payments" && (
           <TransactionsView
             transactions={transactions}
@@ -775,14 +782,17 @@ export default function App() {
             onOpenImportModal={() => setIsImportModalOpen(true)}
           />
         )}
+        </Suspense>
       </main>
 
       {/* Statement Import Modal */}
-      <StatementImportModal
-        isOpen={isImportModalOpen}
-        onClose={() => setIsImportModalOpen(false)}
-        onImportTransactions={handleBatchImportTransactions}
-      />
+      <Suspense fallback={null}>
+        {isImportModalOpen && <StatementImportModal
+          isOpen={isImportModalOpen}
+          onClose={() => setIsImportModalOpen(false)}
+          onImportTransactions={handleBatchImportTransactions}
+        />}
+      </Suspense>
 
       {/* Bottom Navigation Bar */}
       <nav className="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-6 pb-8 pt-4 bg-[#131313]/85 backdrop-blur-2xl border-t border-white/5 shadow-[0px_-4px_40px_rgba(0,122,255,0.15)] rounded-t-2xl">

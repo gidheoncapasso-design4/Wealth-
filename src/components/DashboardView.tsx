@@ -19,9 +19,14 @@ import {
   Sliders,
   Edit3,
   X,
+  ChevronLeft,
+  ChevronRight as ChevronRightIcon,
+  CalendarClock,
+  MessageCircle,
+  ReceiptText,
 } from "lucide-react";
 import { USER_PROFILE, FINANCIAL_GOALS } from "../data";
-import { Transaction } from "../types";
+import { RecurringExpense, Transaction, WhatsAppConfig } from "../types";
 
 interface DashboardViewProps {
   onInvestClick: () => void;
@@ -33,6 +38,10 @@ interface DashboardViewProps {
   onSimulateFullMonth?: () => void;
   onNavigateToTransactions?: () => void;
   onUpdateBalances?: (newLiquid: number, newInvested: number) => void;
+  recurringExpenses?: RecurringExpense[];
+  whatsappConfig?: WhatsAppConfig;
+  onNewIncome?: () => void;
+  onNewExpense?: () => void;
 }
 
 export default function DashboardView({
@@ -45,6 +54,10 @@ export default function DashboardView({
   onSimulateFullMonth,
   onNavigateToTransactions,
   onUpdateBalances,
+  recurringExpenses = [],
+  whatsappConfig,
+  onNewIncome,
+  onNewExpense,
 }: DashboardViewProps) {
   const [chartType, setChartType] = useState<"flow" | "wealth">("flow");
   const [chartRange, setChartRange] = useState<"6M" | "1Y" | "ALL">("6M");
@@ -55,8 +68,8 @@ export default function DashboardView({
   const [inputInvested, setInputInvested] = useState(investedAmount.toString());
 
   const handleOpenAdjustModal = () => {
-    setInputLiquid(liquidBalance > 0 ? liquidBalance.toString() : "35070");
-    setInputInvested(investedAmount > 0 ? investedAmount.toString() : "85000");
+    setInputLiquid(liquidBalance.toString());
+    setInputInvested(investedAmount.toString());
     setIsAdjustModalOpen(true);
   };
 
@@ -70,9 +83,26 @@ export default function DashboardView({
     setIsAdjustModalOpen(false);
   };
 
-  // Dynamic monthly financial stats based on active transactions
-  const inflowTxs = transactions.filter((tx) => tx.amount > 0);
-  const outflowTxs = transactions.filter((tx) => tx.amount < 0);
+  const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+  const monthTokens = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
+  const latestDatedTransaction = transactions.find((tx) => tx.date !== "Recorrente Mensal" && monthTokens.some((m) => tx.date.toLowerCase().includes(m)));
+  const initialMonth = latestDatedTransaction
+    ? monthTokens.findIndex((m) => latestDatedTransaction.date.toLowerCase().includes(m))
+    : new Date().getMonth();
+  const [selectedPeriod, setSelectedPeriod] = useState({ month: Math.max(0, initialMonth), year: new Date().getFullYear() });
+  const changeMonth = (delta: number) => setSelectedPeriod((current) => {
+    const date = new Date(current.year, current.month + delta, 1);
+    return { month: date.getMonth(), year: date.getFullYear() };
+  });
+  const periodTransactions = transactions.filter((tx) => {
+    if (tx.date === "Recorrente Mensal" || tx.isRecurring) return true;
+    const monthIndex = monthTokens.findIndex((m) => tx.date.toLowerCase().includes(m));
+    return monthIndex < 0 || monthIndex === selectedPeriod.month;
+  });
+
+  // Dynamic monthly financial stats based on the selected period
+  const inflowTxs = periodTransactions.filter((tx) => tx.amount > 0);
+  const outflowTxs = periodTransactions.filter((tx) => tx.amount < 0);
 
   const monthlyRevenues = inflowTxs.reduce((acc, tx) => acc + tx.amount, 0);
   const monthlyExpenses = outflowTxs.reduce((acc, tx) => acc + Math.abs(tx.amount), 0);
@@ -111,15 +141,17 @@ export default function DashboardView({
     .sort(([, a], [, b]) => b - a)
     .slice(0, 4);
 
-  // Mock historical monthly cashflow data for chart
-  const monthlyFlowData = [
-    { month: "MAR", in: 22650, out: 14200 },
-    { month: "ABR", in: 22650, out: 16500 },
-    { month: "MAI", in: 23350, out: 15100 },
-    { month: "JUN", in: 22650, out: 17800 },
-    { month: "JUL", in: 22650, out: 16200 },
-    { month: "AGO", in: monthlyRevenues || 22650, out: monthlyExpenses || 18280 },
-  ];
+  const monthlyFlowData = [{ month: monthTokens[selectedPeriod.month].toUpperCase(), in: monthlyRevenues, out: monthlyExpenses }];
+
+  const today = new Date();
+  const tomorrow = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1).getDate();
+  const billsDueTomorrow = recurringExpenses.filter((item) => !item.paidThisMonth && item.dueDate === tomorrow);
+  const dueTomorrowTotal = billsDueTomorrow.reduce((sum, item) => sum + item.amount, 0);
+  const topExpense = topExpenseCategories[0];
+  const deficit = Math.max(0, -netCashFlow);
+  const lastAlertLabel = whatsappConfig?.lastAutoCheckDate
+    ? new Date(`${whatsappConfig.lastAutoCheckDate}T12:00:00`).toLocaleDateString("pt-BR")
+    : "ainda não registrado";
 
   // Mock points for Wealth Growth
   const chartPaths = {
@@ -137,9 +169,9 @@ export default function DashboardView({
   const currentCoords = { "6M": { cx: 800, cy: 40 }, "1Y": { cx: 800, cy: 30 }, "ALL": { cx: 800, cy: 20 } }[chartRange];
 
   return (
-    <div className="space-y-8 animate-fade-in pb-12">
+    <div className="space-y-6 md:space-y-8 animate-fade-in pb-12">
       {/* Top Welcome & Actions Header */}
-      <section className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-[#131313] border border-[#353534]/50 rounded-2xl p-6 shadow-xl">
+      <section className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-[#131313] border border-[#353534]/50 rounded-2xl p-4 md:p-6 shadow-xl">
         <div>
           <div className="flex items-center gap-2">
             <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-widest bg-[#4edea3]/10 text-[#4edea3] border border-[#4edea3]/30">
@@ -150,9 +182,11 @@ export default function DashboardView({
           <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-white mt-1">
             Painel de Controle Financeiro
           </h1>
-          <p className="text-xs text-[#8b90a0] mt-0.5">
-            Acompanhamento detalhado do seu fluxo mensal (Entradas x Saídas) e crescimento do patrimônio.
-          </p>
+          <div className="mt-2 inline-flex items-center gap-1 rounded-xl bg-black/30 border border-white/10 p-1" aria-label="Selecionar mês analisado">
+            <button onClick={() => changeMonth(-1)} className="p-1.5 rounded-lg text-[#c1c6d7] hover:bg-white/10" aria-label="Mês anterior"><ChevronLeft size={15} /></button>
+            <span className="min-w-32 text-center text-xs font-bold text-white">{monthNames[selectedPeriod.month]} {selectedPeriod.year}</span>
+            <button onClick={() => changeMonth(1)} className="p-1.5 rounded-lg text-[#c1c6d7] hover:bg-white/10" aria-label="Próximo mês"><ChevronRightIcon size={15} /></button>
+          </div>
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
@@ -171,20 +205,40 @@ export default function DashboardView({
               type="button"
               onClick={onSimulateFullMonth}
               className="bg-[#4edea3]/10 text-[#4edea3] border border-[#4edea3]/30 font-bold px-4 py-2.5 rounded-xl flex items-center gap-2 hover:bg-[#4edea3]/20 hover:scale-[1.02] transition-all active:scale-95 shadow-lg shadow-[#4edea3]/10 cursor-pointer text-xs"
-              title="Simular Lançamentos de 30 Dias do Mês"
+              title="Criar no extrato os pagamentos de todas as despesas fixas pendentes"
             >
               <Sparkles size={16} className="text-[#4edea3]" />
-              <span>Simular Mês Inteiro</span>
+              <span>Quitar Custos Fixos</span>
             </button>
           )}
 
           <button
-            onClick={onInvestClick}
+            onClick={onNewIncome || onNavigateToTransactions}
             className="bg-[#adc6ff] text-[#002e69] font-bold px-5 py-2.5 rounded-xl flex items-center gap-2 hover:opacity-90 hover:scale-[1.02] transition-all active:scale-95 shadow-lg shadow-[#adc6ff]/20 cursor-pointer text-xs"
           >
             <Plus size={16} strokeWidth={2.5} />
-            <span>Novo Lançamento / Investir</span>
+            <span>Nova Receita</span>
           </button>
+          <button onClick={onNewExpense || onNavigateToTransactions} className="bg-rose-500/10 text-rose-300 border border-rose-500/30 font-bold px-4 py-2.5 rounded-xl flex items-center gap-2 text-xs"><ReceiptText size={15}/><span>Nova Despesa</span></button>
+          <button onClick={onInvestClick} className="bg-[#adc6ff]/10 text-[#adc6ff] border border-[#adc6ff]/30 font-bold px-4 py-2.5 rounded-xl flex items-center gap-2 text-xs"><TrendingUp size={15}/><span>Novo Investimento</span></button>
+        </div>
+      </section>
+
+      <section className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <button onClick={onNavigateToTransactions} className="text-left bg-amber-500/10 border border-amber-400/30 rounded-2xl p-4 hover:bg-amber-500/15 transition-colors">
+          <div className="flex items-center gap-2 text-amber-300 font-bold text-sm"><CalendarClock size={18}/> Próximos vencimentos</div>
+          <p className="mt-2 text-white font-extrabold text-lg">{billsDueTomorrow.length} conta(s) amanhã · {formatBRL(dueTomorrowTotal)}</p>
+          <p className="text-xs text-[#c1c6d7] mt-1">{billsDueTomorrow.length ? billsDueTomorrow.map((b) => b.title).join(", ") : "Nenhuma conta vence amanhã"}</p>
+        </button>
+        <div className={`${deficit ? "bg-rose-500/10 border-rose-500/30" : "bg-[#4edea3]/10 border-[#4edea3]/30"} border rounded-2xl p-4`}>
+          <div className="flex items-center gap-2 text-white font-bold text-sm"><AlertCircle size={18}/> Decisão do mês</div>
+          <p className="mt-2 text-white font-extrabold text-lg">{deficit ? `Reduzir ${formatBRL(deficit)}` : `Sobra de ${formatBRL(netCashFlow)}`}</p>
+          <p className="text-xs text-[#c1c6d7] mt-1">{topExpense ? `${topExpense[0]} é a maior categoria (${formatBRL(topExpense[1])}).` : "Cadastre despesas para receber recomendações."}</p>
+        </div>
+        <div className="bg-[#adc6ff]/10 border border-[#adc6ff]/30 rounded-2xl p-4">
+          <div className="flex items-center gap-2 text-[#adc6ff] font-bold text-sm"><MessageCircle size={18}/> Central de alertas</div>
+          <p className="mt-2 text-white font-extrabold text-lg">WhatsApp {whatsappConfig?.enabled ? "ativo" : "inativo"}</p>
+          <p className="text-xs text-[#c1c6d7] mt-1">Última rotina: {lastAlertLabel}. Próxima verificação diária programada.</p>
         </div>
       </section>
 
