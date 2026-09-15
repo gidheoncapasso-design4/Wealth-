@@ -30,7 +30,7 @@ const getInitialLocalData = () => {
         transactions: Array.isArray(parsed.transactions) ? parsed.transactions : INITIAL_TRANSACTIONS,
         connections: Array.isArray(parsed.connections) ? parsed.connections : CONNECTED_BANKS,
         recurringExpenses: Array.isArray(parsed.recurringExpenses) ? parsed.recurringExpenses : INITIAL_RECURRING_EXPENSES,
-        whatsappConfig: parsed.whatsappConfig || { phoneNumber: "5519982513836", enabled: true, daysAhead: 1 },
+        whatsappConfig: parsed.whatsappConfig || { phoneNumber: "", enabled: false, daysAhead: 1 },
         liquidBalance: localLiquid,
         investedAmount: localInvested,
       };
@@ -42,7 +42,7 @@ const getInitialLocalData = () => {
     transactions: INITIAL_TRANSACTIONS,
     connections: CONNECTED_BANKS,
     recurringExpenses: INITIAL_RECURRING_EXPENSES,
-    whatsappConfig: { phoneNumber: "5519982513836", enabled: true, daysAhead: 1 },
+    whatsappConfig: { phoneNumber: "", enabled: false, daysAhead: 1 },
     liquidBalance: 0,
     investedAmount: 0,
   };

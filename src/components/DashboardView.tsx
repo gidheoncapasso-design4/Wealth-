@@ -85,11 +85,8 @@ export default function DashboardView({
 
   const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
   const monthTokens = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
-  const latestDatedTransaction = transactions.find((tx) => tx.date !== "Recorrente Mensal" && monthTokens.some((m) => tx.date.toLowerCase().includes(m)));
-  const initialMonth = latestDatedTransaction
-    ? monthTokens.findIndex((m) => latestDatedTransaction.date.toLowerCase().includes(m))
-    : new Date().getMonth();
-  const [selectedPeriod, setSelectedPeriod] = useState({ month: Math.max(0, initialMonth), year: new Date().getFullYear() });
+  const now = new Date();
+  const [selectedPeriod, setSelectedPeriod] = useState({ month: now.getMonth(), year: now.getFullYear() });
   const changeMonth = (delta: number) => setSelectedPeriod((current) => {
     const date = new Date(current.year, current.month + delta, 1);
     return { month: date.getMonth(), year: date.getFullYear() };
@@ -152,6 +149,11 @@ export default function DashboardView({
   const lastAlertLabel = whatsappConfig?.lastAutoCheckDate
     ? new Date(`${whatsappConfig.lastAutoCheckDate}T12:00:00`).toLocaleDateString("pt-BR")
     : "ainda não registrado";
+  const lastAlertSummary = whatsappConfig?.lastAutoCheckDate
+    ? whatsappConfig.lastAutoCheckDueCount
+      ? `${whatsappConfig.lastAutoCheckDueCount} conta(s) encontrada(s)${whatsappConfig.lastAutoCheckWhatsAppSent ? " e aviso enviado" : ""}.`
+      : "Nenhuma conta vencia no dia seguinte."
+    : "A rotina diária ainda não foi registrada.";
 
   // Mock points for Wealth Growth
   const chartPaths = {
@@ -238,7 +240,7 @@ export default function DashboardView({
         <div className="bg-[#adc6ff]/10 border border-[#adc6ff]/30 rounded-2xl p-4">
           <div className="flex items-center gap-2 text-[#adc6ff] font-bold text-sm"><MessageCircle size={18}/> Central de alertas</div>
           <p className="mt-2 text-white font-extrabold text-lg">WhatsApp {whatsappConfig?.enabled ? "ativo" : "inativo"}</p>
-          <p className="text-xs text-[#c1c6d7] mt-1">Última rotina: {lastAlertLabel}. Próxima verificação diária programada.</p>
+          <p className="text-xs text-[#c1c6d7] mt-1">Última rotina: {lastAlertLabel}. {lastAlertSummary}</p>
         </div>
       </section>
 

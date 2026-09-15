@@ -1179,11 +1179,6 @@ app.post("/api/cron/daily-reminders", async (req, res) => {
         }
       }
 
-      if (result.whatsappSent || result.emailSent) {
-        await updateMainProfile({
-          whatsappConfig: { ...whatsappConfig, lastAutoCheckDate: todayISO },
-        });
-      }
     }
 
     // --- 2. Google Calendar: keep recurring events in sync (independent of "due tomorrow") ---
@@ -1196,6 +1191,15 @@ app.post("/api/cron/daily-reminders", async (req, res) => {
         result.calendarErrors = [err.message || "Erro ao sincronizar Google Agenda."];
       }
     }
+
+    await updateMainProfile({
+      whatsappConfig: {
+        ...whatsappConfig,
+        lastAutoCheckDate: todayISO,
+        lastAutoCheckDueCount: result.dueCount,
+        lastAutoCheckWhatsAppSent: result.whatsappSent || Boolean(runState.whatsappSent),
+      },
+    });
 
     return res.status(result.whatsappError || result.emailError || result.calendarErrors.length ? 502 : 200).json({ ran: true, ...result });
   } catch (error: any) {

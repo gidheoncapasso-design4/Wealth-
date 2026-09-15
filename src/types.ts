@@ -85,6 +85,8 @@ export interface WhatsAppConfig {
   metaPhoneNumberId?: string;
   metaAccessToken?: string;
   lastAutoCheckDate?: string;
+  lastAutoCheckDueCount?: number;
+  lastAutoCheckWhatsAppSent?: boolean;
   // Google notification channels (sent by the server-side daily cron job)
   emailEnabled?: boolean;
   notificationEmail?: string;
