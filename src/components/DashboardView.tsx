@@ -60,7 +60,6 @@ export default function DashboardView({
   onNewExpense,
 }: DashboardViewProps) {
   const [chartType, setChartType] = useState<"flow" | "wealth">("flow");
-  const [chartRange, setChartRange] = useState<"6M" | "1Y" | "ALL">("6M");
 
   // Edit Balances Modal State
   const [isAdjustModalOpen, setIsAdjustModalOpen] = useState(false);
@@ -154,21 +153,6 @@ export default function DashboardView({
       ? `${whatsappConfig.lastAutoCheckDueCount} conta(s) encontrada(s)${whatsappConfig.lastAutoCheckWhatsAppSent ? " e aviso enviado" : ""}.`
       : "Nenhuma conta vencia no dia seguinte."
     : "A rotina diária ainda não foi registrada.";
-
-  // Mock points for Wealth Growth
-  const chartPaths = {
-    "6M": "M0,180 Q100,160 200,170 T400,100 T600,120 T800,40",
-    "1Y": "M0,170 Q100,140 200,150 T400,120 T600,90 T800,30",
-    "ALL": "M0,190 Q100,150 200,130 T400,110 T600,60 T800,20",
-  };
-
-  const chartGradientPaths = {
-    "6M": "M0,180 Q100,160 200,170 T400,100 T600,120 T800,40 V200 H0 Z",
-    "1Y": "M0,170 Q100,140 200,150 T400,120 T600,90 T800,30 V200 H0 Z",
-    "ALL": "M0,190 Q100,150 200,130 T400,110 T600,60 T800,20 V200 H0 Z",
-  };
-
-  const currentCoords = { "6M": { cx: 800, cy: 40 }, "1Y": { cx: 800, cy: 30 }, "ALL": { cx: 800, cy: 20 } }[chartRange];
 
   return (
     <div className="space-y-6 md:space-y-8 animate-fade-in pb-12">
@@ -375,10 +359,10 @@ export default function DashboardView({
           <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6">
             <div>
               <h3 className="text-lg font-bold text-white tracking-tight">
-                {chartType === "flow" ? "Fluxo Mensal: Entradas vs Saídas" : "Evolução do Patrimônio Líquido"}
+                {chartType === "flow" ? "Resultado do mês: Entradas vs Saídas" : "Posição patrimonial atual"}
               </h3>
               <p className="text-xs text-[#8b90a0]">
-                {chartType === "flow" ? "Comparativo visual mês a mês do dinheiro que entra e sai" : "Histórico de crescimento do acumulado investido + conta"}
+                {chartType === "flow" ? "Valores reais do período selecionado" : "Saldo disponível e investimentos cadastrados agora"}
               </p>
             </div>
 
@@ -452,28 +436,22 @@ export default function DashboardView({
               </div>
             </div>
           ) : (
-            <div className="space-y-4">
-              <div className="h-56 w-full relative">
-                <svg className="w-full h-full" viewBox="0 0 800 200" preserveAspectRatio="none">
-                  <defs>
-                    <linearGradient id="line-gradient" x1="0" x2="0" y1="0" y2="1">
-                      <stop offset="0%" stopColor="rgba(173, 198, 255, 0.2)" />
-                      <stop offset="100%" stopColor="rgba(173, 198, 255, 0)" />
-                    </linearGradient>
-                  </defs>
-                  <line x1="0" y1="50" x2="800" y2="50" stroke="rgba(255,255,255,0.03)" strokeWidth={1} />
-                  <line x1="0" y1="100" x2="800" y2="100" stroke="rgba(255,255,255,0.03)" strokeWidth={1} />
-                  <line x1="0" y1="150" x2="800" y2="150" stroke="rgba(255,255,255,0.03)" strokeWidth={1} />
-
-                  <path className="transition-all duration-500 ease-out fill-[url(#line-gradient)]" d={chartGradientPaths[chartRange]} />
-                  <path className="transition-all duration-500 ease-out" d={chartPaths[chartRange]} fill="none" stroke="#adc6ff" strokeLinecap="round" strokeWidth={3} />
-                  <circle cx={currentCoords.cx} cy={currentCoords.cy} fill="#adc6ff" r={6} className="animate-pulse" />
-                </svg>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 py-4">
+              <div className="rounded-xl border border-white/5 bg-[#1c1b1b] p-4">
+                <p className="text-[10px] uppercase tracking-wider text-[#8b90a0]">Saldo em conta</p>
+                <p className="mt-2 text-xl font-extrabold text-white">{formatBRL(liquidBalance)}</p>
               </div>
-
-              <div className="flex justify-between text-[#8b90a0] font-mono text-xs uppercase pt-2 border-t border-[#353534]/30">
-                <span>JAN</span><span>FEV</span><span>MAR</span><span>ABR</span><span>MAI</span><span>JUN</span>
+              <div className="rounded-xl border border-[#adc6ff]/20 bg-[#adc6ff]/5 p-4">
+                <p className="text-[10px] uppercase tracking-wider text-[#adc6ff]">Investimentos</p>
+                <p className="mt-2 text-xl font-extrabold text-white">{formatBRL(investedAmount)}</p>
               </div>
+              <div className="rounded-xl border border-[#4edea3]/20 bg-[#4edea3]/5 p-4">
+                <p className="text-[10px] uppercase tracking-wider text-[#4edea3]">Patrimônio total</p>
+                <p className="mt-2 text-xl font-extrabold text-white">{formatBRL(netWorth)}</p>
+              </div>
+              <p className="sm:col-span-3 text-xs text-[#8b90a0] text-center pt-2">
+                O histórico aparecerá quando o Wealth tiver registros patrimoniais de vários períodos.
+              </p>
             </div>
           )}
         </div>
