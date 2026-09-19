@@ -719,7 +719,7 @@ export default function App() {
       )}
 
       {/* Main Content Render */}
-      <main className="max-w-7xl mx-auto px-6 pt-6 flex-1 w-full">
+      <main className="max-w-7xl mx-auto px-3 sm:px-6 pt-4 sm:pt-6 flex-1 w-full">
         {activeTab === "dashboard" && (
           <DashboardView
             onInvestClick={() => setIsInvestModalOpen(true)}

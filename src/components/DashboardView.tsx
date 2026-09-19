@@ -175,11 +175,11 @@ export default function DashboardView({
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 sm:gap-3 w-full md:w-auto">
           <button
             type="button"
             onClick={handleOpenAdjustModal}
-            className="bg-white/5 border border-[#353534] text-white font-bold px-4 py-2.5 rounded-xl flex items-center gap-2 hover:bg-white/10 hover:border-[#adc6ff]/40 transition-all active:scale-95 shadow-lg text-xs cursor-pointer"
+            className="bg-white/5 border border-[#353534] text-white font-bold px-3 sm:px-4 py-2.5 rounded-xl flex items-center justify-center gap-2 hover:bg-white/10 hover:border-[#adc6ff]/40 transition-all active:scale-95 shadow-lg text-xs cursor-pointer"
             title="Ajustar Saldo da Conta e Patrimônio Investido"
           >
             <Edit3 size={15} className="text-[#adc6ff]" />
@@ -190,7 +190,7 @@ export default function DashboardView({
             <button
               type="button"
               onClick={onSimulateFullMonth}
-              className="bg-[#4edea3]/10 text-[#4edea3] border border-[#4edea3]/30 font-bold px-4 py-2.5 rounded-xl flex items-center gap-2 hover:bg-[#4edea3]/20 hover:scale-[1.02] transition-all active:scale-95 shadow-lg shadow-[#4edea3]/10 cursor-pointer text-xs"
+              className="bg-[#4edea3]/10 text-[#4edea3] border border-[#4edea3]/30 font-bold px-3 sm:px-4 py-2.5 rounded-xl flex items-center justify-center gap-2 hover:bg-[#4edea3]/20 hover:scale-[1.02] transition-all active:scale-95 shadow-lg shadow-[#4edea3]/10 cursor-pointer text-xs"
               title="Criar no extrato os pagamentos de todas as despesas fixas pendentes"
             >
               <Sparkles size={16} className="text-[#4edea3]" />
@@ -200,13 +200,13 @@ export default function DashboardView({
 
           <button
             onClick={onNewIncome || onNavigateToTransactions}
-            className="bg-[#adc6ff] text-[#002e69] font-bold px-5 py-2.5 rounded-xl flex items-center gap-2 hover:opacity-90 hover:scale-[1.02] transition-all active:scale-95 shadow-lg shadow-[#adc6ff]/20 cursor-pointer text-xs"
+            className="bg-[#adc6ff] text-[#002e69] font-bold px-3 sm:px-5 py-2.5 rounded-xl flex items-center justify-center gap-2 hover:opacity-90 hover:scale-[1.02] transition-all active:scale-95 shadow-lg shadow-[#adc6ff]/20 cursor-pointer text-xs"
           >
             <Plus size={16} strokeWidth={2.5} />
             <span>Nova Receita</span>
           </button>
-          <button onClick={onNewExpense || onNavigateToTransactions} className="bg-rose-500/10 text-rose-300 border border-rose-500/30 font-bold px-4 py-2.5 rounded-xl flex items-center gap-2 text-xs"><ReceiptText size={15}/><span>Nova Despesa</span></button>
-          <button onClick={onInvestClick} className="bg-[#adc6ff]/10 text-[#adc6ff] border border-[#adc6ff]/30 font-bold px-4 py-2.5 rounded-xl flex items-center gap-2 text-xs"><TrendingUp size={15}/><span>Novo Investimento</span></button>
+          <button onClick={onNewExpense || onNavigateToTransactions} className="bg-rose-500/10 text-rose-300 border border-rose-500/30 font-bold px-3 sm:px-4 py-2.5 rounded-xl flex items-center justify-center gap-2 text-xs"><ReceiptText size={15}/><span>Nova Despesa</span></button>
+          <button onClick={onInvestClick} className="col-span-2 sm:col-span-1 bg-[#adc6ff]/10 text-[#adc6ff] border border-[#adc6ff]/30 font-bold px-3 sm:px-4 py-2.5 rounded-xl flex items-center justify-center gap-2 text-xs"><TrendingUp size={15}/><span>Novo Investimento</span></button>
         </div>
       </section>
 
@@ -355,7 +355,7 @@ export default function DashboardView({
 
       {/* Chart Section: Toggle between Fluxo (Entradas x Saídas) and Evolução Patrimonial */}
       <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-[#131313] border border-[#353534]/50 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+        <div className="lg:col-span-2 bg-[#131313] border border-[#353534]/50 rounded-2xl p-4 sm:p-6 shadow-xl flex flex-col justify-between">
           <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6">
             <div>
               <h3 className="text-lg font-bold text-white tracking-tight">
