@@ -1,3 +1,4 @@
+import { currentPeriod, isPaidInPeriod, setPaidInPeriod, transactionPeriod } from "./lib/accountingPeriod";
 import React, { lazy, Suspense, useState, useEffect, useRef } from "react";
 import { LayoutGrid, CreditCard, Bot, TrendingUp, Landmark, X, Plus, AlertCircle, Sparkles } from "lucide-react";
 import { onAuthStateChanged, signOut, type User } from "firebase/auth";
@@ -257,6 +258,7 @@ export default function App() {
       id: "tx-" + Date.now(),
       time: timeNow,
       date: dayNow,
+      period: currentPeriod(),
       colorClass: newTx.amount < 0
         ? "text-rose-400 bg-rose-500/10 border-rose-500/20"
         : "text-[#4edea3] bg-[#4edea3]/10 border-[#4edea3]/20",
@@ -291,7 +293,7 @@ export default function App() {
 
   // Batch import transactions from statement parser
   const handleBatchImportTransactions = async (
-    imported: Array<{ title: string; category: string; amount: number; icon?: string; isRejected?: boolean }>
+    imported: Array<{ title: string; category: string; amount: number; icon?: string; isRejected?: boolean; date?: string }>
   ) => {
     let balanceDelta = 0;
     const timeNow = new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
@@ -308,7 +310,8 @@ export default function App() {
         category: item.category,
         amount: item.amount,
         time: timeNow,
-        date: dayNow,
+        date: item.date || "Data não informada",
+        ...(transactionPeriod({ date: item.date || "" }) ? { period: transactionPeriod({ date: item.date || "" })! } : {}),
         colorClass: item.isRejected
           ? "text-amber-400 bg-amber-500/10 border-amber-500/20"
           : item.amount < 0
@@ -436,10 +439,21 @@ export default function App() {
 
   // Toggle paid state of a recurring expense (integrates with Transactions flow)
   const handleTogglePaidRecurringExpense = (id: string) => {
+    const legacy = recurringExpenses.find((item) => item.id === id && item.paidThisMonth && !item.paidPeriods);
+    if (legacy) {
+      const period = window.prompt("Em qual mês esse pagamento antigo foi feito? Use AAAA-MM. Isso apenas identifica o mês, sem alterar saldo ou extrato.");
+      if (period === null) return;
+      if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(period)) {
+        setGoalAlert("Informe o mês no formato AAAA-MM, por exemplo 2026-09.");
+        return;
+      }
+      setRecurringExpenses((prev) => prev.map((item) => item.id === id ? setPaidInPeriod(item, period, true) : item));
+      return;
+    }
     setRecurringExpenses(
       recurringExpenses.map((item) => {
         if (item.id === id) {
-          const updatedPaid = !item.paidThisMonth;
+          const updatedPaid = !isPaidInPeriod(item);
           
           // Auto-record transaction in cash flow when marked as paid
           if (updatedPaid) {
@@ -458,53 +472,38 @@ export default function App() {
               icon: "payments",
             });
           }
-          return { ...item, paidThisMonth: updatedPaid };
+          return setPaidInPeriod(item, currentPeriod(), updatedPaid);
         }
         return item;
       })
     );
   };
 
-  // Full Month Simulation Handler (Simulates paying only the user's 18 real fixed costs)
+  // Pay only pending expenses without replacing existing history.
   const handleSimulateFullMonth = () => {
+    if (recurringExpenses.some((item) => item.paidThisMonth && !item.paidPeriods)) {
+      setGoalAlert('Confira o mês dos pagamentos antigos na lista de despesas antes de quitar em lote.');
+      return;
+    }
     if (!window.confirm("Isso criará no extrato os pagamentos de todas as despesas fixas pendentes e as marcará como pagas. Deseja continuar?")) return;
-    const simulatedTxs: Transaction[] = recurringExpenses.map((exp, idx) => ({
-      id: `sim-rec-${idx}`,
-      title: `Quitac. ${exp.title}`,
+    const period = currentPeriod();
+    const pending = recurringExpenses.filter((item) => !isPaidInPeriod(item, period));
+    const paidTransactions: Transaction[] = pending.map((exp) => ({
+      id: 'payment-' + exp.id + '-' + Date.now(),
+      title: 'Quitac. ' + exp.title,
       category: exp.category,
       amount: -exp.amount,
-      time: "09:00",
-      date: `${exp.dueDate.toString().padStart(2, "0")}/Ago`,
-      icon: "payments",
-      colorClass: "text-rose-400 bg-rose-500/10 border-rose-500/20",
+      time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+      date: new Date().toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' }),
+      period,
+      icon: 'payments',
+      colorClass: 'text-rose-400 bg-rose-500/10 border-rose-500/20',
     }));
-
-    // Mark all recurring expenses as paid for the month
-    setRecurringExpenses((prev) =>
-      prev.map((item) => ({ ...item, paidThisMonth: true }))
-    );
-
-    // Replace transactions list with user's fixed costs
-    setTransactions(simulatedTxs);
-
-    // Calculate total paid and maintain positive cash balance
-    const totalFixedPaid = recurringExpenses.reduce((acc, curr) => acc + curr.amount, 0);
-    const totalRevenues = 23350.00;
-    const baseAccountBalance = 35000.00;
-    const newLiquidBalance = Math.max(5070.00, baseAccountBalance + (totalRevenues - totalFixedPaid));
-    setLiquidBalance(newLiquidBalance);
-
-    // Set user notification alert banner
-    setGoalAlert(`Simulação Concluída! Todos os seus ${recurringExpenses.length} custos fixos reais (R$ ${totalFixedPaid.toLocaleString("pt-BR")},00) foram marcados como quitados no extrato.`);
-
-    // Add automated audit message in Wealth AI
-    const auditMsg: ChatMessage = {
-      id: "chat-sim-" + Date.now(),
-      role: "model",
-      text: `📊 **Relatório de Fechamento dos Custos Fixos Reais**:\n\n• **Total de Custos Fixos Mês**: R$ ${totalFixedPaid.toLocaleString("pt-BR")},00 (${recurringExpenses.length} itens quitados)\n• **Receitas Mês**: R$ 23.350,00\n• **Sobra do Mês**: R$ ${(totalRevenues - totalFixedPaid).toLocaleString("pt-BR")},00\n• **Saldo Disponível**: R$ ${newLiquidBalance.toLocaleString("pt-BR")},00\n• **Principais Linhas**: Aluguel (R$ 4.500), Dízimo (R$ 2.335), Carro (R$ 3.000), Supermercado (R$ 2.000)\n• **Status**: 100% dos custos fixos quitados e vinculados ao extrato.`,
-      timestamp: "18:00",
-    };
-    setChatHistory((prev) => [...prev, auditMsg]);
+    setRecurringExpenses((prev) => prev.map((item) => setPaidInPeriod(item, period, true)));
+    setTransactions((prev) => [...paidTransactions, ...prev]);
+    const totalPaid = pending.reduce((total, item) => total + item.amount, 0);
+    setLiquidBalance((prev) => prev - totalPaid);
+    setGoalAlert(pending.length + ' despesas quitadas em ' + period + '. Total: ' + totalPaid.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }));
   };
 
   // Direct manual update of account balances and investments
@@ -615,7 +614,7 @@ export default function App() {
           category: r.category,
           amount: r.amount,
           dueDate: r.dueDate,
-          paidThisMonth: r.paidThisMonth,
+          paidThisMonth: isPaidInPeriod(r),
         })),
         totalFixedExpenses: recurringExpenses.reduce((acc, curr) => acc + curr.amount, 0),
       };

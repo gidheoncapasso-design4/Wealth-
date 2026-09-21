@@ -38,7 +38,7 @@ interface StatementImportModalProps {
   isOpen: boolean;
   onClose: () => void;
   onImportTransactions: (
-    imported: Array<{ title: string; category: string; amount: number; icon?: string }>
+    imported: Array<{ title: string; category: string; amount: number; icon?: string; date?: string }>
   ) => void;
 }
 
@@ -169,7 +169,7 @@ export default function StatementImportModal({
             originalDescription: item.originalDescription || item.title || "",
             category: CATEGORY_OPTIONS.includes(item.category) ? item.category : "Outros",
             amount: cleanAmt,
-            date: item.date || new Date().toLocaleDateString("pt-BR", { day: "2-digit", month: "short" }),
+            date: item.date || "Data não informada",
             confidence: item.confidence === "Alta" || item.confidence === "Média" || item.confidence === "Baixa" ? item.confidence : "Alta",
             reasoning: item.reasoning || "Categorizado automaticamente pela IA",
             selected: true,
@@ -275,7 +275,7 @@ export default function StatementImportModal({
               originalDescription: item.originalDescription || item.title || "",
               category: CATEGORY_OPTIONS.includes(item.category) ? item.category : "Outros",
               amount: cleanAmt,
-              date: item.date || new Date().toLocaleDateString("pt-BR", { day: "2-digit", month: "short" }),
+              date: item.date || "Data não informada",
               confidence: item.confidence === "Alta" || item.confidence === "Média" || item.confidence === "Baixa" ? item.confidence : "Alta",
               reasoning: item.reasoning || "Categorizado automaticamente pela IA",
               selected: true,
@@ -389,6 +389,7 @@ export default function StatementImportModal({
       ...approvedItems.map((item) => ({
         title: item.title,
         category: item.category,
+        date: item.date,
         amount: item.amount,
         icon: item.amount > 0 ? "payments" : "shopping_bag",
         isRejected: false,
@@ -396,6 +397,7 @@ export default function StatementImportModal({
       ...rejectedItems.map((item) => ({
         title: item.title,
         category: item.category,
+        date: item.date,
         amount: item.amount,
         icon: item.amount > 0 ? "payments" : "shopping_bag",
         isRejected: true,

@@ -5,6 +5,7 @@ export interface Transaction {
   amount: number; // negative for outflow, positive for inflow
   time: string;
   date: string;
+  period?: string; // Accounting month, YYYY-MM; absent for undated legacy records.
   icon: string;
   colorClass: string;
   hasAttachment?: boolean;
@@ -68,6 +69,7 @@ export interface RecurringExpense {
   amount: number;
   dueDate: number; // Day of the month
   paidThisMonth: boolean;
+  paidPeriods?: string[]; // YYYY-MM; legacy boolean is retained for data compatibility only.
 }
 
 export interface WhatsAppConfig {

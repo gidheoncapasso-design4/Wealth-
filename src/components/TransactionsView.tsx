@@ -1,3 +1,5 @@
+import { isPaidInPeriod } from "../lib/accountingPeriod";
+import { reminderDate } from "../lib/reminderDate";
 import React, { useState, useEffect } from "react";
 import { Search, Filter, Download, Plus, Paperclip, FileText, ShoppingBag, Utensils, CreditCard, Plane, ShieldAlert, Heart, Landmark, RefreshCw, X, Calendar, CheckCircle, Clock, Trash2, Check, UploadCloud, Sparkles, MessageSquare, Bell, Send, Edit3, Tag, Layers } from "lucide-react";
 import { Transaction, RecurringExpense, WhatsAppConfig } from "../types";
@@ -188,11 +190,11 @@ export default function TransactionsView({
   };
 
   // Current date calculations for 1-day before WhatsApp reminders
-  const tomorrowDayOfMonth = getTomorrowDayOfMonth();
+  const tomorrowDayOfMonth = reminderDate().tomorrowDay;
 
   // Bills due tomorrow or in 1 day that are unpaid
   const billsDueTomorrow = recurringExpenses.filter(
-    (item) => !item.paidThisMonth && item.dueDate === tomorrowDayOfMonth
+    (item) => !isPaidInPeriod(item, reminderDate().tomorrowPeriod) && item.dueDate === tomorrowDayOfMonth
   );
 
   // Send WhatsApp reminder for a single bill (uses the saved whatsappConfig, not
@@ -258,11 +260,11 @@ export default function TransactionsView({
 
   const totalFixedAmount = recurringExpenses.reduce((sum, item) => sum + item.amount, 0);
   const paidFixedAmount = recurringExpenses
-    .filter((item) => item.paidThisMonth)
+    .filter((item) => isPaidInPeriod(item))
     .reduce((sum, item) => sum + item.amount, 0);
   const pendingFixedAmount = totalFixedAmount - paidFixedAmount;
   const totalCount = recurringExpenses.length;
-  const paidCount = recurringExpenses.filter((item) => item.paidThisMonth).length;
+  const paidCount = recurringExpenses.filter((item) => isPaidInPeriod(item)).length;
   const paidPercentage = totalCount > 0 ? Math.round((paidCount / totalCount) * 100) : 0;
 
   // CSV Export Handler
@@ -931,7 +933,7 @@ export default function TransactionsView({
             ) : (
               <div className="space-y-2">
                 {recurringExpenses.map((expense) => {
-                  const isDueTomorrow = !expense.paidThisMonth && expense.dueDate === tomorrowDayOfMonth;
+                  const isDueTomorrow = !isPaidInPeriod(expense, reminderDate().tomorrowPeriod) && expense.dueDate === tomorrowDayOfMonth;
 
                   return (
                     <div
@@ -976,13 +978,13 @@ export default function TransactionsView({
                           <p className="font-mono text-sm font-bold text-white">
                             {expense.amount.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
                           </p>
-                          <span className={`text-[10px] font-semibold ${expense.paidThisMonth ? "text-[#4edea3]" : "text-amber-400"}`}>
-                            {expense.paidThisMonth ? "Pago este mês" : "Pendente"}
+                          <span className={`text-[10px] font-semibold ${isPaidInPeriod(expense) ? "text-[#4edea3]" : "text-amber-400"}`}>
+                            {isPaidInPeriod(expense) ? "Pago este mês" : expense.paidThisMonth && !expense.paidPeriods ? "Pagamento antigo sem mês — conferir" : "Pendente"}
                           </span>
                         </div>
 
                         <div className="flex items-center gap-2">
-                          {!expense.paidThisMonth && (
+                          {!isPaidInPeriod(expense) && (
                             <button
                               type="button"
                               onClick={() => handleSendWhatsappReminder(expense)}
@@ -998,13 +1000,13 @@ export default function TransactionsView({
                             type="button"
                             onClick={() => onTogglePaidRecurringExpense(expense.id)}
                             className={`p-2 rounded-xl border transition-all cursor-pointer ${
-                              expense.paidThisMonth
+                              isPaidInPeriod(expense)
                                 ? "bg-[#4edea3]/10 border-[#4edea3]/20 text-[#4edea3] hover:bg-[#4edea3]/20"
                                 : "bg-amber-500/10 border-amber-500/20 text-amber-400 hover:bg-amber-500/20"
                             }`}
-                            title={expense.paidThisMonth ? "Marcar como pendente" : "Marcar como pago (grava extrato)"}
+                            title={expense.paidThisMonth && !expense.paidPeriods ? "Identificar mês do pagamento antigo (sem alterar saldo)" : isPaidInPeriod(expense) ? "Marcar como pendente" : "Marcar como pago (grava extrato)"}
                           >
-                            {expense.paidThisMonth ? <Check size={16} /> : <Clock size={16} />}
+                            {isPaidInPeriod(expense) ? <Check size={16} /> : <Clock size={16} />}
                           </button>
                           
                           <button

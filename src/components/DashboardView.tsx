@@ -1,3 +1,5 @@
+import { currentPeriod, transactionPeriod, isPaidInPeriod } from "../lib/accountingPeriod";
+import { reminderDate } from "../lib/reminderDate";
 import React, { useState } from "react";
 import {
   TrendingUp,
@@ -85,16 +87,14 @@ export default function DashboardView({
   const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
   const monthTokens = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
   const now = new Date();
-  const [selectedPeriod, setSelectedPeriod] = useState({ month: now.getMonth(), year: now.getFullYear() });
+  const [selectedPeriod, setSelectedPeriod] = useState({ month: Number(currentPeriod().slice(5)) - 1, year: Number(currentPeriod().slice(0, 4)) });
   const changeMonth = (delta: number) => setSelectedPeriod((current) => {
     const date = new Date(current.year, current.month + delta, 1);
     return { month: date.getMonth(), year: date.getFullYear() };
   });
-  const periodTransactions = transactions.filter((tx) => {
-    if (tx.date === "Recorrente Mensal" || tx.isRecurring) return true;
-    const monthIndex = monthTokens.findIndex((m) => tx.date.toLowerCase().includes(m));
-    return monthIndex < 0 || monthIndex === selectedPeriod.month;
-  });
+  const period = selectedPeriod.year + '-' + String(selectedPeriod.month + 1).padStart(2, '0');
+  const unknownDateCount = transactions.filter((tx) => !tx.isRejected && !transactionPeriod(tx)).length;
+  const periodTransactions = transactions.filter((tx) => !tx.isRejected && transactionPeriod(tx) === period);
 
   // Dynamic monthly financial stats based on the selected period
   const inflowTxs = periodTransactions.filter((tx) => tx.amount > 0);
@@ -141,7 +141,7 @@ export default function DashboardView({
 
   const today = new Date();
   const tomorrow = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1).getDate();
-  const billsDueTomorrow = recurringExpenses.filter((item) => !item.paidThisMonth && item.dueDate === tomorrow);
+  const billsDueTomorrow = recurringExpenses.filter((item) => !isPaidInPeriod(item, reminderDate().tomorrowPeriod) && item.dueDate === reminderDate().tomorrowDay);
   const dueTomorrowTotal = billsDueTomorrow.reduce((sum, item) => sum + item.amount, 0);
   const topExpense = topExpenseCategories[0];
   const deficit = Math.max(0, -netCashFlow);
@@ -168,6 +168,7 @@ export default function DashboardView({
           <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-white mt-1">
             Painel de Controle Financeiro
           </h1>
+          {unknownDateCount > 0 && <p className="mt-2 text-xs text-amber-300">{unknownDateCount} lançamentos sem mês/ano confirmado permanecem no extrato e não entram nos totais mensais.</p>}
           <div className="mt-2 inline-flex items-center gap-1 rounded-xl bg-black/30 border border-white/10 p-1" aria-label="Selecionar mês analisado">
             <button onClick={() => changeMonth(-1)} className="p-1.5 rounded-lg text-[#c1c6d7] hover:bg-white/10" aria-label="Mês anterior"><ChevronLeft size={15} /></button>
             <span className="min-w-32 text-center text-xs font-bold text-white">{monthNames[selectedPeriod.month]} {selectedPeriod.year}</span>

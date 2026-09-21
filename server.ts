@@ -1,3 +1,4 @@
+import { isPaidInPeriod } from "./src/lib/accountingPeriod";
 import express from "express";
 import path from "path";
 import fs from "fs";
@@ -10,7 +11,6 @@ import { getFirestore as getAdminFirestore, type Firestore as AdminFirestore } f
 import nodemailer from "nodemailer";
 import { google } from "googleapis";
 import firebaseConfig from "./firebase-applet-config.json";
-import { getTomorrowDayOfMonth } from "./src/lib/dateUtils";
 import { getAuth as getAdminAuth } from "firebase-admin/auth";
 import { greenApiRequest, sendGreenApiMessage } from "./src/lib/greenApi";
 import { reminderDate } from "./src/lib/reminderDate";
@@ -1013,11 +1013,11 @@ app.post("/api/whatsapp/auto-check", async (req, res) => {
       return res.status(400).json({ error: "Número do WhatsApp não configurado." });
     }
 
-    const tomorrow = getTomorrowDayOfMonth();
+    const tomorrow = reminderDate().tomorrowDay;
 
     // Filter unpaid bills due tomorrow
     const billsDueTomorrow = (recurringExpenses || []).filter(
-      (item: any) => !item.paidThisMonth && item.dueDate === tomorrow
+      (item: any) => !isPaidInPeriod(item, reminderDate().tomorrowPeriod) && item.dueDate === tomorrow
     );
 
     if (billsDueTomorrow.length === 0) {
@@ -1133,7 +1133,7 @@ app.post("/api/cron/daily-reminders", async (req, res) => {
     // --- 1. WhatsApp + E-mail: bills due tomorrow, sent at most once per day ---
     const tomorrow = reminderDate().tomorrowDay;
     const billsDueTomorrow = recurringExpenses.filter(
-      (item) => !item.paidThisMonth && item.dueDate === tomorrow
+      (item) => !isPaidInPeriod(item, reminderDate().tomorrowPeriod) && item.dueDate === tomorrow
     );
     result.dueCount = billsDueTomorrow.length;
 
