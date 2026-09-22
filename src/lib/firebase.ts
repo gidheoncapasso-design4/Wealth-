@@ -28,6 +28,7 @@ export interface CloudAppData {
     daysAhead: number;
   };
   lastUpdated?: string;
+  resetBackupId?: string | null;
 }
 
 // Subscribe to real-time updates from Firestore cloud

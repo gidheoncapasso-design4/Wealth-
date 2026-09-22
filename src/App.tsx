@@ -1,3 +1,4 @@
+import { authFetch } from "./lib/authFetch";
 import { currentPeriod, isPaidInPeriod, setPaidInPeriod, transactionPeriod } from "./lib/accountingPeriod";
 import React, { lazy, Suspense, useState, useEffect, useRef } from "react";
 import { LayoutGrid, CreditCard, Bot, TrendingUp, Landmark, X, Plus, AlertCircle, Sparkles } from "lucide-react";
@@ -83,6 +84,8 @@ export default function App() {
 
   // Track if cloud data has been loaded or initialized
   const isCloudLoaded = useRef(false);
+  const [maintenanceBusy, setMaintenanceBusy] = useState(false);
+  const [resetBackupId, setResetBackupId] = useState<string | null>(null);
 
   // Subscribe to real-time Firestore database updates once the user is authenticated
   // (Firestore rules require an authenticated session, so subscribing earlier would
@@ -92,26 +95,12 @@ export default function App() {
 
     const unsubscribe = subscribeCloudAppData((data) => {
       if (data) {
-        // If cloud has transactions, update state
-        if (data.transactions && Array.isArray(data.transactions) && data.transactions.length > 0) {
-          setTransactions(autoSanitizeTransactions(data.transactions));
-        } else {
-          // If cloud is empty but local storage has transactions, upload local data to cloud immediately
-          try {
-            const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
-            if (saved) {
-              const parsed = JSON.parse(saved);
-              if (parsed.transactions && parsed.transactions.length > 0) {
-                saveCloudAppData(parsed);
-              }
-            }
-          } catch (e) {}
-        }
-
-        if (data.recurringExpenses && Array.isArray(data.recurringExpenses) && data.recurringExpenses.length > 0) {
+        if (Array.isArray(data.transactions)) setTransactions(data.transactions);
+        setResetBackupId(data.resetBackupId || null);
+        if (data.recurringExpenses && Array.isArray(data.recurringExpenses)) {
           setRecurringExpenses(data.recurringExpenses);
         }
-        if (data.connections && Array.isArray(data.connections) && data.connections.length > 0) {
+        if (data.connections && Array.isArray(data.connections)) {
           setConnections(data.connections);
         }
         if (data.whatsappConfig && typeof data.whatsappConfig === "object") {
@@ -133,7 +122,7 @@ export default function App() {
 
   // Save changes to both LocalStorage and Firestore cloud immediately
   useEffect(() => {
-    if (!authUser) return;
+    if (!authUser || !isCloudLoaded.current || maintenanceBusy) return;
 
     const payload = {
       liquidBalance,
@@ -158,7 +147,7 @@ export default function App() {
     }, 400);
 
     return () => clearTimeout(timer);
-  }, [authUser, liquidBalance, investedAmount, transactions, recurringExpenses, connections, whatsappConfig]);
+  }, [maintenanceBusy, authUser, liquidBalance, investedAmount, transactions, recurringExpenses, connections, whatsappConfig]);
 
 
   // Chat State
@@ -201,51 +190,6 @@ export default function App() {
     setActiveTab(tabId);
   };
 
-  // Ensure recurring incomes & 10% Dízimo are present in transactions & recurring expenses
-  useEffect(() => {
-    setTransactions((prev) => autoSanitizeTransactions(prev));
-  }, []);
-
-  // Sync fixed costs (recurringExpenses) Dízimo whenever transactions change
-  useEffect(() => {
-    const totalInflow = transactions
-      .filter((t) => t.amount > 0 && !t.title.toLowerCase().includes("dízimo") && !t.title.toLowerCase().includes("dizimo"))
-      .reduce((sum, t) => sum + t.amount, 0);
-
-    const dizimoVal = calculateDizimo(totalInflow);
-
-    setRecurringExpenses((prev) => {
-      let hasDizimo = false;
-      const updated = prev.map((r) => {
-        if (r.id === "rec-dizimo" || r.title.toLowerCase().includes("dízimo") || r.title.toLowerCase().includes("dizimo")) {
-          hasDizimo = true;
-          return {
-            ...r,
-            title: "Dízimo (10% das Receitas)",
-            amount: dizimoVal,
-            category: "Dízimo & Doações",
-          };
-        }
-        return r;
-      });
-
-      if (!hasDizimo) {
-        return [
-          {
-            id: "rec-dizimo",
-            title: "Dízimo (10% das Receitas)",
-            category: "Dízimo & Doações",
-            amount: dizimoVal,
-            dueDate: 10,
-            paidThisMonth: false,
-          },
-          ...updated,
-        ];
-      }
-      return updated;
-    });
-  }, [transactions]);
-
   // Add a new transaction (updates balance + net worth)
   const handleAddTransaction = (newTx: Omit<Transaction, "id" | "time" | "date" | "colorClass">) => {
     const timeNow = new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
@@ -283,6 +227,29 @@ export default function App() {
     } else {
       setGoalAlert(`✅ Despesa de ${formattedVal} (${newTx.title}) lançada com sucesso!`);
     }
+  };
+
+  const handleMaintenance = async (action: 'reset' | 'restore') => {
+    if (maintenanceBusy) return;
+    const message = action === 'reset'
+      ? 'Criar backup e zerar lançamentos, saldos e pagamentos? Contas fixas, valores, vencimentos e WhatsApp serão preservados.'
+      : 'Restaurar lançamentos, saldos e pagamentos do backup? Isso substituirá os registros atuais.';
+    if (!window.confirm(message)) return;
+    setMaintenanceBusy(true);
+    try {
+      const response = await authFetch('/api/data/' + action, { method: 'POST' });
+      const result = await response.json();
+      const data = result.profile;
+      setTransactions(data.transactions || []);
+      setRecurringExpenses(data.recurringExpenses || []);
+      setLiquidBalance(data.liquidBalance || 0);
+      setInvestedAmount(data.investedAmount || 0);
+      setResetBackupId(data.resetBackupId || null);
+      setLastImportBatch(null);
+      setGoalAlert(action === 'reset' ? 'Limpeza concluída. Backup salvo; contas fixas e WhatsApp preservados.' : 'Backup restaurado.');
+    } catch (error) {
+      setGoalAlert(error instanceof Error ? error.message : 'Não foi possível concluir.');
+    } finally { setMaintenanceBusy(false); }
   };
 
   // Restore initial demo data
@@ -717,6 +684,10 @@ export default function App() {
         </div>
       )}
 
+      {activeTab === 'dashboard' && <div className="mx-6 mt-4 flex gap-4 text-xs">
+        <button disabled={maintenanceBusy} onClick={() => handleMaintenance('reset')} className="text-amber-300 disabled:opacity-40">{maintenanceBusy ? 'Processando…' : 'Recomeçar com backup'}</button>
+        {resetBackupId && <button disabled={maintenanceBusy} onClick={() => handleMaintenance('restore')} className="text-blue-300">Restaurar último backup</button>}
+      </div>}
       {/* Main Content Render */}
       <main className="max-w-7xl mx-auto px-3 sm:px-6 pt-4 sm:pt-6 flex-1 w-full">
         {activeTab === "dashboard" && (

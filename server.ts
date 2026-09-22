@@ -86,7 +86,7 @@ function getTodayISODate(): string {
   return new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo" }).format(new Date());
 }
 
-app.use("/api/whatsapp", async (req, res, next) => {
+app.use(["/api/whatsapp", "/api/data"], async (req, res, next) => {
   const bearer = req.headers.authorization?.match(/^Bearer (.+)$/)?.[1];
   if (!bearer) return res.status(401).json({ error: "Entre na sua conta para enviar alertas." });
   try {
@@ -100,6 +100,41 @@ app.use("/api/whatsapp", async (req, res, next) => {
     console.error("[WhatsApp auth] Firebase token validation failed:", error?.message || error);
     return res.status(401).json({ error: "Não foi possível validar sua sessão. Confira a configuração do Firebase no servidor." });
   }
+});
+
+// Backup and reset commit atomically; a failed backup cannot clear the profile.
+app.post('/api/data/:action', async (req, res) => {
+  const action = req.params.action;
+  if (action !== 'reset' && action !== 'restore') return res.sendStatus(404);
+  try {
+    const db = getServerDb();
+    const profileRef = db.collection(MAIN_PROFILE_COLLECTION).doc(MAIN_PROFILE_DOC_ID);
+    const backupRef = db.collection('profileBackups').doc();
+    const profile = await db.runTransaction(async (transaction) => {
+      const snapshot = await transaction.get(profileRef);
+      if (!snapshot.exists) throw new Error('Perfil não encontrado.');
+      const current = snapshot.data()!;
+      let updated;
+      if (action === 'reset') {
+        transaction.set(backupRef, { profile: current, createdAt: new Date().toISOString() });
+        updated = { ...current, transactions: [], liquidBalance: 0, investedAmount: 0,
+          recurringExpenses: (current.recurringExpenses || []).map((expense: any) => ({ ...expense, paidThisMonth: false, paidPeriods: [] })),
+          resetBackupId: backupRef.id };
+      } else {
+        if (!current.resetBackupId) throw new Error('Nenhum backup de limpeza disponível.');
+        const backup = await transaction.get(db.collection('profileBackups').doc(current.resetBackupId));
+        if (!backup.exists) throw new Error('Backup não encontrado.');
+        const original = backup.data()!.profile;
+        transaction.set(backupRef, { profile: current, createdAt: new Date().toISOString() });
+        updated = { ...current, transactions: original.transactions || [], liquidBalance: original.liquidBalance || 0,
+          investedAmount: original.investedAmount || 0, recurringExpenses: original.recurringExpenses || [], resetBackupId: backupRef.id };
+      }
+      updated.lastUpdated = new Date().toISOString();
+      transaction.set(profileRef, updated);
+      return updated;
+    });
+    return res.json({ profile });
+  } catch (error: any) { return res.status(500).json({ error: error.message }); }
 });
 
 app.get("/api/whatsapp/status", async (_req, res) => {
