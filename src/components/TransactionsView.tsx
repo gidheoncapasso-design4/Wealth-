@@ -324,10 +324,10 @@ export default function TransactionsView({
         <div className="flex flex-col gap-6">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
-              <h2 className="text-3xl font-bold text-white tracking-tight">
+              <h2 className="text-3xl font-bold text-slate-900 tracking-tight">
                 {viewMode === "history" ? "Transações" : "Despesas Fixas"}
               </h2>
-              <p className="text-[#8b90a0] text-sm">
+              <p className="text-[#6b617c] text-sm">
                 {viewMode === "history"
                   ? "Acompanhamento de movimentações em tempo real"
                   : "Controle de despesas recorrentes e compromissos mensais"}
@@ -335,14 +335,14 @@ export default function TransactionsView({
             </div>
             
             {/* View Mode Dual Selector */}
-            <div className="grid grid-cols-2 bg-[#1c1b1b] p-1 rounded-xl border border-[#353534]/50 w-full md:w-80">
+            <div className="grid grid-cols-2 bg-[#f8f6fc] p-1 rounded-xl border border-[#c4b5d6]/50 w-full md:w-80">
               <button
                 type="button"
                 onClick={() => setViewMode("history")}
                 className={`py-2 text-xs font-bold rounded-lg transition-all cursor-pointer flex items-center justify-center gap-2 ${
                   viewMode === "history"
-                    ? "bg-[#adc6ff] text-[#002e69]"
-                    : "text-[#8b90a0] hover:text-[#c1c6d7]"
+                    ? "bg-[#7c3aed] text-white"
+                    : "text-[#6b617c] hover:text-[#51465f]"
                 }`}
               >
                 <RefreshCw size={13} />
@@ -353,8 +353,8 @@ export default function TransactionsView({
                 onClick={() => setViewMode("fixed")}
                 className={`py-2 text-xs font-bold rounded-lg transition-all cursor-pointer flex items-center justify-center gap-2 ${
                   viewMode === "fixed"
-                    ? "bg-[#adc6ff] text-[#002e69]"
-                    : "text-[#8b90a0] hover:text-[#c1c6d7]"
+                    ? "bg-[#7c3aed] text-white"
+                    : "text-[#6b617c] hover:text-[#51465f]"
                 }`}
               >
                 <Calendar size={13} />
@@ -367,13 +367,13 @@ export default function TransactionsView({
           {viewMode === "history" && (
             <div className="flex flex-col md:flex-row gap-4">
               <div className="relative flex-grow">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8b90a0]" size={20} />
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#6b617c]" size={20} />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Pesquisar por descrição ou categoria..."
-                  className="w-full bg-[#1c1b1b]/50 border-b-2 border-[#353534]/50 focus:border-[#adc6ff] focus:ring-0 text-white py-4 pl-12 pr-4 transition-all duration-300 rounded-t-xl placeholder:text-[#8b90a0]/60 outline-none text-sm"
+                  className="w-full bg-[#f8f6fc]/50 border-b-2 border-[#c4b5d6]/50 focus:border-[#7c3aed] focus:ring-0 text-slate-900 py-4 pl-12 pr-4 transition-all duration-300 rounded-t-xl placeholder:text-[#6b617c]/60 outline-none text-sm"
                 />
               </div>
               
@@ -382,8 +382,8 @@ export default function TransactionsView({
                   onClick={() => setActiveFilter("All")}
                   className={`whitespace-nowrap px-4 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
                     activeFilter === "All"
-                      ? "bg-[#adc6ff] text-[#002e69]"
-                      : "bg-[#201f1f] text-[#c1c6d7] hover:bg-[#2a2a2a]"
+                      ? "bg-[#7c3aed] text-white"
+                      : "bg-[#f8f6fc] text-[#51465f] hover:bg-[#ede9f4]"
                   }`}
                 >
                   Tudo
@@ -392,8 +392,8 @@ export default function TransactionsView({
                   onClick={() => setActiveFilter("ThisMonth")}
                   className={`whitespace-nowrap px-4 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
                     activeFilter === "ThisMonth"
-                      ? "bg-[#adc6ff] text-[#002e69]"
-                      : "bg-[#201f1f] text-[#c1c6d7] hover:bg-[#2a2a2a]"
+                      ? "bg-[#7c3aed] text-white"
+                      : "bg-[#f8f6fc] text-[#51465f] hover:bg-[#ede9f4]"
                   }`}
                 >
                   Este Mês
@@ -402,8 +402,8 @@ export default function TransactionsView({
                   onClick={() => setActiveFilter("Inflow")}
                   className={`whitespace-nowrap px-4 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
                     activeFilter === "Inflow"
-                      ? "bg-[#adc6ff] text-[#002e69]"
-                      : "bg-[#201f1f] text-[#c1c6d7] hover:bg-[#2a2a2a]"
+                      ? "bg-[#7c3aed] text-white"
+                      : "bg-[#f8f6fc] text-[#51465f] hover:bg-[#ede9f4]"
                   }`}
                 >
                   Entradas
@@ -413,12 +413,12 @@ export default function TransactionsView({
                   className={`whitespace-nowrap px-4 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                     activeFilter === "Unidentified"
                       ? "bg-amber-400 text-black"
-                      : "bg-amber-500/10 text-amber-300 border border-amber-500/30 hover:bg-amber-500/20"
+                      : "bg-amber-500/10 text-amber-700 border border-amber-500/30 hover:bg-amber-500/20"
                   }`}
                 >
                   <span>❓ Não Identificadas</span>
                   {unidentifiedCount > 0 && (
-                    <span className="px-1.5 py-0.5 rounded-full text-[10px] bg-black/30 font-extrabold">
+                    <span className="px-1.5 py-0.5 rounded-full text-[10px] bg-violet-50 font-extrabold">
                       {unidentifiedCount}
                     </span>
                   )}
@@ -427,8 +427,8 @@ export default function TransactionsView({
                   onClick={() => setActiveFilter("Rejected")}
                   className={`whitespace-nowrap px-4 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                     activeFilter === "Rejected"
-                      ? "bg-rose-500 text-white"
-                      : "bg-rose-500/10 text-rose-300 border border-rose-500/30 hover:bg-rose-500/20"
+                      ? "bg-rose-500 text-slate-900"
+                      : "bg-rose-500/10 text-rose-700 border border-rose-500/30 hover:bg-rose-500/20"
                   }`}
                 >
                   <span>🚫 Rejeitadas</span>
@@ -442,7 +442,7 @@ export default function TransactionsView({
                 {onOpenImportModal && (
                   <button
                     onClick={onOpenImportModal}
-                    className="whitespace-nowrap px-4 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer bg-[#adc6ff]/15 border border-[#adc6ff]/30 text-[#adc6ff] hover:bg-[#adc6ff]/25 flex items-center gap-1.5"
+                    className="whitespace-nowrap px-4 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer bg-[#7c3aed]/15 border border-[#7c3aed]/30 text-[#7c3aed] hover:bg-[#7c3aed]/25 flex items-center gap-1.5"
                     title="Importar PDF, OFX ou CSV"
                   >
                     <UploadCloud size={14} />
@@ -452,7 +452,7 @@ export default function TransactionsView({
 
                 <button
                   onClick={handleExportCSV}
-                  className="whitespace-nowrap px-4 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer bg-white/5 border border-white/10 text-[#c1c6d7] hover:bg-white/10 hover:text-white flex items-center gap-1.5"
+                  className="whitespace-nowrap px-4 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer bg-violet-50 border border-violet-200/60 text-[#51465f] hover:bg-violet-50 hover:text-slate-900 flex items-center gap-1.5"
                   title="Baixar extrato completo em CSV"
                 >
                   <Download size={14} />
@@ -469,18 +469,18 @@ export default function TransactionsView({
         <section className="space-y-8 pb-12">
           {/* Category Expenses Breakdown Summary Card */}
           {allCategories.length > 0 && (
-            <div className="glass-card rounded-2xl p-5 border border-[#353534]/40 bg-[#191818]/80 space-y-4">
+            <div className="glass-card rounded-2xl p-5 border border-[#c4b5d6]/40 bg-[#f8f6fc]/80 space-y-4">
               <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <Filter size={16} className="text-[#adc6ff]" />
-                  <h3 className="text-sm font-bold text-white">Distribuição de Saídas por Categoria (Mês)</h3>
-                  <span className="text-[10px] font-bold text-[#adc6ff] bg-[#adc6ff]/10 border border-[#adc6ff]/20 px-2.5 py-0.5 rounded-full">
+                  <Filter size={16} className="text-[#7c3aed]" />
+                  <h3 className="text-sm font-bold text-slate-900">Distribuição de Saídas por Categoria (Mês)</h3>
+                  <span className="text-[10px] font-bold text-[#7c3aed] bg-[#7c3aed]/10 border border-[#7c3aed]/20 px-2.5 py-0.5 rounded-full">
                     {allCategories.length} {allCategories.length === 1 ? "categoria identificada" : "categorias identificadas"}
                   </span>
                 </div>
 
                 <div className="flex items-center gap-3 self-end sm:self-auto">
-                  <span className="font-mono text-xs text-[#8b90a0]">
+                  <span className="font-mono text-xs text-[#6b617c]">
                     Total: {totalExpensesSum.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
                   </span>
 
@@ -488,7 +488,7 @@ export default function TransactionsView({
                     <button
                       type="button"
                       onClick={() => setShowAllCategories(!showAllCategories)}
-                      className="text-xs font-bold text-[#adc6ff] bg-[#adc6ff]/10 hover:bg-[#adc6ff]/20 border border-[#adc6ff]/30 px-3 py-1 rounded-xl transition-all cursor-pointer flex items-center gap-1.5"
+                      className="text-xs font-bold text-[#7c3aed] bg-[#7c3aed]/10 hover:bg-[#7c3aed]/20 border border-[#7c3aed]/30 px-3 py-1 rounded-xl transition-all cursor-pointer flex items-center gap-1.5"
                     >
                       <Layers size={13} />
                       <span>{showAllCategories ? "Mostrar Top 5" : `Ver Todas (${allCategories.length})`}</span>
@@ -499,19 +499,19 @@ export default function TransactionsView({
 
               {/* Selected category active filter notification */}
               {selectedCategoryFilter && (
-                <div className="flex items-center justify-between p-3 rounded-xl bg-[#adc6ff]/10 border border-[#adc6ff]/30 text-xs animate-fade-in">
-                  <span className="text-white font-medium flex items-center gap-2">
-                    <Tag size={14} className="text-[#adc6ff]" />
+                <div className="flex items-center justify-between p-3 rounded-xl bg-[#7c3aed]/10 border border-[#7c3aed]/30 text-xs animate-fade-in">
+                  <span className="text-slate-900 font-medium flex items-center gap-2">
+                    <Tag size={14} className="text-[#7c3aed]" />
                     <span>Filtrando por categoria:</span>
-                    <strong className="text-[#adc6ff] font-bold text-sm">{selectedCategoryFilter}</strong>
-                    <span className="text-[#8b90a0] font-mono">
+                    <strong className="text-[#7c3aed] font-bold text-sm">{selectedCategoryFilter}</strong>
+                    <span className="text-[#6b617c] font-mono">
                       ({(categoryTotals[selectedCategoryFilter] || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })})
                     </span>
                   </span>
                   <button
                     type="button"
                     onClick={() => setSelectedCategoryFilter(null)}
-                    className="text-xs text-rose-400 hover:text-white font-bold bg-rose-500/10 hover:bg-rose-500/20 px-3 py-1 rounded-lg border border-rose-500/30 transition-all cursor-pointer"
+                    className="text-xs text-rose-700 hover:text-slate-900 font-bold bg-rose-500/10 hover:bg-rose-500/20 px-3 py-1 rounded-lg border border-rose-500/30 transition-all cursor-pointer"
                   >
                     Limpar Filtro ✕
                   </button>
@@ -530,20 +530,20 @@ export default function TransactionsView({
                       onClick={() => setSelectedCategoryFilter(isSelected ? null : cat)}
                       className={`p-3.5 border rounded-xl space-y-2 cursor-pointer transition-all hover:scale-[1.02] active:scale-95 ${
                         isSelected
-                          ? "bg-[#adc6ff]/15 border-[#adc6ff] shadow-lg shadow-[#adc6ff]/10 ring-1 ring-[#adc6ff]"
-                          : "bg-[#131313] border-[#353534]/40 hover:border-[#adc6ff]/40"
+                          ? "bg-[#7c3aed]/15 border-[#7c3aed] shadow-lg shadow-[#7c3aed]/10 ring-1 ring-[#7c3aed]"
+                          : "bg-[#ffffff] border-[#c4b5d6]/40 hover:border-[#7c3aed]/40"
                       }`}
                     >
                       <div className="flex justify-between items-center text-xs font-semibold">
-                        <span className="text-white truncate font-bold">{cat}</span>
-                        <span className="text-[#adc6ff] font-mono">{pct}%</span>
+                        <span className="text-slate-900 truncate font-bold">{cat}</span>
+                        <span className="text-[#7c3aed] font-mono">{pct}%</span>
                       </div>
-                      <div className="h-1.5 w-full bg-[#262525] rounded-full overflow-hidden">
-                        <div className="h-full bg-[#adc6ff] rounded-full" style={{ width: `${pct}%` }}></div>
+                      <div className="h-1.5 w-full bg-[#f1edf8] rounded-full overflow-hidden">
+                        <div className="h-full bg-[#7c3aed] rounded-full" style={{ width: `${pct}%` }}></div>
                       </div>
-                      <div className="flex justify-between items-center text-[10px] text-[#8b90a0] font-mono">
+                      <div className="flex justify-between items-center text-[10px] text-[#6b617c] font-mono">
                         <span>{amount.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</span>
-                        <span className="text-[9px] text-[#adc6ff] font-bold underline">
+                        <span className="text-[9px] text-[#7c3aed] font-bold underline">
                           {isSelected ? "Selecionado" : "Filtrar"}
                         </span>
                       </div>
@@ -555,23 +555,23 @@ export default function TransactionsView({
                 {!showAllCategories && remainingCategories.length > 0 && (
                   <div
                     onClick={() => setShowAllCategories(true)}
-                    className="p-3.5 bg-[#131313] border border-dashed border-[#adc6ff]/40 hover:border-[#adc6ff] rounded-xl space-y-2 cursor-pointer transition-all hover:scale-[1.02]"
+                    className="p-3.5 bg-[#ffffff] border border-dashed border-[#7c3aed]/40 hover:border-[#7c3aed] rounded-xl space-y-2 cursor-pointer transition-all hover:scale-[1.02]"
                   >
                     <div className="flex justify-between items-center text-xs font-semibold">
-                      <span className="text-[#adc6ff] font-bold truncate">+ {remainingCategories.length} Outras Categorias</span>
-                      <span className="text-[#adc6ff] font-mono">
+                      <span className="text-[#7c3aed] font-bold truncate">+ {remainingCategories.length} Outras Categorias</span>
+                      <span className="text-[#7c3aed] font-mono">
                         {totalExpensesSum > 0 ? Math.round((remainingSum / totalExpensesSum) * 100) : 0}%
                       </span>
                     </div>
-                    <div className="h-1.5 w-full bg-[#262525] rounded-full overflow-hidden">
+                    <div className="h-1.5 w-full bg-[#f1edf8] rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-[#adc6ff]/60 rounded-full"
+                        className="h-full bg-[#7c3aed]/60 rounded-full"
                         style={{
                           width: `${totalExpensesSum > 0 ? Math.round((remainingSum / totalExpensesSum) * 100) : 0}%`,
                         }}
                       ></div>
                     </div>
-                    <div className="flex justify-between items-center text-[10px] text-[#adc6ff] font-mono font-bold">
+                    <div className="flex justify-between items-center text-[10px] text-[#7c3aed] font-mono font-bold">
                       <span>{remainingSum.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</span>
                       <span className="underline">Ver Todas</span>
                     </div>
@@ -581,11 +581,11 @@ export default function TransactionsView({
             </div>
           )}
           {Object.keys(groupedTransactions).length === 0 ? (
-            <div className="text-center py-12 glass-card rounded-2xl p-8 border border-[#353534]/30 space-y-4">
-              <ShieldAlert size={44} className="mx-auto text-[#adc6ff]/60" />
+            <div className="text-center py-12 glass-card rounded-2xl p-8 border border-[#c4b5d6]/30 space-y-4">
+              <ShieldAlert size={44} className="mx-auto text-[#7c3aed]/60" />
               <div className="max-w-md mx-auto space-y-1">
-                <h4 className="text-base font-bold text-white">Nenhuma movimentação para exibir</h4>
-                <p className="text-xs text-[#c1c6d7]">
+                <h4 className="text-base font-bold text-slate-900">Nenhuma movimentação para exibir</h4>
+                <p className="text-xs text-[#51465f]">
                   {activeFilter === "Rejected"
                     ? "Nenhum lançamento foi rejeitado no momento."
                     : activeFilter === "Unidentified"
@@ -596,11 +596,11 @@ export default function TransactionsView({
 
               {/* Notice if items exist in rejected tab */}
               {activeFilter !== "Rejected" && rejectedCount > 0 && (
-                <div className="inline-flex items-center gap-2 px-4 py-2 bg-rose-500/10 border border-rose-500/30 rounded-xl text-xs text-rose-300">
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-rose-500/10 border border-rose-500/30 rounded-xl text-xs text-rose-700">
                   <span>Você possui <strong>{rejectedCount}</strong> {rejectedCount === 1 ? "item rejeitado" : "itens rejeitados"} no extrato.</span>
                   <button
                     onClick={() => setActiveFilter("Rejected")}
-                    className="font-bold underline text-white hover:text-rose-200 cursor-pointer ml-1"
+                    className="font-bold underline text-slate-900 hover:text-rose-200 cursor-pointer ml-1"
                   >
                     Ver Rejeitadas
                   </button>
@@ -612,7 +612,7 @@ export default function TransactionsView({
                 {onOpenImportModal && (
                   <button
                     onClick={onOpenImportModal}
-                    className="px-5 py-2.5 rounded-xl bg-[#adc6ff] text-[#002e69] font-bold text-xs hover:bg-white transition-all cursor-pointer flex items-center gap-2 shadow-lg"
+                    className="px-5 py-2.5 rounded-xl bg-[#7c3aed] text-white font-bold text-xs hover:bg-violet-700 transition-all cursor-pointer flex items-center gap-2 shadow-lg"
                   >
                     <UploadCloud size={16} />
                     <span>Importar Extrato Bancário</span>
@@ -622,7 +622,7 @@ export default function TransactionsView({
                 {onResetDemoData && (
                   <button
                     onClick={onResetDemoData}
-                    className="px-4 py-2.5 rounded-xl bg-[#252524] text-[#c1c6d7] hover:text-white font-medium text-xs border border-[#353534] hover:bg-[#353534] transition-all cursor-pointer flex items-center gap-1.5"
+                    className="px-4 py-2.5 rounded-xl bg-[#f1edf8] text-[#51465f] hover:text-slate-900 font-medium text-xs border border-[#c4b5d6] hover:bg-[#c4b5d6] transition-all cursor-pointer flex items-center gap-1.5"
                   >
                     <RefreshCw size={14} />
                     <span>Carregar Dados de Exemplo</span>
@@ -633,8 +633,8 @@ export default function TransactionsView({
           ) : (
             Object.keys(groupedTransactions).map((dateKey) => (
               <div key={dateKey} className="space-y-3">
-                <h3 className="text-xs font-bold text-[#8b90a0] uppercase tracking-wider pl-2">{dateKey}</h3>
-                <div className="space-y-[1px] rounded-2xl overflow-hidden border border-[#353534]/15 shadow-xl">
+                <h3 className="text-xs font-bold text-[#6b617c] uppercase tracking-wider pl-2">{dateKey}</h3>
+                <div className="space-y-[1px] rounded-2xl overflow-hidden border border-[#c4b5d6]/15 shadow-xl">
                   {groupedTransactions[dateKey].map((tx) => {
                     const isNegative = tx.amount < 0;
                     return (
@@ -647,7 +647,7 @@ export default function TransactionsView({
                             {getIcon(tx.icon)}
                           </div>
                           <div className="flex flex-col">
-                            <span className="text-sm font-semibold text-white tracking-tight group-hover:text-[#adc6ff] transition-colors">
+                            <span className="text-sm font-semibold text-slate-900 tracking-tight group-hover:text-[#7c3aed] transition-colors">
                               {tx.title}
                             </span>
                             <div className="flex items-center gap-2 mt-1">
@@ -663,7 +663,7 @@ export default function TransactionsView({
                                     }}
                                     onBlur={() => setEditingTxCategory(null)}
                                     autoFocus
-                                    className="text-[10px] bg-[#1a1919] text-white border border-[#adc6ff] rounded px-2 py-0.5 outline-none font-medium cursor-pointer"
+                                    className="text-[10px] bg-[#ffffff] text-slate-900 border border-[#7c3aed] rounded px-2 py-0.5 outline-none font-medium cursor-pointer"
                                   >
                                     {[
                                       "Cartão de Crédito",
@@ -698,30 +698,30 @@ export default function TransactionsView({
                                       e.stopPropagation();
                                       setEditingTxCategory(tx.id);
                                     }}
-                                    className="text-[10px] px-2 py-0.5 rounded-md bg-[#1c1b1b] text-[#c1c6d7] font-medium hover:bg-[#adc6ff]/20 hover:text-[#adc6ff] border border-transparent hover:border-[#adc6ff]/30 transition-all cursor-pointer flex items-center gap-1"
+                                    className="text-[10px] px-2 py-0.5 rounded-md bg-[#f8f6fc] text-[#51465f] font-medium hover:bg-[#7c3aed]/20 hover:text-[#7c3aed] border border-transparent hover:border-[#7c3aed]/30 transition-all cursor-pointer flex items-center gap-1"
                                     title="Clique para alterar a categoria deste lançamento"
                                   >
                                     <span>{tx.category}</span>
-                                    <Edit3 size={10} className="text-[#8b90a0]" />
+                                    <Edit3 size={10} className="text-[#6b617c]" />
                                   </button>
                                 )}
                               </div>
                               {(tx.isRecurring || tx.date === "Recorrente Mensal") && (
-                                <span className="text-[9px] font-bold text-[#4edea3] bg-[#4edea3]/10 border border-[#4edea3]/30 px-1.5 py-0.5 rounded flex items-center gap-1">
+                                <span className="text-[9px] font-bold text-[#15803d] bg-[#15803d]/10 border border-[#15803d]/30 px-1.5 py-0.5 rounded flex items-center gap-1">
                                   🔄 Fixo Mensal
                                 </span>
                               )}
                               {tx.installment && (
-                                <span className="text-[9px] uppercase font-bold text-[#ffb95f] px-1.5 border border-[#ffb95f]/30 rounded">
+                                <span className="text-[9px] uppercase font-bold text-[#b45309] px-1.5 border border-[#b45309]/30 rounded">
                                   {tx.installment}
                                 </span>
                               )}
                               <div className="flex gap-1">
                                 {tx.hasAttachment && (
-                                  <Paperclip size={12} className="text-[#8b90a0]" title="Anexo" />
+                                  <Paperclip size={12} className="text-[#6b617c]" title="Anexo" />
                                 )}
                                 {tx.hasNote && (
-                                  <FileText size={12} className="text-[#8b90a0]" title="Nota" />
+                                  <FileText size={12} className="text-[#6b617c]" title="Nota" />
                                 )}
                               </div>
                             </div>
@@ -730,20 +730,20 @@ export default function TransactionsView({
                         
                         <div className="flex items-center gap-3">
                           <div className="text-right">
-                            <p className={`font-mono text-sm font-bold ${isNegative ? "text-rose-400" : "text-[#4edea3]"}`}>
+                            <p className={`font-mono text-sm font-bold ${isNegative ? "text-rose-700" : "text-[#15803d]"}`}>
                               {isNegative ? "- " : "+ "}{Math.abs(tx.amount).toLocaleString("pt-BR", {
                                 style: "currency",
                                 currency: "BRL",
                               })}
                             </p>
-                            <span className="text-[11px] text-[#8b90a0] block">{tx.time}</span>
+                            <span className="text-[11px] text-[#6b617c] block">{tx.time}</span>
                           </div>
 
                           {/* Quick Actions: Restore if rejected, or Toggle sign / Delete if active */}
                           <div className="flex items-center gap-1 opacity-90 group-hover:opacity-100 transition-opacity">
                             {tx.isRejected ? (
                               <>
-                                <span className="text-[10px] font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-1 rounded">
+                                <span className="text-[10px] font-bold text-amber-700 bg-amber-500/10 border border-amber-500/20 px-2 py-1 rounded">
                                   🚫 Rejeitada
                                 </span>
                                 {onRestoreTransaction && (
@@ -753,7 +753,7 @@ export default function TransactionsView({
                                       e.stopPropagation();
                                       onRestoreTransaction(tx.id);
                                     }}
-                                    className="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-[#4edea3]/20 text-[#4edea3] border border-[#4edea3]/40 hover:bg-[#4edea3]/30 transition-colors cursor-pointer flex items-center gap-1"
+                                    className="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-[#15803d]/20 text-[#15803d] border border-[#15803d]/40 hover:bg-[#15803d]/30 transition-colors cursor-pointer flex items-center gap-1"
                                     title="Aprovar e mover para o fluxo de caixa ativo"
                                   >
                                     <Check size={12} />
@@ -771,8 +771,8 @@ export default function TransactionsView({
                                   }}
                                   className={`text-[10px] font-bold px-2 py-1 rounded border transition-colors cursor-pointer ${
                                     isNegative
-                                      ? "bg-rose-500/10 text-rose-400 border-rose-500/30 hover:bg-rose-500/20"
-                                      : "bg-[#4edea3]/10 text-[#4edea3] border-[#4edea3]/30 hover:bg-[#4edea3]/20"
+                                      ? "bg-rose-500/10 text-rose-700 border-rose-500/30 hover:bg-rose-500/20"
+                                      : "bg-[#15803d]/10 text-[#15803d] border-[#15803d]/30 hover:bg-[#15803d]/20"
                                   }`}
                                   title={isNegative ? "Alternar para Entrada (+)" : "Alternar para Saída (-)"}
                                 >
@@ -788,7 +788,7 @@ export default function TransactionsView({
                                   e.stopPropagation();
                                   onDeleteTransaction(tx.id);
                                 }}
-                                className="p-1.5 text-[#8b90a0] hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors cursor-pointer"
+                                className="p-1.5 text-[#6b617c] hover:text-rose-700 hover:bg-rose-500/10 rounded-lg transition-colors cursor-pointer"
                                 title="Excluir lançamento definitivamente"
                               >
                                 <Trash2 size={13} />
@@ -812,29 +812,29 @@ export default function TransactionsView({
           {/* WhatsApp Notification Alert Banner */}
           <div className="glass-card p-4.5 rounded-2xl border border-[#25D366]/30 bg-[#25D366]/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#25D366]/20 border border-[#25D366]/40 flex items-center justify-center text-[#25D366] shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-[#25D366]/20 border border-[#25D366]/40 flex items-center justify-center text-[#15803d] shrink-0">
                 <MessageSquare size={20} />
               </div>
               <div>
                 <div className="flex items-center gap-2 flex-wrap">
-                  <h4 className="text-sm font-bold text-white">Lembretes WhatsApp (1 Dia Antes)</h4>
-                  <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-[#25D366]/20 text-[#25D366] uppercase tracking-wider font-mono">
+                  <h4 className="text-sm font-bold text-slate-900">Lembretes WhatsApp (1 Dia Antes)</h4>
+                  <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-[#25D366]/20 text-[#15803d] uppercase tracking-wider font-mono">
                     {(!whatsappConfig.provider || whatsappConfig.provider === "manual") ? "Modo 1-Clique" : "100% Automático"}
                   </span>
                   {whatsappConfig.provider && whatsappConfig.provider !== "manual" && (
-                    <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-white/10 text-white/80 uppercase tracking-wider font-mono">
+                    <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-violet-50 text-slate-900/80 uppercase tracking-wider font-mono">
                       Via {whatsappConfig.provider.toUpperCase()}
                     </span>
                   )}
                 </div>
-                <p className="text-xs text-[#c1c6d7] mt-0.5">
-                  Número: <strong className="text-white font-mono">{whatsappConfig.phoneNumber || "Não informado"}</strong>
+                <p className="text-xs text-[#51465f] mt-0.5">
+                  Número: <strong className="text-slate-900 font-mono">{whatsappConfig.phoneNumber || "Não informado"}</strong>
                   {billsDueTomorrow.length > 0 ? (
-                    <span className="text-[#25D366] font-bold ml-2 animate-pulse">
+                    <span className="text-[#15803d] font-bold ml-2 animate-pulse">
                       • ⚠️ {billsDueTomorrow.length} conta(s) vence(m) amanhã!
                     </span>
                   ) : (
-                    <span className="text-[#8b90a0] ml-2">
+                    <span className="text-[#6b617c] ml-2">
                       • Nenhuma conta vencendo amanhã.
                     </span>
                   )}
@@ -848,7 +848,7 @@ export default function TransactionsView({
                   type="button"
                   onClick={handleAutoDispatchDueTomorrow}
                   disabled={isAutoDispatching}
-                  className="px-3.5 py-2 bg-[#4edea3]/20 hover:bg-[#4edea3]/30 border border-[#4edea3]/40 text-[#4edea3] font-bold text-xs rounded-xl flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-50"
+                  className="px-3.5 py-2 bg-[#15803d]/20 hover:bg-[#15803d]/30 border border-[#15803d]/40 text-[#15803d] font-bold text-xs rounded-xl flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-50"
                   title="Disparar aviso das contas de amanhã para o seu WhatsApp agora"
                 >
                   <Send size={13} className={isAutoDispatching ? "animate-spin" : ""} />
@@ -869,43 +869,43 @@ export default function TransactionsView({
 
           {/* Statistics Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="glass-card p-5 border border-[#353534]/15 rounded-2xl flex flex-col justify-between">
-              <span className="text-[10px] uppercase font-bold text-[#8b90a0] tracking-wider">Compromisso Mensal</span>
-              <p className="text-2xl font-bold text-white mt-1 font-mono">
+            <div className="glass-card p-5 border border-[#c4b5d6]/15 rounded-2xl flex flex-col justify-between">
+              <span className="text-[10px] uppercase font-bold text-[#6b617c] tracking-wider">Compromisso Mensal</span>
+              <p className="text-2xl font-bold text-slate-900 mt-1 font-mono">
                 {totalFixedAmount.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
               </p>
-              <span className="text-[10px] text-[#8b90a0] mt-1">{totalCount} despesas cadastradas</span>
+              <span className="text-[10px] text-[#6b617c] mt-1">{totalCount} despesas cadastradas</span>
             </div>
 
-            <div className="glass-card p-5 border border-[#353534]/15 rounded-2xl flex flex-col justify-between">
-              <span className="text-[10px] uppercase font-bold text-[#4edea3] tracking-wider">Total Pago</span>
-              <p className="text-2xl font-bold text-[#4edea3] mt-1 font-mono">
+            <div className="glass-card p-5 border border-[#c4b5d6]/15 rounded-2xl flex flex-col justify-between">
+              <span className="text-[10px] uppercase font-bold text-[#15803d] tracking-wider">Total Pago</span>
+              <p className="text-2xl font-bold text-[#15803d] mt-1 font-mono">
                 {paidFixedAmount.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
               </p>
-              <span className="text-[10px] text-[#8b90a0] mt-1">{paidCount} de {totalCount} liquidadas</span>
+              <span className="text-[10px] text-[#6b617c] mt-1">{paidCount} de {totalCount} liquidadas</span>
             </div>
 
-            <div className="glass-card p-5 border border-[#353534]/15 rounded-2xl flex flex-col justify-between">
-              <span className="text-[10px] uppercase font-bold text-amber-400 tracking-wider">A Pagar / Pendente</span>
-              <p className="text-2xl font-bold text-amber-400 mt-1 font-mono">
+            <div className="glass-card p-5 border border-[#c4b5d6]/15 rounded-2xl flex flex-col justify-between">
+              <span className="text-[10px] uppercase font-bold text-amber-700 tracking-wider">A Pagar / Pendente</span>
+              <p className="text-2xl font-bold text-amber-700 mt-1 font-mono">
                 {pendingFixedAmount.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
               </p>
               <div className="flex items-center gap-1.5 mt-1">
                 <div className="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></div>
-                <span className="text-[10px] text-[#8b90a0]">Próximos vencimentos</span>
+                <span className="text-[10px] text-[#6b617c]">Próximos vencimentos</span>
               </div>
             </div>
           </div>
 
           {/* Progress Bar of Settlements */}
-          <div className="glass-card p-4 border border-[#353534]/15 rounded-2xl space-y-2">
+          <div className="glass-card p-4 border border-[#c4b5d6]/15 rounded-2xl space-y-2">
             <div className="flex justify-between items-center text-xs">
-              <span className="text-[#8b90a0] font-medium">Progresso de Quitação Mensal</span>
-              <span className="text-white font-bold">{paidPercentage}% concluído</span>
+              <span className="text-[#6b617c] font-medium">Progresso de Quitação Mensal</span>
+              <span className="text-slate-900 font-bold">{paidPercentage}% concluído</span>
             </div>
-            <div className="w-full bg-[#1c1b1b] h-2 rounded-full overflow-hidden">
+            <div className="w-full bg-[#f8f6fc] h-2 rounded-full overflow-hidden">
               <div 
-                className="bg-gradient-to-r from-[#adc6ff] to-[#4edea3] h-full transition-all duration-500 ease-out"
+                className="bg-gradient-to-r from-[#7c3aed] to-[#15803d] h-full transition-all duration-500 ease-out"
                 style={{ width: `${paidPercentage}%` }}
               ></div>
             </div>
@@ -914,18 +914,18 @@ export default function TransactionsView({
           {/* List Section */}
           <div className="space-y-3">
             <div className="flex items-center justify-between px-2">
-              <h3 className="text-xs font-bold text-[#8b90a0] uppercase tracking-wider">Listagem de Compromissos</h3>
-              <p className="text-[10px] text-[#8b90a0] italic">Dia de vencimento estimado</p>
+              <h3 className="text-xs font-bold text-[#6b617c] uppercase tracking-wider">Listagem de Compromissos</h3>
+              <p className="text-[10px] text-[#6b617c] italic">Dia de vencimento estimado</p>
             </div>
 
             {recurringExpenses.length === 0 ? (
-              <div className="text-center py-12 glass-card rounded-2xl p-6 border border-[#353534]/15">
-                <Calendar size={40} className="mx-auto text-[#8b90a0]/30 mb-3" />
-                <p className="text-[#8b90a0] text-sm">Nenhuma despesa fixa cadastrada.</p>
+              <div className="text-center py-12 glass-card rounded-2xl p-6 border border-[#c4b5d6]/15">
+                <Calendar size={40} className="mx-auto text-[#6b617c]/30 mb-3" />
+                <p className="text-[#6b617c] text-sm">Nenhuma despesa fixa cadastrada.</p>
                 <button
                   type="button"
                   onClick={() => setIsAddRecOpen(true)}
-                  className="mt-3 text-xs font-bold text-[#adc6ff] hover:underline cursor-pointer"
+                  className="mt-3 text-xs font-bold text-[#7c3aed] hover:underline cursor-pointer"
                 >
                   Adicionar primeira despesa
                 </button>
@@ -941,20 +941,20 @@ export default function TransactionsView({
                       className={`glass-card flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-2xl border transition-all gap-4 ${
                         isDueTomorrow
                           ? "border-[#25D366]/60 bg-[#25D366]/5 shadow-lg shadow-[#25D366]/10"
-                          : "border-[#353534]/15 hover:border-[#adc6ff]/20"
+                          : "border-[#c4b5d6]/15 hover:border-[#7c3aed]/20"
                       }`}
                     >
                       <div className="flex items-center gap-4">
                         <div className={`w-11 h-11 rounded-xl border flex items-center justify-center ${
                           isDueTomorrow
-                            ? "bg-[#25D366]/20 text-[#25D366] border-[#25D366]/40"
-                            : "bg-[#1c1b1b]/80 text-[#adc6ff] border-[#353534]/30"
+                            ? "bg-[#25D366]/20 text-[#15803d] border-[#25D366]/40"
+                            : "bg-[#f8f6fc]/80 text-[#7c3aed] border-[#c4b5d6]/30"
                         }`}>
                           {isDueTomorrow ? <Bell size={18} className="animate-bounce" /> : <Calendar size={18} />}
                         </div>
                         <div>
                           <div className="flex items-center gap-2">
-                            <p className="text-sm font-semibold text-white tracking-tight">{expense.title}</p>
+                            <p className="text-sm font-semibold text-slate-900 tracking-tight">{expense.title}</p>
                             {isDueTomorrow && (
                               <span className="text-[9px] px-2 py-0.5 rounded-full bg-[#25D366] text-black font-bold tracking-wider uppercase flex items-center gap-1">
                                 ⚠️ Vence Amanhã!
@@ -962,10 +962,10 @@ export default function TransactionsView({
                             )}
                           </div>
                           <div className="flex flex-wrap items-center gap-2 mt-1">
-                            <span className="text-[10px] px-2 py-0.5 rounded-md bg-[#1c1b1b] text-[#c1c6d7]/70 font-medium">
+                            <span className="text-[10px] px-2 py-0.5 rounded-md bg-[#f8f6fc] text-[#51465f]/70 font-medium">
                               {expense.category}
                             </span>
-                            <span className="text-[10px] px-2 py-0.5 rounded-md bg-[#2d2112]/40 border border-[#ffb95f]/15 text-[#ffb95f] font-mono flex items-center gap-1">
+                            <span className="text-[10px] px-2 py-0.5 rounded-md bg-[#fffbeb]/40 border border-[#b45309]/15 text-[#b45309] font-mono flex items-center gap-1">
                               <Clock size={10} />
                               Vence dia {expense.dueDate}
                             </span>
@@ -973,12 +973,12 @@ export default function TransactionsView({
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between sm:justify-end gap-3 border-t sm:border-t-0 pt-3 sm:pt-0 border-[#353534]/15">
+                      <div className="flex items-center justify-between sm:justify-end gap-3 border-t sm:border-t-0 pt-3 sm:pt-0 border-[#c4b5d6]/15">
                         <div className="text-left sm:text-right">
-                          <p className="font-mono text-sm font-bold text-white">
+                          <p className="font-mono text-sm font-bold text-slate-900">
                             {expense.amount.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
                           </p>
-                          <span className={`text-[10px] font-semibold ${isPaidInPeriod(expense) ? "text-[#4edea3]" : "text-amber-400"}`}>
+                          <span className={`text-[10px] font-semibold ${isPaidInPeriod(expense) ? "text-[#15803d]" : "text-amber-700"}`}>
                             {isPaidInPeriod(expense) ? "Pago este mês" : expense.paidThisMonth && !expense.paidPeriods ? "Pagamento antigo sem mês — conferir" : "Pendente"}
                           </span>
                         </div>
@@ -988,7 +988,7 @@ export default function TransactionsView({
                             <button
                               type="button"
                               onClick={() => handleSendWhatsappReminder(expense)}
-                              className="p-2 rounded-xl border border-[#25D366]/40 bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366]/20 transition-all cursor-pointer flex items-center gap-1.5 text-xs font-bold"
+                              className="p-2 rounded-xl border border-[#25D366]/40 bg-[#25D366]/10 text-[#15803d] hover:bg-[#25D366]/20 transition-all cursor-pointer flex items-center gap-1.5 text-xs font-bold"
                               title="Enviar Lembrete WhatsApp"
                             >
                               <MessageSquare size={16} />
@@ -1001,8 +1001,8 @@ export default function TransactionsView({
                             onClick={() => onTogglePaidRecurringExpense(expense.id)}
                             className={`p-2 rounded-xl border transition-all cursor-pointer ${
                               isPaidInPeriod(expense)
-                                ? "bg-[#4edea3]/10 border-[#4edea3]/20 text-[#4edea3] hover:bg-[#4edea3]/20"
-                                : "bg-amber-500/10 border-amber-500/20 text-amber-400 hover:bg-amber-500/20"
+                                ? "bg-[#15803d]/10 border-[#15803d]/20 text-[#15803d] hover:bg-[#15803d]/20"
+                                : "bg-amber-500/10 border-amber-500/20 text-amber-700 hover:bg-amber-500/20"
                             }`}
                             title={expense.paidThisMonth && !expense.paidPeriods ? "Identificar mês do pagamento antigo (sem alterar saldo)" : isPaidInPeriod(expense) ? "Marcar como pendente" : "Marcar como pago (grava extrato)"}
                           >
@@ -1012,7 +1012,7 @@ export default function TransactionsView({
                           <button
                             type="button"
                             onClick={() => onDeleteRecurringExpense(expense.id)}
-                            className="p-2 rounded-xl border border-rose-500/20 text-rose-400 hover:bg-rose-500/10 hover:border-rose-500/40 transition-all cursor-pointer"
+                            className="p-2 rounded-xl border border-rose-500/20 text-rose-700 hover:bg-rose-500/10 hover:border-rose-500/40 transition-all cursor-pointer"
                             title="Excluir despesa recorrente"
                           >
                             <Trash2 size={16} />
@@ -1039,7 +1039,7 @@ export default function TransactionsView({
             setIsAddRecOpen(true);
           }
         }}
-        className="fixed bottom-28 right-6 w-14 h-14 rounded-full bg-[#adc6ff] text-[#002e69] flex items-center justify-center shadow-xl shadow-[#adc6ff]/20 hover:scale-105 active:scale-95 transition-all z-40 cursor-pointer"
+        className="fixed bottom-28 right-6 w-14 h-14 rounded-full bg-[#7c3aed] text-white flex items-center justify-center shadow-xl shadow-[#7c3aed]/20 hover:scale-105 active:scale-95 transition-all z-40 cursor-pointer"
         aria-label={viewMode === "history" ? "Nova Transação" : "Nova Despesa Fixa"}
       >
         <Plus size={24} strokeWidth={2.5} />
@@ -1048,16 +1048,16 @@ export default function TransactionsView({
       {/* MODAL 1: Add Transaction (History Mode) */}
       {isAddOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md overflow-y-auto">
-          <div className="w-full max-w-lg bg-[#131313] border border-[#353534]/70 rounded-3xl shadow-2xl p-6 space-y-6 max-h-[90vh] overflow-y-auto custom-scrollbar animate-slide-up my-auto">
-            <div className="flex justify-between items-center pb-2 border-b border-[#353534]/30">
-              <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                <Landmark size={20} className="text-[#4edea3]" />
+          <div className="w-full max-w-lg bg-[#ffffff] border border-[#c4b5d6]/70 rounded-3xl shadow-2xl p-6 space-y-6 max-h-[90vh] overflow-y-auto custom-scrollbar animate-slide-up my-auto">
+            <div className="flex justify-between items-center pb-2 border-b border-[#c4b5d6]/30">
+              <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+                <Landmark size={20} className="text-[#15803d]" />
                 Adicionar Transação
               </h3>
               <button
                 type="button"
                 onClick={() => setIsAddOpen(false)}
-                className="text-[#8b90a0] hover:text-white p-1 rounded-full hover:bg-white/5 transition-all cursor-pointer"
+                className="text-[#6b617c] hover:text-slate-900 p-1 rounded-full hover:bg-violet-50 transition-all cursor-pointer"
               >
                 <X size={20} />
               </button>
@@ -1065,20 +1065,20 @@ export default function TransactionsView({
 
             <form onSubmit={handleFormSubmit} className="space-y-4 text-left">
               <div className="space-y-1">
-                <label className="text-xs text-[#8b90a0] font-semibold uppercase tracking-wider">Descrição</label>
+                <label className="text-xs text-[#6b617c] font-semibold uppercase tracking-wider">Descrição</label>
                 <input
                   type="text"
                   required
                   placeholder="Ex: Salário, Ajuda de Custo, Supermercado"
                   value={formTitle}
                   onChange={(e) => setFormTitle(e.target.value)}
-                  className="w-full bg-[#1c1b1b] border border-[#353534]/50 rounded-xl px-4 py-3 text-sm text-white focus:border-[#adc6ff] outline-none"
+                  className="w-full bg-[#f8f6fc] border border-[#c4b5d6]/50 rounded-xl px-4 py-3 text-sm text-slate-900 focus:border-[#7c3aed] outline-none"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="text-xs text-[#8b90a0] font-semibold uppercase tracking-wider">Valor (R$)</label>
+                  <label className="text-xs text-[#6b617c] font-semibold uppercase tracking-wider">Valor (R$)</label>
                   <input
                     type="number"
                     step="0.01"
@@ -1086,18 +1086,18 @@ export default function TransactionsView({
                     placeholder="3150.00"
                     value={formAmount}
                     onChange={(e) => setFormAmount(e.target.value)}
-                    className="w-full bg-[#1c1b1b] border border-[#353534]/50 rounded-xl px-4 py-3 text-sm text-white focus:border-[#adc6ff] outline-none font-mono"
+                    className="w-full bg-[#f8f6fc] border border-[#c4b5d6]/50 rounded-xl px-4 py-3 text-sm text-slate-900 focus:border-[#7c3aed] outline-none font-mono"
                   />
                 </div>
                 
                 <div className="space-y-1">
-                  <label className="text-xs text-[#8b90a0] font-semibold uppercase tracking-wider">Tipo de Lançamento</label>
-                  <div className="grid grid-cols-2 bg-[#1c1b1b] p-1 rounded-xl border border-[#353534]/50">
+                  <label className="text-xs text-[#6b617c] font-semibold uppercase tracking-wider">Tipo de Lançamento</label>
+                  <div className="grid grid-cols-2 bg-[#f8f6fc] p-1 rounded-xl border border-[#c4b5d6]/50">
                     <button
                       type="button"
                       onClick={() => setFormType("outflow")}
                       className={`py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${
-                        formType === "outflow" ? "bg-rose-500/20 text-rose-400 font-extrabold shadow-sm" : "text-[#8b90a0] hover:text-white"
+                        formType === "outflow" ? "bg-rose-500/20 text-rose-700 font-extrabold shadow-sm" : "text-[#6b617c] hover:text-slate-900"
                       }`}
                     >
                       Despesa (-)
@@ -1106,7 +1106,7 @@ export default function TransactionsView({
                       type="button"
                       onClick={() => setFormType("inflow")}
                       className={`py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${
-                        formType === "inflow" ? "bg-[#00a572]/30 text-[#4edea3] font-extrabold shadow-sm" : "text-[#8b90a0] hover:text-white"
+                        formType === "inflow" ? "bg-[#7c3aed]/30 text-[#15803d] font-extrabold shadow-sm" : "text-[#6b617c] hover:text-slate-900"
                       }`}
                     >
                       Receita (+)
@@ -1116,13 +1116,13 @@ export default function TransactionsView({
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs text-[#8b90a0] font-semibold uppercase tracking-wider">Frequência da Movimentação</label>
-                <div className="grid grid-cols-2 bg-[#1c1b1b] p-1 rounded-xl border border-[#353534]/50">
+                <label className="text-xs text-[#6b617c] font-semibold uppercase tracking-wider">Frequência da Movimentação</label>
+                <div className="grid grid-cols-2 bg-[#f8f6fc] p-1 rounded-xl border border-[#c4b5d6]/50">
                   <button
                     type="button"
                     onClick={() => setFormIsRecurring(false)}
                     className={`py-2 text-xs font-bold rounded-lg transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
-                      !formIsRecurring ? "bg-[#adc6ff]/20 text-[#adc6ff] font-extrabold shadow-sm" : "text-[#8b90a0] hover:text-white"
+                      !formIsRecurring ? "bg-[#7c3aed]/20 text-[#7c3aed] font-extrabold shadow-sm" : "text-[#6b617c] hover:text-slate-900"
                     }`}
                   >
                     <span>📌 Único / Pontual</span>
@@ -1131,13 +1131,13 @@ export default function TransactionsView({
                     type="button"
                     onClick={() => setFormIsRecurring(true)}
                     className={`py-2 text-xs font-bold rounded-lg transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
-                      formIsRecurring ? "bg-[#4edea3]/20 text-[#4edea3] font-extrabold shadow-sm" : "text-[#8b90a0] hover:text-white"
+                      formIsRecurring ? "bg-[#15803d]/20 text-[#15803d] font-extrabold shadow-sm" : "text-[#6b617c] hover:text-slate-900"
                     }`}
                   >
                     <span>🔄 Fixo (Recorrente Mensal)</span>
                   </button>
                 </div>
-                <p className="text-[11px] text-[#8b90a0] pt-0.5">
+                <p className="text-[11px] text-[#6b617c] pt-0.5">
                   {formIsRecurring
                     ? "✨ Marque como Fixo para entradas/saídas que acontecem todos os meses (ex: Salário, Mentoria, Aluguel)."
                     : "📌 Marque como Pontual para compras ou recebimentos únicos referentes apenas a este mês."}
@@ -1145,11 +1145,11 @@ export default function TransactionsView({
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs text-[#8b90a0] font-semibold uppercase tracking-wider">Categoria</label>
+                <label className="text-xs text-[#6b617c] font-semibold uppercase tracking-wider">Categoria</label>
                 <select
                   value={formCategory}
                   onChange={(e) => setFormCategory(e.target.value)}
-                  className="w-full bg-[#1c1b1b] border border-[#353534]/50 rounded-xl px-4 py-3 text-sm text-white focus:border-[#adc6ff] outline-none cursor-pointer"
+                  className="w-full bg-[#f8f6fc] border border-[#c4b5d6]/50 rounded-xl px-4 py-3 text-sm text-slate-900 focus:border-[#7c3aed] outline-none cursor-pointer"
                 >
                   <option value="Receita / Salário">Receita / Salário / Ajuda de Custo</option>
                   <option value="Dízimo & Doações">Dízimo & Doações (10%)</option>
@@ -1165,23 +1165,23 @@ export default function TransactionsView({
                 </select>
               </div>
 
-              <div className="flex gap-6 py-2 border-y border-[#353534]/30">
-                <label className="flex items-center gap-2 cursor-pointer text-xs text-[#c1c6d7]">
+              <div className="flex gap-6 py-2 border-y border-[#c4b5d6]/30">
+                <label className="flex items-center gap-2 cursor-pointer text-xs text-[#51465f]">
                   <input
                     type="checkbox"
                     checked={formNote}
                     onChange={(e) => setFormNote(e.target.checked)}
-                    className="rounded border-[#353534] bg-[#1c1b1b] text-[#adc6ff] focus:ring-0 cursor-pointer"
+                    className="rounded border-[#c4b5d6] bg-[#f8f6fc] text-[#7c3aed] focus:ring-0 cursor-pointer"
                   />
                   <span>Adicionar Nota Fiscal</span>
                 </label>
                 
-                <label className="flex items-center gap-2 cursor-pointer text-xs text-[#c1c6d7]">
+                <label className="flex items-center gap-2 cursor-pointer text-xs text-[#51465f]">
                   <input
                     type="checkbox"
                     checked={formAttachment}
                     onChange={(e) => setFormAttachment(e.target.checked)}
-                    className="rounded border-[#353534] bg-[#1c1b1b] text-[#adc6ff] focus:ring-0 cursor-pointer"
+                    className="rounded border-[#c4b5d6] bg-[#f8f6fc] text-[#7c3aed] focus:ring-0 cursor-pointer"
                   />
                   <span>Anexar Comprovante</span>
                 </label>
@@ -1191,8 +1191,8 @@ export default function TransactionsView({
                 type="submit"
                 className={`w-full py-3.5 rounded-xl font-bold active:scale-[0.98] transition-all cursor-pointer text-sm shadow-lg ${
                   formType === "inflow"
-                    ? "bg-[#4edea3] text-[#003822] hover:bg-[#4edea3]/90 shadow-[#4edea3]/20"
-                    : "bg-rose-500 text-white hover:bg-rose-600 shadow-rose-500/20"
+                    ? "bg-[#15803d] text-white hover:bg-[#15803d]/90 shadow-[#15803d]/20"
+                    : "bg-rose-500 text-slate-900 hover:bg-rose-600 shadow-rose-500/20"
                 }`}
               >
                 Confirmar e Gravar {formType === "inflow" ? "Receita (+)" : "Despesa (-)"} {formIsRecurring ? "(Fixa Mensal)" : "(Pontual)"}
@@ -1205,16 +1205,16 @@ export default function TransactionsView({
       {/* MODAL 2: Add Recurring Expense (Fixed Mode) */}
       {isAddRecOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md overflow-y-auto">
-          <div className="w-full max-w-lg bg-[#131313] border border-[#353534]/70 rounded-3xl shadow-2xl p-6 space-y-6 max-h-[90vh] overflow-y-auto custom-scrollbar animate-slide-up my-auto">
+          <div className="w-full max-w-lg bg-[#ffffff] border border-[#c4b5d6]/70 rounded-3xl shadow-2xl p-6 space-y-6 max-h-[90vh] overflow-y-auto custom-scrollbar animate-slide-up my-auto">
             <div className="flex justify-between items-center pb-2">
-              <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                <Calendar size={20} className="text-[#adc6ff]" />
+              <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+                <Calendar size={20} className="text-[#7c3aed]" />
                 Nova Despesa Fixa Recorrente
               </h3>
               <button
                 type="button"
                 onClick={() => setIsAddRecOpen(false)}
-                className="text-[#8b90a0] hover:text-white p-1 rounded-full hover:bg-white/5 transition-all cursor-pointer"
+                className="text-[#6b617c] hover:text-slate-900 p-1 rounded-full hover:bg-violet-50 transition-all cursor-pointer"
               >
                 <X size={20} />
               </button>
@@ -1222,20 +1222,20 @@ export default function TransactionsView({
 
             <form onSubmit={handleRecSubmit} className="space-y-4 text-left">
               <div className="space-y-1">
-                <label className="text-xs text-[#8b90a0] font-semibold uppercase tracking-wider">Descrição / Nome do Compromisso</label>
+                <label className="text-xs text-[#6b617c] font-semibold uppercase tracking-wider">Descrição / Nome do Compromisso</label>
                 <input
                   type="text"
                   required
                   placeholder="Ex: Aluguel do Escritório, Seguro Saúde, Internet"
                   value={recTitle}
                   onChange={(e) => setRecTitle(e.target.value)}
-                  className="w-full bg-[#1c1b1b] border border-[#353534]/50 rounded-xl px-4 py-3 text-sm text-white focus:border-[#adc6ff] outline-none"
+                  className="w-full bg-[#f8f6fc] border border-[#c4b5d6]/50 rounded-xl px-4 py-3 text-sm text-slate-900 focus:border-[#7c3aed] outline-none"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="text-xs text-[#8b90a0] font-semibold uppercase tracking-wider">Valor Mensal (R$)</label>
+                  <label className="text-xs text-[#6b617c] font-semibold uppercase tracking-wider">Valor Mensal (R$)</label>
                   <input
                     type="number"
                     step="0.01"
@@ -1243,12 +1243,12 @@ export default function TransactionsView({
                     placeholder="1500.00"
                     value={recAmount}
                     onChange={(e) => setRecAmount(e.target.value)}
-                    className="w-full bg-[#1c1b1b] border border-[#353534]/50 rounded-xl px-4 py-3 text-sm text-white focus:border-[#adc6ff] outline-none font-mono"
+                    className="w-full bg-[#f8f6fc] border border-[#c4b5d6]/50 rounded-xl px-4 py-3 text-sm text-slate-900 focus:border-[#7c3aed] outline-none font-mono"
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-xs text-[#8b90a0] font-semibold uppercase tracking-wider">Dia de Vencimento</label>
+                  <label className="text-xs text-[#6b617c] font-semibold uppercase tracking-wider">Dia de Vencimento</label>
                   <input
                     type="number"
                     min="1"
@@ -1257,17 +1257,17 @@ export default function TransactionsView({
                     placeholder="10"
                     value={recDueDate}
                     onChange={(e) => setRecDueDate(e.target.value)}
-                    className="w-full bg-[#1c1b1b] border border-[#353534]/50 rounded-xl px-4 py-3 text-sm text-white focus:border-[#adc6ff] outline-none font-mono"
+                    className="w-full bg-[#f8f6fc] border border-[#c4b5d6]/50 rounded-xl px-4 py-3 text-sm text-slate-900 focus:border-[#7c3aed] outline-none font-mono"
                   />
                 </div>
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs text-[#8b90a0] font-semibold uppercase tracking-wider">Categoria da Despesa</label>
+                <label className="text-xs text-[#6b617c] font-semibold uppercase tracking-wider">Categoria da Despesa</label>
                 <select
                   value={recCategory}
                   onChange={(e) => setRecCategory(e.target.value)}
-                  className="w-full bg-[#1c1b1b] border border-[#353534]/50 rounded-xl px-4 py-3 text-sm text-white focus:border-[#adc6ff] outline-none cursor-pointer"
+                  className="w-full bg-[#f8f6fc] border border-[#c4b5d6]/50 rounded-xl px-4 py-3 text-sm text-slate-900 focus:border-[#7c3aed] outline-none cursor-pointer"
                 >
                   <option value="Cartão de Crédito">Cartão de Crédito / Fatura</option>
                   <option value="Beleza & Estética">Beleza & Estética (Salão, Unha, Barbearia)</option>
@@ -1280,15 +1280,15 @@ export default function TransactionsView({
                 </select>
               </div>
 
-              <div className="p-3 bg-[#adc6ff]/5 border border-[#adc6ff]/10 rounded-xl">
-                <p className="text-[11px] text-[#adc6ff]/80 leading-normal">
+              <div className="p-3 bg-[#7c3aed]/5 border border-[#7c3aed]/10 rounded-xl">
+                <p className="text-[11px] text-[#7c3aed]/80 leading-normal">
                   💡 <strong>Dica de Gestão:</strong> Ao final do ciclo mensal, despesas recorrentes ajudam o Wealth AI a estimar sua taxa de poupança (Saving Rate) e projetar seus objetivos financeiros futuros de forma automatizada.
                 </p>
               </div>
 
               <button
                 type="submit"
-                className="w-full bg-[#adc6ff] text-[#002e69] py-3.5 rounded-xl font-bold hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer text-sm shadow-lg shadow-[#adc6ff]/10"
+                className="w-full bg-[#7c3aed] text-white py-3.5 rounded-xl font-bold hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer text-sm shadow-lg shadow-[#7c3aed]/10"
               >
                 Cadastrar Despesa Fixa
               </button>

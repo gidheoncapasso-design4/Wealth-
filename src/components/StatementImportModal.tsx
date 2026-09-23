@@ -421,21 +421,21 @@ export default function StatementImportModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-md p-3 sm:p-4 animate-fade-in">
-      <div className="w-full max-w-3xl bg-[#131313] border border-[#353534]/60 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
+      <div className="w-full max-w-3xl bg-[#ffffff] border border-[#c4b5d6]/60 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
         {/* Modal Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#353534]/40 bg-[#191818]/80">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#c4b5d6]/40 bg-[#f8f6fc]/80">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#adc6ff]/10 border border-[#adc6ff]/20 flex items-center justify-center text-[#adc6ff]">
+            <div className="w-10 h-10 rounded-xl bg-[#7c3aed]/10 border border-[#7c3aed]/20 flex items-center justify-center text-[#7c3aed]">
               <Sparkles size={20} />
             </div>
             <div>
-              <h3 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+              <h3 className="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
                 Leitor & Categorizador de Extrato com IA
-                <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded-full bg-[#4edea3]/10 border border-[#4edea3]/20 text-[#4edea3]">
+                <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded-full bg-[#15803d]/10 border border-[#15803d]/20 text-[#15803d]">
                   Gemini 3.6
                 </span>
               </h3>
-              <p className="text-xs text-[#8b90a0]">
+              <p className="text-xs text-[#6b617c]">
                 A IA lê, categoriza e envia os lançamentos para o seu Campo de Aprovação
               </p>
             </div>
@@ -443,7 +443,7 @@ export default function StatementImportModal({
           <button
             type="button"
             onClick={onClose}
-            className="text-[#8b90a0] hover:text-white p-2 rounded-full hover:bg-white/5 transition-all cursor-pointer"
+            className="text-[#6b617c] hover:text-slate-900 p-2 rounded-full hover:bg-violet-50 transition-all cursor-pointer"
           >
             <X size={20} />
           </button>
@@ -454,14 +454,14 @@ export default function StatementImportModal({
           {step === "upload" && !isProcessing && (
             <div className="space-y-6">
               {/* Input Method Tabs */}
-              <div className="grid grid-cols-2 bg-[#1c1b1b] p-1 rounded-2xl border border-[#353534]/50">
+              <div className="grid grid-cols-2 bg-[#f8f6fc] p-1 rounded-2xl border border-[#c4b5d6]/50">
                 <button
                   type="button"
                   onClick={() => setInputTab("file")}
                   className={`py-2.5 text-xs font-bold rounded-xl transition-all cursor-pointer flex items-center justify-center gap-2 ${
                     inputTab === "file"
-                      ? "bg-[#adc6ff] text-[#002e69] shadow-md"
-                      : "text-[#8b90a0] hover:text-white"
+                      ? "bg-[#7c3aed] text-white shadow-md"
+                      : "text-[#6b617c] hover:text-slate-900"
                   }`}
                 >
                   <UploadCloud size={16} />
@@ -472,8 +472,8 @@ export default function StatementImportModal({
                   onClick={() => setInputTab("paste")}
                   className={`py-2.5 text-xs font-bold rounded-xl transition-all cursor-pointer flex items-center justify-center gap-2 ${
                     inputTab === "paste"
-                      ? "bg-[#adc6ff] text-[#002e69] shadow-md"
-                      : "text-[#8b90a0] hover:text-white"
+                      ? "bg-[#7c3aed] text-white shadow-md"
+                      : "text-[#6b617c] hover:text-slate-900"
                   }`}
                 >
                   <AlignLeft size={16} />
@@ -483,7 +483,7 @@ export default function StatementImportModal({
 
               {inputTab === "file" ? (
                 /* File Upload Drop Zone */
-                <div className="relative border-2 border-dashed border-[#353534] hover:border-[#adc6ff]/50 rounded-2xl p-8 text-center bg-[#181717]/40 hover:bg-[#181717]/80 transition-all group cursor-pointer">
+                <div className="relative border-2 border-dashed border-[#c4b5d6] hover:border-[#7c3aed]/50 rounded-2xl p-8 text-center bg-[#ffffff]/40 hover:bg-[#ffffff]/80 transition-all group cursor-pointer">
                   <input
                     type="file"
                     multiple
@@ -492,15 +492,15 @@ export default function StatementImportModal({
                     className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
                   />
                   <div className="flex flex-col items-center space-y-3">
-                    <div className="w-14 h-14 rounded-2xl bg-[#adc6ff]/10 border border-[#adc6ff]/20 flex items-center justify-center text-[#adc6ff] group-hover:scale-110 transition-all">
+                    <div className="w-14 h-14 rounded-2xl bg-[#7c3aed]/10 border border-[#7c3aed]/20 flex items-center justify-center text-[#7c3aed] group-hover:scale-110 transition-all">
                       <UploadCloud size={28} />
                     </div>
                     <div>
-                      <p className="text-sm font-bold text-white">
-                        Arraste 1 ou múltiplos extratos aqui ou <span className="text-[#adc6ff]">clique para escolher arquivos</span>
+                      <p className="text-sm font-bold text-slate-900">
+                        Arraste 1 ou múltiplos extratos aqui ou <span className="text-[#7c3aed]">clique para escolher arquivos</span>
                       </p>
-                      <p className="text-xs text-[#8b90a0] mt-1">
-                        Selecione vários arquivos de uma vez (Ex: <span className="font-mono text-white">3 extratos em .PDF/.OFX/.CSV</span>). A IA lerá todos em lote!
+                      <p className="text-xs text-[#6b617c] mt-1">
+                        Selecione vários arquivos de uma vez (Ex: <span className="font-mono text-slate-900">3 extratos em .PDF/.OFX/.CSV</span>). A IA lerá todos em lote!
                       </p>
                     </div>
                   </div>
@@ -509,7 +509,7 @@ export default function StatementImportModal({
                 /* Text Area Paste Zone */
                 <form onSubmit={handlePastedSubmit} className="space-y-3">
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-[#8b90a0] uppercase tracking-wider">
+                    <label className="text-xs font-bold text-[#6b617c] uppercase tracking-wider">
                       Cole o texto das notificações ou extrato do app bancário:
                     </label>
                     <textarea
@@ -517,13 +517,13 @@ export default function StatementImportModal({
                       value={pastedText}
                       onChange={(e) => setPastedText(e.target.value)}
                       placeholder="Exemplo:&#10;02/08 Compra no Supermercado Mami R$ 342,80&#10;03/08 Pix Recebido de Consultoria Tech R$ 4.500,00&#10;05/08 Uber Viagem R$ 42,50&#10;08/08 Netflix R$ 55,90"
-                      className="w-full bg-[#181717] border border-[#353534] rounded-2xl p-4 text-xs font-mono text-white focus:border-[#adc6ff] outline-none leading-relaxed placeholder:text-[#8b90a0]/50"
+                      className="w-full bg-[#ffffff] border border-[#c4b5d6] rounded-2xl p-4 text-xs font-mono text-slate-900 focus:border-[#7c3aed] outline-none leading-relaxed placeholder:text-[#6b617c]/50"
                     ></textarea>
                   </div>
                   <button
                     type="submit"
                     disabled={!pastedText.trim()}
-                    className="w-full bg-[#adc6ff] text-[#002e69] py-3.5 rounded-xl font-bold text-xs hover:opacity-90 active:scale-95 transition-all cursor-pointer shadow-lg shadow-[#adc6ff]/10 disabled:opacity-50 flex items-center justify-center gap-2"
+                    className="w-full bg-[#7c3aed] text-white py-3.5 rounded-xl font-bold text-xs hover:opacity-90 active:scale-95 transition-all cursor-pointer shadow-lg shadow-[#7c3aed]/10 disabled:opacity-50 flex items-center justify-center gap-2"
                   >
                     <Sparkles size={16} />
                     Analisar & Categorizar com IA
@@ -534,10 +534,10 @@ export default function StatementImportModal({
               {/* Sample files 1-click test */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <p className="text-xs font-bold text-[#8b90a0] uppercase tracking-wider">
+                  <p className="text-xs font-bold text-[#6b617c] uppercase tracking-wider">
                     Ou teste agora com um extrato real de amostra
                   </p>
-                  <span className="text-[10px] text-[#adc6ff] font-medium flex items-center gap-1">
+                  <span className="text-[10px] text-[#7c3aed] font-medium flex items-center gap-1">
                     <Zap size={12} /> Auto-Leitura
                   </span>
                 </div>
@@ -546,45 +546,45 @@ export default function StatementImportModal({
                   <button
                     type="button"
                     onClick={() => handleSampleClick("itau_pdf", "Extrato_Itau_Agosto.pdf")}
-                    className="p-3 bg-[#1c1b1b] border border-[#353534]/50 rounded-xl text-left hover:border-[#adc6ff]/40 hover:bg-[#252424] transition-all cursor-pointer group"
+                    className="p-3 bg-[#f8f6fc] border border-[#c4b5d6]/50 rounded-xl text-left hover:border-[#7c3aed]/40 hover:bg-[#f1edf8] transition-all cursor-pointer group"
                   >
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-white group-hover:text-[#adc6ff]">Extrato Itaú</span>
-                      <FileText size={14} className="text-[#8b90a0]" />
+                      <span className="text-xs font-bold text-slate-900 group-hover:text-[#7c3aed]">Extrato Itaú</span>
+                      <FileText size={14} className="text-[#6b617c]" />
                     </div>
-                    <p className="text-[10px] text-[#8b90a0] mt-1">Simulação de Extrato Itaú</p>
+                    <p className="text-[10px] text-[#6b617c] mt-1">Simulação de Extrato Itaú</p>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => handleSampleClick("nubank_csv", "Nubank_Agosto.csv")}
-                    className="p-3 bg-[#1c1b1b] border border-[#353534]/50 rounded-xl text-left hover:border-[#adc6ff]/40 hover:bg-[#252424] transition-all cursor-pointer group"
+                    className="p-3 bg-[#f8f6fc] border border-[#c4b5d6]/50 rounded-xl text-left hover:border-[#7c3aed]/40 hover:bg-[#f1edf8] transition-all cursor-pointer group"
                   >
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-white group-hover:text-[#adc6ff]">Extrato Nubank</span>
-                      <FileSpreadsheet size={14} className="text-[#8b90a0]" />
+                      <span className="text-xs font-bold text-slate-900 group-hover:text-[#7c3aed]">Extrato Nubank</span>
+                      <FileSpreadsheet size={14} className="text-[#6b617c]" />
                     </div>
-                    <p className="text-[10px] text-[#8b90a0] mt-1">Exportação CSV NuBank</p>
+                    <p className="text-[10px] text-[#6b617c] mt-1">Exportação CSV NuBank</p>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => handleSampleClick("xp_ofx", "XP_Investimentos.ofx")}
-                    className="p-3 bg-[#1c1b1b] border border-[#353534]/50 rounded-xl text-left hover:border-[#adc6ff]/40 hover:bg-[#252424] transition-all cursor-pointer group"
+                    className="p-3 bg-[#f8f6fc] border border-[#c4b5d6]/50 rounded-xl text-left hover:border-[#7c3aed]/40 hover:bg-[#f1edf8] transition-all cursor-pointer group"
                   >
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-white group-hover:text-[#adc6ff]">Extrato XP / OFX</span>
-                      <Zap size={14} className="text-[#8b90a0]" />
+                      <span className="text-xs font-bold text-slate-900 group-hover:text-[#7c3aed]">Extrato XP / OFX</span>
+                      <Zap size={14} className="text-[#6b617c]" />
                     </div>
-                    <p className="text-[10px] text-[#8b90a0] mt-1">Padrão OFX Unificado</p>
+                    <p className="text-[10px] text-[#6b617c] mt-1">Padrão OFX Unificado</p>
                   </button>
                 </div>
               </div>
 
               {/* Security Banner */}
-              <div className="p-4 bg-[#1c1b1b]/80 border border-[#353534]/40 rounded-2xl flex items-center gap-3">
-                <ShieldCheck size={20} className="text-[#4edea3] shrink-0" />
-                <p className="text-[11px] text-[#8b90a0] leading-snug">
+              <div className="p-4 bg-[#f8f6fc]/80 border border-[#c4b5d6]/40 rounded-2xl flex items-center gap-3">
+                <ShieldCheck size={20} className="text-[#15803d] shrink-0" />
+                <p className="text-[11px] text-[#6b617c] leading-snug">
                   Seus dados bancários são lidos com segurança no servidor via Gemini AI. O sistema só registra as transações que você aprovar explicitamente.
                 </p>
               </div>
@@ -593,10 +593,10 @@ export default function StatementImportModal({
 
           {isProcessing && (
             <div className="py-16 text-center space-y-4">
-              <RefreshCw size={40} className="mx-auto text-[#adc6ff] animate-spin" />
+              <RefreshCw size={40} className="mx-auto text-[#7c3aed] animate-spin" />
               <div>
-                <h4 className="text-base font-bold text-white">Gemini IA Analisando Extrato...</h4>
-                <p className="text-xs text-[#8b90a0] mt-1">Extraindo datas, valores e gerando sugestões de categorização inteligente.</p>
+                <h4 className="text-base font-bold text-slate-900">Gemini IA Analisando Extrato...</h4>
+                <p className="text-xs text-[#6b617c] mt-1">Extraindo datas, valores e gerando sugestões de categorização inteligente.</p>
               </div>
             </div>
           )}
@@ -605,23 +605,23 @@ export default function StatementImportModal({
           {step === "review" && !isProcessing && (
             <div className="space-y-4">
               {processingWarning && (
-                <div className="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl flex items-center gap-2 text-xs text-amber-400">
+                <div className="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl flex items-center gap-2 text-xs text-amber-700">
                   <AlertCircle size={16} className="shrink-0" />
                   <span>{processingWarning}</span>
                 </div>
               )}
 
               {/* Approval Header Controls */}
-              <div className="p-4 bg-[#1c1b1b] rounded-2xl border border-[#353534]/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="p-4 bg-[#f8f6fc] rounded-2xl border border-[#c4b5d6]/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
                   <div className="flex items-center gap-2">
-                    <Sparkles size={16} className="text-[#adc6ff]" />
-                    <h4 className="text-sm font-bold text-white">Campo de Aprovação da IA</h4>
-                    <span className="text-[10px] bg-[#adc6ff]/10 text-[#adc6ff] font-mono px-2 py-0.5 rounded-md border border-[#adc6ff]/20">
+                    <Sparkles size={16} className="text-[#7c3aed]" />
+                    <h4 className="text-sm font-bold text-slate-900">Campo de Aprovação da IA</h4>
+                    <span className="text-[10px] bg-[#7c3aed]/10 text-[#7c3aed] font-mono px-2 py-0.5 rounded-md border border-[#7c3aed]/20">
                       {parsedItems.length} identificados
                     </span>
                   </div>
-                  <p className="text-[11px] text-[#8b90a0] mt-0.5">
+                  <p className="text-[11px] text-[#6b617c] mt-0.5">
                     Confira a categoria sugerida pela IA. Clique para alterar qualquer campo antes de aprovar.
                   </p>
                 </div>
@@ -630,14 +630,14 @@ export default function StatementImportModal({
                   <button
                     type="button"
                     onClick={handleApproveSelected}
-                    className="px-3 py-1.5 rounded-lg bg-[#4edea3]/15 border border-[#4edea3]/30 text-[#4edea3] text-xs font-bold hover:bg-[#4edea3]/25 transition-all cursor-pointer flex items-center gap-1"
+                    className="px-3 py-1.5 rounded-lg bg-[#15803d]/15 border border-[#15803d]/30 text-[#15803d] text-xs font-bold hover:bg-[#15803d]/25 transition-all cursor-pointer flex items-center gap-1"
                   >
                     <CheckCheck size={14} /> Aprovar Selecionados
                   </button>
                   <button
                     type="button"
                     onClick={handleRejectSelected}
-                    className="px-3 py-1.5 rounded-lg bg-rose-500/15 border border-rose-500/30 text-rose-400 text-xs font-bold hover:bg-rose-500/25 transition-all cursor-pointer flex items-center gap-1"
+                    className="px-3 py-1.5 rounded-lg bg-rose-500/15 border border-rose-500/30 text-rose-700 text-xs font-bold hover:bg-rose-500/25 transition-all cursor-pointer flex items-center gap-1"
                   >
                     <Trash2 size={14} /> Rejeitar
                   </button>
@@ -645,17 +645,17 @@ export default function StatementImportModal({
               </div>
 
               {/* Select All Toggle */}
-              <div className="flex items-center justify-between px-2 text-xs text-[#8b90a0]">
+              <div className="flex items-center justify-between px-2 text-xs text-[#6b617c]">
                 <button
                   type="button"
                   onClick={toggleSelectAll}
-                  className="hover:text-white font-medium cursor-pointer flex items-center gap-1.5"
+                  className="hover:text-slate-900 font-medium cursor-pointer flex items-center gap-1.5"
                 >
                   <div
                     className={`w-4 h-4 rounded border flex items-center justify-center ${
                       parsedItems.every((i) => i.selected)
-                        ? "bg-[#adc6ff] border-[#adc6ff] text-[#002e69]"
-                        : "border-[#353534]"
+                        ? "bg-[#7c3aed] border-[#7c3aed] text-white"
+                        : "border-[#c4b5d6]"
                     }`}
                   >
                     {parsedItems.every((i) => i.selected) && <Check size={10} strokeWidth={3} />}
@@ -664,8 +664,8 @@ export default function StatementImportModal({
                 </button>
 
                 <div className="flex gap-3 text-[11px] font-mono">
-                  <span className="text-[#4edea3]">Aprovados: {approvedCount}</span>
-                  <span className="text-rose-400">Rejeitados: {rejectedCount}</span>
+                  <span className="text-[#15803d]">Aprovados: {approvedCount}</span>
+                  <span className="text-rose-700">Rejeitados: {rejectedCount}</span>
                 </div>
               </div>
 
@@ -681,12 +681,12 @@ export default function StatementImportModal({
                       key={item.id}
                       className={`p-4 rounded-2xl border transition-all space-y-3 ${
                         isApproved
-                          ? "bg-[#14221b] border-[#4edea3]/40 shadow-sm"
+                          ? "bg-[#ecfdf5] border-[#15803d]/40 shadow-sm"
                           : isRejected
-                          ? "bg-[#221415]/60 border-rose-500/30 opacity-60"
+                          ? "bg-[#fff1f2]/60 border-rose-500/30 opacity-60"
                           : item.selected
-                          ? "bg-[#1c1b1b] border-[#adc6ff]/40 shadow-sm"
-                          : "bg-[#141414] border-[#353534]/30"
+                          ? "bg-[#f8f6fc] border-[#7c3aed]/40 shadow-sm"
+                          : "bg-[#ffffff] border-[#c4b5d6]/30"
                       }`}
                     >
                       <div className="flex items-start justify-between gap-3">
@@ -697,8 +697,8 @@ export default function StatementImportModal({
                             onClick={() => toggleItemSelect(item.id)}
                             className={`w-5 h-5 mt-0.5 rounded-md border flex items-center justify-center shrink-0 transition-colors cursor-pointer ${
                               item.selected
-                                ? "bg-[#adc6ff] border-[#adc6ff] text-[#002e69]"
-                                : "border-[#353534]"
+                                ? "bg-[#7c3aed] border-[#7c3aed] text-white"
+                                : "border-[#c4b5d6]"
                             }`}
                           >
                             {item.selected && <Check size={12} strokeWidth={3} />}
@@ -711,15 +711,15 @@ export default function StatementImportModal({
                                 type="text"
                                 value={item.title}
                                 onChange={(e) => handleUpdateItemField(item.id, "title", e.target.value)}
-                                className="w-full bg-[#131313] border border-[#adc6ff]/50 rounded-lg px-2 py-1 text-xs text-white outline-none"
+                                className="w-full bg-[#ffffff] border border-[#7c3aed]/50 rounded-lg px-2 py-1 text-xs text-slate-900 outline-none"
                               />
                             ) : (
                               <div className="flex items-center gap-2">
-                                <p className="text-xs font-bold text-white tracking-tight">{item.title}</p>
+                                <p className="text-xs font-bold text-slate-900 tracking-tight">{item.title}</p>
                                 <button
                                   type="button"
                                   onClick={() => toggleItemEdit(item.id)}
-                                  className="text-[#8b90a0] hover:text-[#adc6ff] cursor-pointer"
+                                  className="text-[#6b617c] hover:text-[#7c3aed] cursor-pointer"
                                   title="Editar título e valor"
                                 >
                                   <Edit3 size={12} />
@@ -728,11 +728,11 @@ export default function StatementImportModal({
                             )}
 
                             <div className="flex items-center gap-2 flex-wrap">
-                              <p className="text-[10px] text-[#8b90a0] font-mono truncate" title={item.originalDescription}>
+                              <p className="text-[10px] text-[#6b617c] font-mono truncate" title={item.originalDescription}>
                                 Extrato: {item.originalDescription}
                               </p>
                               {item.sourceFile && (
-                                <span className="text-[9px] px-2 py-0.5 rounded bg-[#353534]/60 text-[#adc6ff] border border-[#353534] font-mono shrink-0">
+                                <span className="text-[9px] px-2 py-0.5 rounded bg-[#c4b5d6]/60 text-[#7c3aed] border border-[#c4b5d6] font-mono shrink-0">
                                   📄 {item.sourceFile}
                                 </span>
                               )}
@@ -748,7 +748,7 @@ export default function StatementImportModal({
                               step="0.01"
                               value={item.amount}
                               onChange={(e) => handleUpdateItemField(item.id, "amount", parseFloat(e.target.value) || 0)}
-                              className="w-24 bg-[#131313] border border-[#adc6ff]/50 rounded-lg px-2 py-1 text-xs font-mono text-white text-right outline-none"
+                              className="w-24 bg-[#ffffff] border border-[#7c3aed]/50 rounded-lg px-2 py-1 text-xs font-mono text-slate-900 text-right outline-none"
                             />
                           ) : (
                             <div className="flex items-center gap-1.5">
@@ -757,8 +757,8 @@ export default function StatementImportModal({
                                 onClick={() => handleToggleItemSign(item.id)}
                                 className={`text-[10px] font-bold px-1.5 py-0.5 rounded border transition-colors cursor-pointer ${
                                   isExpense
-                                    ? "bg-rose-500/10 text-rose-400 border-rose-500/30 hover:bg-rose-500/20"
-                                    : "bg-[#4edea3]/10 text-[#4edea3] border-[#4edea3]/30 hover:bg-[#4edea3]/20"
+                                    ? "bg-rose-500/10 text-rose-700 border-rose-500/30 hover:bg-rose-500/20"
+                                    : "bg-[#15803d]/10 text-[#15803d] border-[#15803d]/30 hover:bg-[#15803d]/20"
                                 }`}
                                 title="Clique para alternar entre Entrada (+) e Saída (-)"
                               >
@@ -766,7 +766,7 @@ export default function StatementImportModal({
                               </button>
                               <p
                                 className={`font-mono text-xs font-bold ${
-                                  isExpense ? "text-rose-400" : "text-[#4edea3]"
+                                  isExpense ? "text-rose-700" : "text-[#15803d]"
                                 }`}
                               >
                                 {isExpense ? "- " : "+ "}
@@ -777,14 +777,14 @@ export default function StatementImportModal({
                               </p>
                             </div>
                           )}
-                          <span className="text-[10px] text-[#8b90a0] font-mono block">{item.date}</span>
+                          <span className="text-[10px] text-[#6b617c] font-mono block">{item.date}</span>
                         </div>
                       </div>
 
                       {/* AI Classification Row & User Category Dropdown */}
-                      <div className="pt-2 border-t border-[#353534]/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div className="pt-2 border-t border-[#c4b5d6]/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className="text-[10px] font-bold text-[#8b90a0] uppercase tracking-wider">
+                          <span className="text-[10px] font-bold text-[#6b617c] uppercase tracking-wider">
                             Categoria IA:
                           </span>
                           
@@ -792,7 +792,7 @@ export default function StatementImportModal({
                           <select
                             value={item.category}
                             onChange={(e) => handleCategoryChange(item.id, e.target.value)}
-                            className="bg-[#242323] text-white border border-[#353534] rounded-lg px-2.5 py-1 text-xs font-medium focus:border-[#adc6ff] outline-none cursor-pointer"
+                            className="bg-[#f1edf8] text-slate-900 border border-[#c4b5d6] rounded-lg px-2.5 py-1 text-xs font-medium focus:border-[#7c3aed] outline-none cursor-pointer"
                           >
                             {CATEGORY_OPTIONS.map((cat) => (
                               <option key={cat} value={cat}>
@@ -801,7 +801,7 @@ export default function StatementImportModal({
                             ))}
                           </select>
 
-                          <span className="text-[10px] px-2 py-0.5 rounded bg-[#adc6ff]/10 text-[#adc6ff] border border-[#adc6ff]/20 font-mono">
+                          <span className="text-[10px] px-2 py-0.5 rounded bg-[#7c3aed]/10 text-[#7c3aed] border border-[#7c3aed]/20 font-mono">
                             Confiança: {item.confidence}
                           </span>
                         </div>
@@ -809,11 +809,11 @@ export default function StatementImportModal({
                         {/* Status Buttons for Individual Item */}
                         <div className="flex items-center gap-2 self-end sm:self-center">
                           {isApproved ? (
-                            <span className="text-[11px] font-bold text-[#4edea3] bg-[#4edea3]/10 border border-[#4edea3]/30 px-3 py-1 rounded-lg flex items-center gap-1">
+                            <span className="text-[11px] font-bold text-[#15803d] bg-[#15803d]/10 border border-[#15803d]/30 px-3 py-1 rounded-lg flex items-center gap-1">
                               <Check size={12} /> Aprovado
                             </span>
                           ) : isRejected ? (
-                            <span className="text-[11px] font-bold text-rose-400 bg-rose-500/10 border border-rose-500/30 px-3 py-1 rounded-lg flex items-center gap-1">
+                            <span className="text-[11px] font-bold text-rose-700 bg-rose-500/10 border border-rose-500/30 px-3 py-1 rounded-lg flex items-center gap-1">
                               <X size={12} /> Rejeitado
                             </span>
                           ) : (
@@ -821,14 +821,14 @@ export default function StatementImportModal({
                               <button
                                 type="button"
                                 onClick={() => handleItemStatusChange(item.id, "approved")}
-                                className="px-3 py-1 rounded-lg bg-[#4edea3]/15 border border-[#4edea3]/30 text-[#4edea3] text-xs font-bold hover:bg-[#4edea3]/30 transition-all cursor-pointer flex items-center gap-1"
+                                className="px-3 py-1 rounded-lg bg-[#15803d]/15 border border-[#15803d]/30 text-[#15803d] text-xs font-bold hover:bg-[#15803d]/30 transition-all cursor-pointer flex items-center gap-1"
                               >
                                 <ThumbsUp size={12} /> Aprovar
                               </button>
                               <button
                                 type="button"
                                 onClick={() => handleItemStatusChange(item.id, "rejected")}
-                                className="px-3 py-1 rounded-lg bg-rose-500/15 border border-rose-500/30 text-rose-400 text-xs font-bold hover:bg-rose-500/30 transition-all cursor-pointer flex items-center gap-1"
+                                className="px-3 py-1 rounded-lg bg-rose-500/15 border border-rose-500/30 text-rose-700 text-xs font-bold hover:bg-rose-500/30 transition-all cursor-pointer flex items-center gap-1"
                               >
                                 <X size={12} /> Rejeitar
                               </button>
@@ -839,8 +839,8 @@ export default function StatementImportModal({
 
                       {/* AI Reasoning Box */}
                       {item.reasoning && (
-                        <div className="p-2 bg-[#181717] rounded-xl border border-[#353534]/40 text-[10px] text-[#adc6ff]/90 flex items-start gap-1.5 leading-snug">
-                          <HelpCircle size={12} className="shrink-0 mt-0.5 text-[#adc6ff]" />
+                        <div className="p-2 bg-[#ffffff] rounded-xl border border-[#c4b5d6]/40 text-[10px] text-[#7c3aed]/90 flex items-start gap-1.5 leading-snug">
+                          <HelpCircle size={12} className="shrink-0 mt-0.5 text-[#7c3aed]" />
                           <span>
                             <strong>Motivo da IA:</strong> {item.reasoning}
                           </span>
@@ -852,11 +852,11 @@ export default function StatementImportModal({
               </div>
 
               {/* Confirm & Import Bar */}
-              <div className="pt-3 border-t border-[#353534]/40 flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div className="pt-3 border-t border-[#c4b5d6]/40 flex flex-col sm:flex-row items-center justify-between gap-3">
                 <button
                   type="button"
                   onClick={() => setStep("upload")}
-                  className="text-xs text-[#8b90a0] hover:text-white cursor-pointer"
+                  className="text-xs text-[#6b617c] hover:text-slate-900 cursor-pointer"
                 >
                   ← Ler outro extrato
                 </button>
@@ -864,7 +864,7 @@ export default function StatementImportModal({
                 <button
                   type="button"
                   onClick={handleConfirmImport}
-                  className="w-full sm:w-auto bg-[#adc6ff] text-[#002e69] px-6 py-3.5 rounded-xl font-bold text-xs hover:opacity-90 active:scale-95 transition-all cursor-pointer shadow-lg shadow-[#adc6ff]/10 flex items-center justify-center gap-2"
+                  className="w-full sm:w-auto bg-[#7c3aed] text-white px-6 py-3.5 rounded-xl font-bold text-xs hover:opacity-90 active:scale-95 transition-all cursor-pointer shadow-lg shadow-[#7c3aed]/10 flex items-center justify-center gap-2"
                 >
                   <CheckCircle2 size={16} />
                   Confirmar & Gravar {approvedCount} Transações no Extrato
@@ -875,12 +875,12 @@ export default function StatementImportModal({
 
           {step === "success" && (
             <div className="py-12 text-center space-y-4 animate-fade-in">
-              <div className="w-16 h-16 rounded-full bg-[#4edea3]/10 border border-[#4edea3]/30 flex items-center justify-center text-[#4edea3] mx-auto">
+              <div className="w-16 h-16 rounded-full bg-[#15803d]/10 border border-[#15803d]/30 flex items-center justify-center text-[#15803d] mx-auto">
                 <CheckCircle2 size={32} />
               </div>
               <div>
-                <h4 className="text-lg font-bold text-white">Extrato Aprovado e Salvo com Sucesso!</h4>
-                <p className="text-xs text-[#8b90a0] mt-1">
+                <h4 className="text-lg font-bold text-slate-900">Extrato Aprovado e Salvo com Sucesso!</h4>
+                <p className="text-xs text-[#6b617c] mt-1">
                   Os lançamentos categorizados e aprovados foram integrados ao seu fluxo de caixa e extrato oficial.
                 </p>
               </div>

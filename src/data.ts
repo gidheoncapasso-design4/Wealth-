@@ -19,7 +19,7 @@ export const USER_PROFILE = {
 
 export const INITIAL_TRANSACTIONS: Transaction[] = [
   {
-    "colorClass": "text-[#4edea3] bg-[#4edea3]/10 border-[#4edea3]/20",
+    "colorClass": "text-[#15803d] bg-[#15803d]/10 border-[#15803d]/20",
     "title": "Mentoria - Gidheon",
     "date": "Recorrente Mensal",
     "amount": 700,
@@ -33,7 +33,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "time": "08:00",
     "isRecurring": true,
     "icon": "landmark",
-    "colorClass": "text-[#4edea3] bg-[#4edea3]/10 border-[#4edea3]/20",
+    "colorClass": "text-[#15803d] bg-[#15803d]/10 border-[#15803d]/20",
     "id": "tx-igreja-gidheon",
     "amount": 3150,
     "date": "Recorrente Mensal",
@@ -41,7 +41,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "title": "Ajuda de custo igreja - Gidheon"
   },
   {
-    "colorClass": "text-[#4edea3] bg-[#4edea3]/10 border-[#4edea3]/20",
+    "colorClass": "text-[#15803d] bg-[#15803d]/10 border-[#15803d]/20",
     "icon": "briefcase",
     "isRecurring": true,
     "title": "Salário - Elo",
@@ -52,7 +52,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "date": "Recorrente Mensal"
   },
   {
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "time": "10:45",
     "id": "imp-1786628745327-0",
     "isRejected": false,
@@ -70,13 +70,13 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "category": "Alimentação",
     "date": "Hoje, 13 de ago.",
     "isRejected": false,
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "title": "Sonda Supermercado"
   },
   {
     "date": "Hoje, 13 de ago.",
     "id": "imp-1786628745327-2",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "isRejected": false,
     "time": "10:45",
     "title": "Mundo dos Heróis Pizza",
@@ -85,7 +85,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "icon": "shopping_bag"
   },
   {
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "date": "Hoje, 13 de ago.",
     "isRejected": false,
     "title": "Drogaria São Paulo",
@@ -98,7 +98,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
   {
     "amount": -16,
     "isRejected": false,
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "date": "Hoje, 13 de ago.",
     "category": "Transporte",
     "title": "Valet Service",
@@ -112,7 +112,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "category": "Serviços",
     "id": "imp-1786628745327-5",
     "icon": "shopping_bag",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "isRejected": false,
     "amount": -7.99,
     "time": "10:45"
@@ -120,7 +120,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
   {
     "isRejected": false,
     "amount": -337.5,
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "time": "10:45",
     "icon": "shopping_bag",
     "category": "Entretenimento",
@@ -132,7 +132,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "time": "10:45",
     "category": "Shopping",
     "icon": "shopping_bag",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "title": "Shopee",
     "id": "imp-1786628745327-7",
     "isRejected": false,
@@ -143,7 +143,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "icon": "shopping_bag",
     "amount": -449.79,
     "category": "Alimentação",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "time": "10:45",
     "id": "imp-1786628745327-8",
     "isRejected": false,
@@ -155,7 +155,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "icon": "shopping_bag",
     "time": "10:45",
     "title": "Supermercado Pague Menos",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "isRejected": false,
     "category": "Alimentação",
     "id": "imp-1786628745327-9",
@@ -166,7 +166,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "date": "Hoje, 13 de ago.",
     "isRejected": false,
     "amount": -34.89,
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "time": "10:45",
     "id": "imp-1786628745327-10",
     "icon": "shopping_bag",
@@ -178,13 +178,13 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "time": "10:45",
     "id": "imp-1786628745327-11",
     "isRejected": false,
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "category": "Beleza",
     "amount": -60,
     "date": "Hoje, 13 de ago."
   },
   {
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "time": "10:45",
     "id": "imp-1786628745327-12",
     "isRejected": false,
@@ -197,7 +197,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
   {
     "isRejected": false,
     "time": "10:45",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "id": "imp-1786628745327-13",
     "icon": "shopping_bag",
     "title": "Amazon Marketplace",
@@ -212,13 +212,13 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "isRejected": false,
     "icon": "shopping_bag",
     "amount": -54.6,
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "title": "Frango Assado",
     "date": "Hoje, 13 de ago."
   },
   {
     "date": "Hoje, 13 de ago.",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "title": "BMB Esc NavAp",
     "isRejected": false,
     "category": "Filhos & Cuidados",
@@ -236,11 +236,11 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "icon": "shopping_bag",
     "isRejected": false,
     "time": "10:45",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20"
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20"
   },
   {
     "category": "Transporte",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "isRejected": false,
     "date": "Hoje, 13 de ago.",
     "title": "São Tomaz",
@@ -251,7 +251,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
   },
   {
     "isRejected": false,
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "date": "Hoje, 13 de ago.",
     "title": "Shopee",
     "category": "Shopping",
@@ -269,14 +269,14 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "date": "Hoje, 13 de ago.",
     "title": "BuyBye",
     "isRejected": false,
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20"
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20"
   },
   {
     "time": "10:45",
     "icon": "shopping_bag",
     "amount": -159.17,
     "isRejected": false,
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "date": "Hoje, 13 de ago.",
     "category": "Entretenimento",
     "id": "imp-1786628745327-20",
@@ -289,7 +289,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "category": "Entretenimento",
     "title": "Cinemark",
     "time": "10:45",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "isRejected": false,
     "date": "Hoje, 13 de ago."
   },
@@ -298,7 +298,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "category": "Entretenimento",
     "isRejected": false,
     "date": "Hoje, 13 de ago.",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "icon": "shopping_bag",
     "amount": -59.85,
     "time": "10:45",
@@ -309,7 +309,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "amount": -6.9,
     "date": "Hoje, 13 de ago.",
     "id": "imp-1786628745327-23",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "icon": "shopping_bag",
     "isRejected": false,
     "category": "Alimentação",
@@ -320,7 +320,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "title": "Shopee",
     "category": "Shopping",
     "isRejected": false,
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "id": "imp-1786628745327-24",
     "time": "10:45",
     "amount": -54.49,
@@ -332,7 +332,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "date": "Hoje, 13 de ago.",
     "id": "imp-1786628745327-25",
     "icon": "shopping_bag",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "isRejected": false,
     "time": "10:45",
     "amount": -35.01
@@ -344,7 +344,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "icon": "shopping_bag",
     "amount": -6.8,
     "time": "10:45",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "category": "Alimentação",
     "isRejected": false
   },
@@ -353,7 +353,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "amount": -208.95,
     "icon": "shopping_bag",
     "id": "imp-1786628745327-27",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "date": "Hoje, 13 de ago.",
     "isRejected": false,
     "category": "Alimentação",
@@ -367,14 +367,14 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "icon": "shopping_bag",
     "amount": -199.8,
     "time": "10:45",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "isRejected": false
   },
   {
     "time": "10:45",
     "category": "Alimentação",
     "id": "imp-1786628745327-29",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "icon": "shopping_bag",
     "isRejected": false,
     "date": "Hoje, 13 de ago.",
@@ -390,13 +390,13 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "date": "Hoje, 13 de ago.",
     "isRejected": false,
     "amount": -68.17,
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20"
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20"
   },
   {
     "date": "Hoje, 13 de ago.",
     "id": "imp-1786628745327-31",
     "time": "10:45",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "title": "Seguro Superprotegido",
     "isRejected": false,
     "amount": -9.99,
@@ -404,7 +404,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "category": "Seguros"
   },
   {
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "isRejected": false,
     "date": "Hoje, 13 de ago.",
     "title": "Queima Diária",
@@ -416,7 +416,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
   },
   {
     "title": "Mercado Livre",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "category": "Shopping",
     "date": "Hoje, 13 de ago.",
     "isRejected": false,
@@ -428,7 +428,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
   {
     "date": "Hoje, 13 de ago.",
     "title": "Samsung",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "isRejected": false,
     "id": "imp-1786628745327-34",
     "time": "10:45",
@@ -437,7 +437,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "amount": -233.25
   },
   {
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "date": "Hoje, 13 de ago.",
     "isRejected": false,
     "title": "Mercado Livre",
@@ -456,14 +456,14 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "title": "Amazon BR",
     "icon": "shopping_bag",
     "isRejected": false,
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20"
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20"
   },
   {
     "date": "Hoje, 13 de ago.",
     "amount": -250,
     "isRejected": false,
     "id": "imp-1786628745327-37",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "time": "10:45",
     "title": "Vulcano Odonto",
     "category": "Saúde",
@@ -472,7 +472,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
   {
     "isRejected": false,
     "icon": "shopping_bag",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "time": "10:45",
     "id": "imp-1786628745327-38",
     "amount": -52.75,
@@ -487,7 +487,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "amount": -70.99,
     "title": "Saligram Calçados",
     "time": "10:45",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "category": "Shopping",
     "date": "Hoje, 13 de ago."
   },
@@ -500,7 +500,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "title": "Mercado Livre",
     "isRejected": false,
     "icon": "shopping_bag",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20"
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20"
   },
   {
     "date": "Hoje, 13 de ago.",
@@ -508,7 +508,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "time": "10:45",
     "amount": -9.99,
     "title": "Seguro Superprotegido",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "id": "imp-1786628745327-41",
     "isRejected": false,
     "icon": "shopping_bag"
@@ -519,13 +519,13 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "title": "Pagamento de Fatura",
     "amount": -2982.28,
     "id": "imp-1786628745327-42",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "isRejected": false,
     "category": "Cartão de Crédito",
     "date": "Hoje, 13 de ago."
   },
   {
-    "colorClass": "text-[#4edea3] bg-[#4edea3]/10 border-[#4edea3]/20",
+    "colorClass": "text-[#15803d] bg-[#15803d]/10 border-[#15803d]/20",
     "time": "10:45",
     "isRejected": false,
     "icon": "payments",
@@ -536,7 +536,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "id": "imp-1786628745327-43"
   },
   {
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "category": "Shopping",
     "date": "Hoje, 13 de ago.",
     "isRejected": false,
@@ -548,7 +548,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
   },
   {
     "time": "10:45",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "icon": "shopping_bag",
     "isRejected": false,
     "category": "Shopping",
@@ -558,7 +558,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "title": "Amazon"
   },
   {
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "date": "Hoje, 13 de ago.",
     "isRejected": false,
     "title": "Sem Parar",
@@ -575,7 +575,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "id": "imp-1786628745327-47",
     "category": "Transporte",
     "isRejected": false,
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "amount": -50,
     "date": "Hoje, 13 de ago."
   },
@@ -583,7 +583,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "isRejected": false,
     "id": "imp-1786628745327-48",
     "time": "10:45",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "icon": "shopping_bag",
     "title": "Sem Parar",
     "category": "Transporte",
@@ -597,12 +597,12 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "title": "Sem Parar",
     "amount": -50,
     "time": "10:45",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "date": "Hoje, 13 de ago.",
     "isRejected": false
   },
   {
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "title": "Sem Parar Abastecimento",
     "isRejected": false,
     "date": "Hoje, 13 de ago.",
@@ -620,7 +620,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "title": "Sem Parar",
     "isRejected": false,
     "icon": "shopping_bag",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "category": "Transporte"
   },
   {
@@ -629,7 +629,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "time": "10:45",
     "isRejected": false,
     "id": "imp-1786628745327-52",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "category": "Transporte",
     "title": "Sem Parar",
     "date": "Hoje, 13 de ago."
@@ -641,7 +641,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "amount": -213.96,
     "id": "imp-1786628745327-53",
     "icon": "shopping_bag",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "isRejected": false,
     "time": "10:45"
   },
@@ -653,7 +653,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "icon": "shopping_bag",
     "title": "Sem Parar",
     "isRejected": false,
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "time": "10:45"
   },
   {
@@ -664,12 +664,12 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "title": "Sem Parar Abastecimento",
     "date": "Hoje, 13 de ago.",
     "category": "Transporte",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "isRejected": false
   },
   {
     "icon": "shopping_bag",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "isRejected": false,
     "title": "Sem Parar",
     "id": "imp-1786628745327-56",
@@ -682,7 +682,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "time": "10:45",
     "isRejected": false,
     "icon": "shopping_bag",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "title": "Sem Parar",
     "id": "imp-1786628745327-57",
     "category": "Transporte",
@@ -695,14 +695,14 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "title": "Amazon",
     "isRejected": false,
     "time": "10:45",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "category": "Shopping",
     "id": "imp-1786628745327-58",
     "date": "Hoje, 13 de ago."
   },
   {
     "time": "10:45",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "category": "Transporte",
     "isRejected": false,
     "icon": "shopping_bag",
@@ -713,7 +713,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
   },
   {
     "category": "Transporte",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "title": "Sem Parar",
     "id": "imp-1786628745327-60",
     "isRejected": false,
@@ -731,10 +731,10 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "isRejected": false,
     "icon": "shopping_bag",
     "category": "Transporte",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20"
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20"
   },
   {
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "isRejected": false,
     "icon": "shopping_bag",
     "title": "Sem Parar",
@@ -750,14 +750,14 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "category": "Transporte",
     "id": "imp-1786628745327-63",
     "time": "10:45",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "icon": "shopping_bag",
     "amount": -385.33,
     "isRejected": false
   },
   {
     "date": "Hoje, 13 de ago.",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "category": "Transporte",
     "isRejected": false,
     "id": "imp-1786628745327-64",
@@ -770,7 +770,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "amount": -50,
     "icon": "shopping_bag",
     "time": "10:45",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "id": "imp-1786628745327-65",
     "isRejected": false,
     "category": "Transporte",
@@ -782,7 +782,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "icon": "shopping_bag",
     "isRejected": false,
     "title": "Pagamento de Fatura",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "time": "10:45",
     "id": "imp-1786628745327-66",
     "amount": -4653.97,
@@ -793,7 +793,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "title": "Dafiti",
     "isRejected": false,
     "id": "imp-1786628745327-67",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "time": "10:45",
     "icon": "shopping_bag",
     "category": "Shopping",
@@ -808,14 +808,14 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "title": "Shopee",
     "isRejected": false,
     "date": "Hoje, 13 de ago.",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20"
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20"
   },
   {
     "icon": "shopping_bag",
     "category": "Shopping",
     "title": "Mercado Livre",
     "time": "10:45",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "isRejected": false,
     "amount": -33.98,
     "id": "imp-1786628745327-69",
@@ -825,7 +825,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "date": "Hoje, 13 de ago.",
     "id": "imp-1786628745327-70",
     "title": "Maravilhas do Lar",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "isRejected": false,
     "amount": -54.33,
     "time": "10:45",
@@ -838,7 +838,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "isRejected": false,
     "title": "Supermercado Pague Menos",
     "amount": -165.62,
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "icon": "shopping_bag",
     "time": "10:45",
     "category": "Alimentação"
@@ -848,7 +848,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "id": "imp-1786628745327-72",
     "amount": -49.9,
     "isRejected": false,
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "time": "10:45",
     "title": "Parque Prado Delicia",
     "category": "Alimentação",
@@ -861,7 +861,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "amount": -51.78,
     "icon": "shopping_bag",
     "category": "Saúde",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "time": "10:45",
     "isRejected": false
   },
@@ -874,14 +874,14 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "date": "Hoje, 13 de ago.",
     "amount": -30,
     "isRejected": false,
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20"
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20"
   },
   {
     "icon": "shopping_bag",
     "time": "10:45",
     "id": "imp-1786628745327-75",
     "amount": -27.98,
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "isRejected": false,
     "title": "Belo Fruto Hortifruti",
     "date": "Hoje, 13 de ago.",
@@ -892,7 +892,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "amount": -84.6,
     "time": "10:45",
     "id": "imp-1786628745327-76",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "isRejected": false,
     "title": "BuyBye Campinas",
     "date": "Hoje, 13 de ago.",
@@ -901,7 +901,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
   {
     "date": "Hoje, 13 de ago.",
     "amount": -32.97,
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "time": "10:45",
     "id": "imp-1786628745327-77",
     "isRejected": false,
@@ -913,7 +913,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "date": "Hoje, 13 de ago.",
     "id": "imp-1786628745327-78",
     "isRejected": false,
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "time": "10:45",
     "title": "Tenda Atacado",
     "amount": -280.27,
@@ -925,7 +925,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "icon": "shopping_bag",
     "time": "10:45",
     "category": "Transporte",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "title": "99 App",
     "id": "imp-1786628745327-79",
     "isRejected": false,
@@ -940,7 +940,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "category": "Serviços",
     "isRejected": false,
     "date": "Hoje, 13 de ago.",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20"
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20"
   },
   {
     "date": "Hoje, 13 de ago.",
@@ -948,13 +948,13 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "category": "Alimentação",
     "id": "imp-1786628745327-81",
     "isRejected": false,
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "amount": -36.39,
     "time": "10:45",
     "icon": "shopping_bag"
   },
   {
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "category": "Entretenimento",
     "date": "Hoje, 13 de ago.",
     "isRejected": false,
@@ -969,7 +969,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "amount": -80,
     "title": "RodoShopping",
     "icon": "shopping_bag",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "isRejected": false,
     "id": "imp-1786628745327-83",
     "category": "Shopping",
@@ -982,7 +982,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "date": "Hoje, 13 de ago.",
     "amount": -8.8,
     "icon": "shopping_bag",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "isRejected": false,
     "time": "10:45"
   },
@@ -992,7 +992,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "id": "imp-1786628745327-85",
     "category": "Alimentação",
     "isRejected": false,
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "time": "10:45",
     "icon": "shopping_bag",
     "amount": -81.93
@@ -1000,7 +1000,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
   {
     "icon": "shopping_bag",
     "title": "Cinthya Albuquerque",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "isRejected": false,
     "time": "10:45",
     "id": "imp-1786628745327-86",
@@ -1014,7 +1014,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "date": "Hoje, 13 de ago.",
     "isRejected": false,
     "icon": "shopping_bag",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "category": "Shopping",
     "time": "10:45",
     "amount": -119.44
@@ -1022,7 +1022,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
   {
     "icon": "shopping_bag",
     "amount": -29,
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "isRejected": false,
     "time": "10:45",
     "id": "imp-1786628745327-88",
@@ -1035,7 +1035,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "title": "Comunidade Casa Aviva",
     "category": "Outros",
     "id": "imp-1786628745327-89",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "time": "10:45",
     "isRejected": false,
     "icon": "shopping_bag",
@@ -1045,7 +1045,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "icon": "shopping_bag",
     "time": "10:45",
     "amount": -69.91,
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "title": "Supermercado Pague Menos",
     "category": "Alimentação",
     "id": "imp-1786628745327-90",
@@ -1060,7 +1060,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "category": "Entretenimento",
     "title": "Garra Man",
     "date": "Hoje, 13 de ago.",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "isRejected": false
   },
   {
@@ -1069,7 +1069,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "id": "imp-1786628745327-92",
     "amount": -5,
     "time": "10:45",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "isRejected": false,
     "icon": "shopping_bag",
     "category": "Entretenimento"
@@ -1081,7 +1081,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "time": "10:45",
     "isRejected": false,
     "id": "imp-1786628745327-93",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "amount": -41.22,
     "date": "Hoje, 13 de ago."
   },
@@ -1093,14 +1093,14 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "category": "Alimentação",
     "icon": "shopping_bag",
     "isRejected": false,
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "time": "10:45"
   },
   {
     "date": "Hoje, 13 de ago.",
     "amount": -86.48,
     "isRejected": false,
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "id": "imp-1786628745327-95",
     "time": "10:45",
     "title": "Growth Supplements",
@@ -1110,7 +1110,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
   {
     "isRejected": false,
     "category": "Transporte",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "icon": "shopping_bag",
     "amount": -50,
     "title": "Posto Vila Nova",
@@ -1120,7 +1120,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
   },
   {
     "time": "10:45",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "isRejected": false,
     "icon": "shopping_bag",
     "amount": -118.78,
@@ -1132,7 +1132,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
   {
     "title": "Supermercado Pague Menos",
     "id": "imp-1786628745327-98",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "date": "Hoje, 13 de ago.",
     "isRejected": false,
     "category": "Alimentação",
@@ -1142,7 +1142,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
   },
   {
     "amount": -21.6,
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "isRejected": false,
     "date": "Hoje, 13 de ago.",
     "title": "Fazenda Campineira",
@@ -1156,7 +1156,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "time": "10:45",
     "amount": -112.24,
     "isRejected": false,
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "title": "Carneiro Produtos Alimentícios",
     "category": "Alimentação",
     "id": "imp-1786628745327-100",
@@ -1167,7 +1167,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "id": "imp-1786628745327-101",
     "category": "Alimentação",
     "amount": -35,
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "time": "10:45",
     "title": "Inoue Muu Iguatemi",
     "isRejected": false,
@@ -1180,13 +1180,13 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "date": "Hoje, 13 de ago.",
     "icon": "shopping_bag",
     "title": "Drogaria São Paulo",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "isRejected": false,
     "time": "10:45"
   },
   {
     "time": "10:45",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "amount": -25.99,
     "isRejected": false,
     "icon": "shopping_bag",
@@ -1202,7 +1202,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "time": "10:45",
     "date": "Hoje, 13 de ago.",
     "title": "Shein",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "category": "Shopping",
     "isRejected": false
   },
@@ -1214,11 +1214,11 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "category": "Alimentação",
     "date": "Hoje, 13 de ago.",
     "amount": -36.19,
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "isRejected": false
   },
   {
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "isRejected": false,
     "time": "10:45",
     "icon": "shopping_bag",
@@ -1234,7 +1234,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "title": "Drogaria Sant'Anna",
     "time": "10:45",
     "amount": -53,
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "id": "imp-1786628745327-107",
     "isRejected": false,
     "date": "Hoje, 13 de ago."
@@ -1248,14 +1248,14 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "date": "Hoje, 13 de ago.",
     "isRejected": false,
     "title": "BuyBye Campinas",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20"
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20"
   },
   {
     "amount": -19.9,
     "isRejected": false,
     "icon": "shopping_bag",
     "id": "imp-1786628745327-109",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "time": "10:45",
     "date": "Hoje, 13 de ago.",
     "title": "Apple Services",
@@ -1268,7 +1268,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "date": "Hoje, 13 de ago.",
     "isRejected": false,
     "icon": "shopping_bag",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "time": "10:45",
     "amount": -99.9
   },
@@ -1278,7 +1278,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "category": "Serviços",
     "icon": "shopping_bag",
     "title": "Apple Services",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "date": "Hoje, 13 de ago.",
     "isRejected": false,
     "amount": -19.9
@@ -1290,7 +1290,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "id": "imp-1786628745327-112",
     "time": "10:45",
     "isRejected": false,
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "amount": -89.99,
     "icon": "shopping_bag"
   },
@@ -1301,7 +1301,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "title": "Uber",
     "isRejected": false,
     "amount": -24.98,
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "time": "10:45",
     "category": "Transporte"
   },
@@ -1314,12 +1314,12 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "amount": -15.2,
     "isRejected": false,
     "date": "Hoje, 13 de ago.",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20"
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20"
   },
   {
     "category": "Alimentação",
     "date": "Hoje, 13 de ago.",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "title": "Nico Panificadora",
     "icon": "shopping_bag",
     "amount": -60.2,
@@ -1335,13 +1335,13 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "amount": -15.98,
     "isRejected": false,
     "date": "Hoje, 13 de ago.",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "category": "Transporte"
   },
   {
     "title": "ZP Danilo",
     "category": "Serviços",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "id": "imp-1786628745327-117",
     "date": "Hoje, 13 de ago.",
     "isRejected": false,
@@ -1357,7 +1357,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "amount": -15,
     "time": "10:45",
     "icon": "shopping_bag",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "isRejected": false
   },
   {
@@ -1365,7 +1365,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "category": "Alimentação",
     "time": "10:45",
     "icon": "shopping_bag",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "isRejected": false,
     "date": "Hoje, 13 de ago.",
     "id": "imp-1786628745327-119",
@@ -1377,7 +1377,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "icon": "shopping_bag",
     "id": "imp-1786628745327-120",
     "date": "Hoje, 13 de ago.",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "category": "Alimentação",
     "title": "Supermercado Pague Menos",
     "isRejected": false
@@ -1385,7 +1385,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
   {
     "date": "Hoje, 13 de ago.",
     "isRejected": false,
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "id": "imp-1786628745327-121",
     "amount": -96.99,
     "time": "10:45",
@@ -1399,7 +1399,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "id": "imp-1786628745327-122",
     "category": "Alimentação",
     "time": "10:45",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "title": "BuyBye Campinas",
     "isRejected": false,
     "icon": "shopping_bag"
@@ -1408,7 +1408,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "id": "imp-1786628745327-123",
     "title": "Posto Washington Luiz",
     "isRejected": false,
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "date": "Hoje, 13 de ago.",
     "amount": -381.87,
     "icon": "shopping_bag",
@@ -1420,7 +1420,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "amount": -27.8,
     "isRejected": false,
     "date": "Hoje, 13 de ago.",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "title": "BuyBye Campinas",
     "icon": "shopping_bag",
     "time": "10:45",
@@ -1432,7 +1432,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "time": "10:45",
     "id": "imp-1786628745327-125",
     "isRejected": false,
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "category": "Alimentação",
     "title": "Maluhe Comércio",
     "date": "Hoje, 13 de ago."
@@ -1441,7 +1441,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "amount": -33.8,
     "time": "10:45",
     "isRejected": false,
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "icon": "shopping_bag",
     "id": "imp-1786628745327-126",
     "date": "Hoje, 13 de ago.",
@@ -1453,7 +1453,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "amount": -71.44,
     "date": "Hoje, 13 de ago.",
     "isRejected": false,
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "title": "Farmácia do Povo",
     "icon": "shopping_bag",
     "time": "10:45",
@@ -1464,14 +1464,14 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "amount": -58.08,
     "date": "Hoje, 13 de ago.",
     "title": "Chácara de Minas",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "icon": "shopping_bag",
     "isRejected": false,
     "category": "Alimentação",
     "time": "10:45"
   },
   {
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "icon": "shopping_bag",
     "isRejected": false,
     "amount": -72.8,
@@ -1486,14 +1486,14 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "id": "imp-1786628745327-130",
     "title": "Disney Plus",
     "isRejected": false,
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "amount": -26.5,
     "category": "Entretenimento",
     "time": "10:45",
     "icon": "shopping_bag"
   },
   {
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "date": "Hoje, 13 de ago.",
     "isRejected": false,
     "id": "imp-1786628745327-131",
@@ -1504,7 +1504,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "icon": "shopping_bag"
   },
   {
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "id": "imp-1786628745327-132",
     "icon": "shopping_bag",
     "isRejected": false,
@@ -1519,7 +1519,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "category": "Transporte",
     "icon": "shopping_bag",
     "title": "Uber",
-    "colorClass": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+    "colorClass": "text-rose-700 bg-rose-500/10 border-rose-500/20",
     "isRejected": false,
     "date": "Hoje, 13 de ago.",
     "id": "imp-1786628745327-133",
@@ -1532,7 +1532,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "time": "10:45",
     "title": "R Das Flores Comercio",
     "category": "Shopping",
-    "colorClass": "text-amber-400 bg-amber-500/10 border-amber-500/20",
+    "colorClass": "text-amber-700 bg-amber-500/10 border-amber-500/20",
     "amount": -466.66,
     "icon": "shopping_bag"
   },
@@ -1544,7 +1544,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "category": "Entretenimento",
     "isRejected": true,
     "icon": "shopping_bag",
-    "colorClass": "text-amber-400 bg-amber-500/10 border-amber-500/20",
+    "colorClass": "text-amber-700 bg-amber-500/10 border-amber-500/20",
     "time": "10:45"
   },
   {
@@ -1556,12 +1556,12 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "category": "Serviços",
     "isRejected": true,
     "time": "10:45",
-    "colorClass": "text-amber-400 bg-amber-500/10 border-amber-500/20"
+    "colorClass": "text-amber-700 bg-amber-500/10 border-amber-500/20"
   },
   {
     "isRejected": true,
     "amount": -1452.72,
-    "colorClass": "text-amber-400 bg-amber-500/10 border-amber-500/20",
+    "colorClass": "text-amber-700 bg-amber-500/10 border-amber-500/20",
     "category": "Serviços",
     "date": "Hoje, 13 de ago.",
     "title": "Escola Navegantes",
@@ -1574,7 +1574,7 @@ export const INITIAL_TRANSACTIONS: Transaction[] = [
     "id": "tx-dizimo-10",
     "category": "Dízimo & Doações",
     "time": "10:00",
-    "colorClass": "text-purple-400 bg-purple-500/10 border-purple-500/20",
+    "colorClass": "text-purple-700 bg-purple-500/10 border-purple-500/20",
     "amount": -2336.61,
     "title": "Dízimo (10% das Receitas)",
     "date": "Recorrente Mensal",

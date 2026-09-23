@@ -204,8 +204,8 @@ export default function App() {
       date: dayNow,
       period: currentPeriod(),
       colorClass: newTx.amount < 0
-        ? "text-rose-400 bg-rose-500/10 border-rose-500/20"
-        : "text-[#4edea3] bg-[#4edea3]/10 border-[#4edea3]/20",
+        ? "text-rose-700 bg-rose-500/10 border-rose-500/20"
+        : "text-[#15803d] bg-[#15803d]/10 border-[#15803d]/20",
     };
 
     setTransactions((prev) => [tx, ...prev]);
@@ -280,10 +280,10 @@ export default function App() {
         date: item.date || "Data não informada",
         ...(transactionPeriod({ date: item.date || "" }) ? { period: transactionPeriod({ date: item.date || "" })! } : {}),
         colorClass: item.isRejected
-          ? "text-amber-400 bg-amber-500/10 border-amber-500/20"
+          ? "text-amber-700 bg-amber-500/10 border-amber-500/20"
           : item.amount < 0
-          ? "text-rose-400 bg-rose-500/10 border-rose-500/20"
-          : "text-[#4edea3] bg-[#4edea3]/10 border-[#4edea3]/20",
+          ? "text-rose-700 bg-rose-500/10 border-rose-500/20"
+          : "text-[#15803d] bg-[#15803d]/10 border-[#15803d]/20",
         icon: item.icon || (item.amount > 0 ? "payments" : "shopping"),
         isRejected: !!item.isRejected,
         importBatchId: batchId,
@@ -373,8 +373,8 @@ export default function App() {
             ...tx,
             amount: newAmount,
             colorClass: newAmount < 0
-              ? "text-rose-400 bg-rose-500/10 border-rose-500/20"
-              : "text-[#4edea3] bg-[#4edea3]/10 border-[#4edea3]/20",
+              ? "text-rose-700 bg-rose-500/10 border-rose-500/20"
+              : "text-[#15803d] bg-[#15803d]/10 border-[#15803d]/20",
           };
         }
         return tx;
@@ -464,7 +464,7 @@ export default function App() {
       date: new Date().toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' }),
       period,
       icon: 'payments',
-      colorClass: 'text-rose-400 bg-rose-500/10 border-rose-500/20',
+      colorClass: 'text-rose-700 bg-rose-500/10 border-rose-500/20',
     }));
     setRecurringExpenses((prev) => prev.map((item) => setPaidInPeriod(item, period, true)));
     setTransactions((prev) => [...paidTransactions, ...prev]);
@@ -632,7 +632,7 @@ export default function App() {
 
   // Avoid flashing the login screen while Firebase is still resolving the session
   if (!authChecked) {
-    return <div className="min-h-screen bg-black" />;
+    return <div className="min-h-screen bg-[#f7f5fb]" />;
   }
 
   if (!authUser) {
@@ -640,7 +640,7 @@ export default function App() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen text-[#e5e2e1] custom-scrollbar pb-32">
+    <div className="flex flex-col min-h-screen text-[#271d38] custom-scrollbar pb-32">
       {/* Top Header */}
       <Header
         title={activeTab === "smart_toy" ? "Wealth AI" : "Wealth"}
@@ -654,11 +654,11 @@ export default function App() {
       {/* Goal alerts banner */}
       {goalAlert && (
         <div className="mx-6 mt-4 p-3.5 bg-blue-500/10 border border-blue-500/20 rounded-xl flex items-center justify-between text-left animate-fade-in z-40">
-          <div className="flex items-center gap-2 text-xs font-semibold text-white">
-            <Sparkles size={16} className="text-[#adc6ff]" />
+          <div className="flex items-center gap-2 text-xs font-semibold text-slate-900">
+            <Sparkles size={16} className="text-[#7c3aed]" />
             <span>{goalAlert}</span>
           </div>
-          <button onClick={() => setGoalAlert(null)} className="text-[#8b90a0] hover:text-white cursor-pointer p-0.5">
+          <button onClick={() => setGoalAlert(null)} className="text-[#6b617c] hover:text-slate-900 cursor-pointer p-0.5">
             <X size={14} />
           </button>
         </div>
@@ -666,18 +666,18 @@ export default function App() {
 
       {/* Undo last statement import batch */}
       {lastImportBatch && (
-        <div className="mx-6 mt-4 p-3.5 bg-[#adc6ff]/10 border border-[#adc6ff]/20 rounded-xl flex items-center justify-between text-left animate-fade-in z-40">
-          <div className="flex items-center gap-2 text-xs font-semibold text-white">
+        <div className="mx-6 mt-4 p-3.5 bg-[#7c3aed]/10 border border-[#7c3aed]/20 rounded-xl flex items-center justify-between text-left animate-fade-in z-40">
+          <div className="flex items-center gap-2 text-xs font-semibold text-slate-900">
             <span>{lastImportBatch.count} lançamentos importados. Categorização saiu errada?</span>
           </div>
           <div className="flex items-center gap-3 shrink-0">
             <button
               onClick={handleUndoImportBatch}
-              className="text-xs font-bold text-[#adc6ff] hover:underline cursor-pointer"
+              className="text-xs font-bold text-[#7c3aed] hover:underline cursor-pointer"
             >
               Desfazer importação
             </button>
-            <button onClick={() => setLastImportBatch(null)} className="text-[#8b90a0] hover:text-white cursor-pointer p-0.5">
+            <button onClick={() => setLastImportBatch(null)} className="text-[#6b617c] hover:text-slate-900 cursor-pointer p-0.5">
               <X size={14} />
             </button>
           </div>
@@ -685,8 +685,8 @@ export default function App() {
       )}
 
       {activeTab === 'dashboard' && <div className="mx-6 mt-4 flex gap-4 text-xs">
-        <button disabled={maintenanceBusy} onClick={() => handleMaintenance('reset')} className="text-amber-300 disabled:opacity-40">{maintenanceBusy ? 'Processando…' : 'Recomeçar com backup'}</button>
-        {resetBackupId && <button disabled={maintenanceBusy} onClick={() => handleMaintenance('restore')} className="text-blue-300">Restaurar último backup</button>}
+        <button disabled={maintenanceBusy} onClick={() => handleMaintenance('reset')} className="text-amber-700 disabled:opacity-40">{maintenanceBusy ? 'Processando…' : 'Recomeçar com backup'}</button>
+        {resetBackupId && <button disabled={maintenanceBusy} onClick={() => handleMaintenance('restore')} className="text-blue-700">Restaurar último backup</button>}
       </div>}
       {/* Main Content Render */}
       <main className="max-w-7xl mx-auto px-3 sm:px-6 pt-4 sm:pt-6 flex-1 w-full">
@@ -708,7 +708,7 @@ export default function App() {
           />
         )}
         
-        <Suspense fallback={<div className="py-16 text-center text-sm text-[#8b90a0]">Carregando…</div>}>
+        <Suspense fallback={<div className="py-16 text-center text-sm text-[#6b617c]">Carregando…</div>}>
         {activeTab === "payments" && (
           <TransactionsView
             transactions={transactions}
@@ -765,7 +765,7 @@ export default function App() {
       </Suspense>
 
       {/* Bottom Navigation Bar */}
-      <nav className="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-6 pb-8 pt-4 bg-[#131313]/85 backdrop-blur-2xl border-t border-white/5 shadow-[0px_-4px_40px_rgba(0,122,255,0.15)] rounded-t-2xl">
+      <nav className="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-6 pb-8 pt-4 bg-[#ffffff]/85 backdrop-blur-2xl border-t border-violet-200/60 shadow-[0px_-4px_40px_rgba(0,122,255,0.15)] rounded-t-2xl">
         {navItems.map((item) => {
           const isActive = activeTab === item.id;
           return (
@@ -774,8 +774,8 @@ export default function App() {
               onClick={() => handleTabChange(item.id)}
               className={`flex flex-col items-center justify-center p-3 rounded-full transition-all duration-200 cursor-pointer ${
                 isActive
-                  ? "bg-[#00a572] text-[#00311f] scale-110 shadow-lg shadow-[#00a572]/20"
-                  : "text-[#8b90a0] hover:text-white hover:bg-white/5"
+                  ? "bg-[#7c3aed] text-white scale-110 shadow-lg shadow-[#7c3aed]/20"
+                  : "text-[#6b617c] hover:text-slate-900 hover:bg-violet-50"
               }`}
               title={item.label}
             >
@@ -788,10 +788,10 @@ export default function App() {
       {/* Floating Investment Dialog Modal */}
       {isInvestModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4">
-          <div className="w-full max-w-md bg-[#131313] border border-[#353534]/50 rounded-2xl shadow-2xl p-6 space-y-6 animate-fade-in text-left">
+          <div className="w-full max-w-md bg-[#ffffff] border border-[#c4b5d6]/50 rounded-2xl shadow-2xl p-6 space-y-6 animate-fade-in text-left">
             <div className="flex justify-between items-center">
-              <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                <TrendingUp size={20} className="text-[#adc6ff]" />
+              <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+                <TrendingUp size={20} className="text-[#7c3aed]" />
                 Depositar em Investimentos
               </h3>
               <button
@@ -800,26 +800,26 @@ export default function App() {
                   setInvestError("");
                   setIsInvestModalOpen(false);
                 }}
-                className="text-[#8b90a0] hover:text-white p-1 rounded-full hover:bg-white/5 transition-all cursor-pointer"
+                className="text-[#6b617c] hover:text-slate-900 p-1 rounded-full hover:bg-violet-50 transition-all cursor-pointer"
               >
                 <X size={20} />
               </button>
             </div>
 
             <form onSubmit={handleInvestDeposit} className="space-y-4">
-              <p className="text-xs text-[#c1c6d7] leading-relaxed">
+              <p className="text-xs text-[#51465f] leading-relaxed">
                 Transfira saldo de sua conta corrente líquida para sua carteira de investimentos global.
               </p>
 
-              <div className="p-3 bg-[#1c1b1b] rounded-xl flex justify-between items-center text-xs text-[#8b90a0] font-mono border border-white/[0.02]">
+              <div className="p-3 bg-[#f8f6fc] rounded-xl flex justify-between items-center text-xs text-[#6b617c] font-mono border border-violet-200/60">
                 <span>Saldo Líquido Disponível:</span>
-                <span className="font-bold text-white">
+                <span className="font-bold text-slate-900">
                   {liquidBalance.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
                 </span>
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs text-[#8b90a0] font-semibold uppercase tracking-wider">Valor para Investir (R$)</label>
+                <label className="text-xs text-[#6b617c] font-semibold uppercase tracking-wider">Valor para Investir (R$)</label>
                 <input
                   type="number"
                   step="0.01"
@@ -827,12 +827,12 @@ export default function App() {
                   placeholder="Ex: 5000.00"
                   value={investAmountInput}
                   onChange={(e) => setInvestAmountInput(e.target.value)}
-                  className="w-full bg-[#1c1b1b] border border-[#353534]/50 rounded-xl px-4 py-3 text-sm text-white focus:border-[#adc6ff] outline-none font-mono"
+                  className="w-full bg-[#f8f6fc] border border-[#c4b5d6]/50 rounded-xl px-4 py-3 text-sm text-slate-900 focus:border-[#7c3aed] outline-none font-mono"
                 />
               </div>
 
               {investError && (
-                <div className="p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl flex items-start gap-2.5 text-xs text-rose-400">
+                <div className="p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl flex items-start gap-2.5 text-xs text-rose-700">
                   <AlertCircle size={16} className="shrink-0 mt-0.5" />
                   <span>{investError}</span>
                 </div>
@@ -846,13 +846,13 @@ export default function App() {
                     setInvestError("");
                     setIsInvestModalOpen(false);
                   }}
-                  className="flex-1 py-3 border border-[#353534]/60 text-[#c1c6d7] hover:bg-white/5 rounded-xl font-bold text-xs cursor-pointer"
+                  className="flex-1 py-3 border border-[#c4b5d6]/60 text-[#51465f] hover:bg-violet-50 rounded-xl font-bold text-xs cursor-pointer"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-3 bg-[#adc6ff] text-[#002e69] hover:opacity-90 rounded-xl font-bold text-xs shadow-lg shadow-[#adc6ff]/10 cursor-pointer"
+                  className="flex-1 py-3 bg-[#7c3aed] text-white hover:opacity-90 rounded-xl font-bold text-xs shadow-lg shadow-[#7c3aed]/10 cursor-pointer"
                 >
                   Confirmar Aporte
                 </button>

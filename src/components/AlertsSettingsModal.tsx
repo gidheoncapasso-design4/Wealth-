@@ -143,28 +143,28 @@ export default function AlertsSettingsModal({
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md overflow-y-auto">
-      <div className="w-full max-w-xl bg-[#131313] border border-[#353534]/70 rounded-3xl shadow-2xl p-6 space-y-5 max-h-[92vh] overflow-y-auto custom-scrollbar animate-slide-up my-auto text-left">
-        <div className="flex justify-between items-center pb-2 border-b border-[#353534]/30">
+      <div className="w-full max-w-xl bg-[#ffffff] border border-[#c4b5d6]/70 rounded-3xl shadow-2xl p-6 space-y-5 max-h-[92vh] overflow-y-auto custom-scrollbar animate-slide-up my-auto text-left">
+        <div className="flex justify-between items-center pb-2 border-b border-[#c4b5d6]/30">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-[#25D366]/20 border border-[#25D366]/30 text-[#25D366]">
+            <div className="p-2 rounded-xl bg-[#25D366]/20 border border-[#25D366]/30 text-[#15803d]">
               <MessageSquare size={18} />
             </div>
             <div>
-              <h3 className="text-base font-bold text-white">Alertas de Vencimento</h3>
-              <p className="text-[11px] text-[#8b90a0]">Receba aviso 1 dia antes das contas vencerem por WhatsApp, E-mail e Google Agenda</p>
+              <h3 className="text-base font-bold text-slate-900">Alertas de Vencimento</h3>
+              <p className="text-[11px] text-[#6b617c]">Receba aviso 1 dia antes das contas vencerem por WhatsApp, E-mail e Google Agenda</p>
             </div>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="text-[#8b90a0] hover:text-white p-1 rounded-full hover:bg-white/5 transition-all cursor-pointer"
+            className="text-[#6b617c] hover:text-slate-900 p-1 rounded-full hover:bg-violet-50 transition-all cursor-pointer"
           >
             <X size={20} />
           </button>
         </div>
 
         {whatsappStatusMessage && (
-          <div className="p-3 bg-[#25D366]/10 border border-[#25D366]/30 text-[#25D366] text-xs font-semibold rounded-xl animate-fade-in">
+          <div className="p-3 bg-[#25D366]/10 border border-[#25D366]/30 text-[#15803d] text-xs font-semibold rounded-xl animate-fade-in">
             ✓ {whatsappStatusMessage}
           </div>
         )}
@@ -173,8 +173,8 @@ export default function AlertsSettingsModal({
           <div
             className={`p-3 text-xs font-semibold rounded-xl border animate-fade-in ${
               testResult.success
-                ? "bg-[#4edea3]/10 border-[#4edea3]/30 text-[#4edea3]"
-                : "bg-rose-500/10 border-rose-500/30 text-rose-300"
+                ? "bg-[#15803d]/10 border-[#15803d]/30 text-[#15803d]"
+                : "bg-rose-500/10 border-rose-500/30 text-rose-700"
             }`}
           >
             {testResult.message}
@@ -185,11 +185,11 @@ export default function AlertsSettingsModal({
           {/* Phone number & Switch */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div className="sm:col-span-2 space-y-1">
-              <label className="text-xs text-[#8b90a0] font-semibold uppercase tracking-wider">
+              <label className="text-xs text-[#6b617c] font-semibold uppercase tracking-wider">
                 Seu WhatsApp (DDD + Número)
               </label>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-mono font-bold text-[#8b90a0]">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-mono font-bold text-[#6b617c]">
                   +55
                 </span>
                 <input
@@ -198,17 +198,17 @@ export default function AlertsSettingsModal({
                   placeholder="19 98251-3836"
                   value={whatsappPhone}
                   onChange={(e) => setWhatsappPhone(e.target.value)}
-                  className="w-full bg-[#1c1b1b] border border-[#353534]/50 rounded-xl pl-12 pr-4 py-2.5 text-sm text-white font-mono focus:border-[#25D366] outline-none"
+                  className="w-full bg-[#f8f6fc] border border-[#c4b5d6]/50 rounded-xl pl-12 pr-4 py-2.5 text-sm text-slate-900 font-mono focus:border-[#25D366] outline-none"
                 />
               </div>
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs text-[#8b90a0] font-semibold uppercase tracking-wider">
+              <label className="text-xs text-[#6b617c] font-semibold uppercase tracking-wider">
                 Status dos Avisos
               </label>
-              <div className="h-[42px] px-3 bg-[#1c1b1b] border border-[#353534]/50 rounded-xl flex items-center justify-between">
-                <span className="text-xs font-medium text-white">
+              <div className="h-[42px] px-3 bg-[#f8f6fc] border border-[#c4b5d6]/50 rounded-xl flex items-center justify-between">
+                <span className="text-xs font-medium text-slate-900">
                   {whatsappEnabled ? "Ativo" : "Pausado"}
                 </span>
                 <input
@@ -222,15 +222,15 @@ export default function AlertsSettingsModal({
           </div>
 
           {/* Automation Mode Selector */}
-          <div className="space-y-2 pt-1 border-t border-[#353534]/30">
-            <label className="text-xs text-[#8b90a0] font-semibold uppercase tracking-wider flex items-center gap-1.5">
-              <Sparkles size={13} className="text-[#25D366]" />
+          <div className="space-y-2 pt-1 border-t border-[#c4b5d6]/30">
+            <label className="text-xs text-[#6b617c] font-semibold uppercase tracking-wider flex items-center gap-1.5">
+              <Sparkles size={13} className="text-[#15803d]" />
               <span>Modo de Disparo do WhatsApp</span>
             </label>
 
             <div className="grid grid-cols-2 gap-2">
               <button type="button" onClick={() => setWhatsappProvider("greenapi")}
-                className={`p-3 rounded-xl border text-left cursor-pointer ${whatsappProvider === "greenapi" ? "bg-[#25D366]/15 border-[#25D366] text-white" : "bg-[#1c1b1b] border-[#353534]/50 text-[#8b90a0]"}`}>
+                className={`p-3 rounded-xl border text-left cursor-pointer ${whatsappProvider === "greenapi" ? "bg-[#25D366]/15 border-[#25D366] text-slate-900" : "bg-[#f8f6fc] border-[#c4b5d6]/50 text-[#6b617c]"}`}>
                 <p className="text-xs font-bold">GREEN-API {whatsappProvider === "greenapi" ? "✓" : ""}</p>
                 <p className="text-[11px] mt-1">Envio automático. Vincule seu WhatsApp na GREEN-API. Credenciais configuradas no Render.</p>
               </button>
@@ -239,15 +239,15 @@ export default function AlertsSettingsModal({
                 onClick={() => setWhatsappProvider("manual")}
                 className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
                   whatsappProvider === "manual"
-                    ? "bg-[#25D366]/15 border-[#25D366] text-white"
-                    : "bg-[#1c1b1b] border-[#353534]/50 text-[#8b90a0] hover:text-white"
+                    ? "bg-[#25D366]/15 border-[#25D366] text-slate-900"
+                    : "bg-[#f8f6fc] border-[#c4b5d6]/50 text-[#6b617c] hover:text-slate-900"
                 }`}
               >
-                <p className="text-xs font-bold text-white flex items-center justify-between">
+                <p className="text-xs font-bold text-slate-900 flex items-center justify-between">
                   <span>1-Clique (WhatsApp Web/App)</span>
-                  {whatsappProvider === "manual" && <Check size={14} className="text-[#25D366]" />}
+                  {whatsappProvider === "manual" && <Check size={14} className="text-[#15803d]" />}
                 </p>
-                <p className="text-[11px] text-[#8b90a0] mt-1">
+                <p className="text-[11px] text-[#6b617c] mt-1">
                   Sem necessidade de API. Abre o WhatsApp com a mensagem pronta para enviar.
                 </p>
               </button>
@@ -257,15 +257,15 @@ export default function AlertsSettingsModal({
                 onClick={() => setWhatsappProvider("webhook")}
                 className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
                   whatsappProvider === "webhook"
-                    ? "bg-[#25D366]/15 border-[#25D366] text-white"
-                    : "bg-[#1c1b1b] border-[#353534]/50 text-[#8b90a0] hover:text-white"
+                    ? "bg-[#25D366]/15 border-[#25D366] text-slate-900"
+                    : "bg-[#f8f6fc] border-[#c4b5d6]/50 text-[#6b617c] hover:text-slate-900"
                 }`}
               >
-                <p className="text-xs font-bold text-white flex items-center justify-between">
+                <p className="text-xs font-bold text-slate-900 flex items-center justify-between">
                   <span>Webhook (Make / n8n / Zapier)</span>
-                  {whatsappProvider === "webhook" && <Check size={14} className="text-[#25D366]" />}
+                  {whatsappProvider === "webhook" && <Check size={14} className="text-[#15803d]" />}
                 </p>
-                <p className="text-[11px] text-[#8b90a0] mt-1">
+                <p className="text-[11px] text-[#6b617c] mt-1">
                   100% Automático e Gratuito. Dispara para sua URL de webhook sem você tocar no app.
                 </p>
               </button>
@@ -275,15 +275,15 @@ export default function AlertsSettingsModal({
                 onClick={() => setWhatsappProvider("zapi")}
                 className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
                   whatsappProvider === "zapi"
-                    ? "bg-[#25D366]/15 border-[#25D366] text-white"
-                    : "bg-[#1c1b1b] border-[#353534]/50 text-[#8b90a0] hover:text-white"
+                    ? "bg-[#25D366]/15 border-[#25D366] text-slate-900"
+                    : "bg-[#f8f6fc] border-[#c4b5d6]/50 text-[#6b617c] hover:text-slate-900"
                 }`}
               >
-                <p className="text-xs font-bold text-white flex items-center justify-between">
+                <p className="text-xs font-bold text-slate-900 flex items-center justify-between">
                   <span>Z-API (Brasil)</span>
-                  {whatsappProvider === "zapi" && <Check size={14} className="text-[#25D366]" />}
+                  {whatsappProvider === "zapi" && <Check size={14} className="text-[#15803d]" />}
                 </p>
-                <p className="text-[11px] text-[#8b90a0] mt-1">
+                <p className="text-[11px] text-[#6b617c] mt-1">
                   100% Automático. Conecte via QR Code do seu WhatsApp com sua instância Z-API.
                 </p>
               </button>
@@ -293,15 +293,15 @@ export default function AlertsSettingsModal({
                 onClick={() => setWhatsappProvider("evolution")}
                 className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
                   whatsappProvider === "evolution"
-                    ? "bg-[#25D366]/15 border-[#25D366] text-white"
-                    : "bg-[#1c1b1b] border-[#353534]/50 text-[#8b90a0] hover:text-white"
+                    ? "bg-[#25D366]/15 border-[#25D366] text-slate-900"
+                    : "bg-[#f8f6fc] border-[#c4b5d6]/50 text-[#6b617c] hover:text-slate-900"
                 }`}
               >
-                <p className="text-xs font-bold text-white flex items-center justify-between">
+                <p className="text-xs font-bold text-slate-900 flex items-center justify-between">
                   <span>Evolution API</span>
-                  {whatsappProvider === "evolution" && <Check size={14} className="text-[#25D366]" />}
+                  {whatsappProvider === "evolution" && <Check size={14} className="text-[#15803d]" />}
                 </p>
-                <p className="text-[11px] text-[#8b90a0] mt-1">
+                <p className="text-[11px] text-[#6b617c] mt-1">
                   100% Automático. Para instâncias Evolution API próprias ou hospedadas.
                 </p>
               </button>
@@ -311,15 +311,15 @@ export default function AlertsSettingsModal({
                 onClick={() => setWhatsappProvider("meta")}
                 className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
                   whatsappProvider === "meta"
-                    ? "bg-[#25D366]/15 border-[#25D366] text-white"
-                    : "bg-[#1c1b1b] border-[#353534]/50 text-[#8b90a0] hover:text-white"
+                    ? "bg-[#25D366]/15 border-[#25D366] text-slate-900"
+                    : "bg-[#f8f6fc] border-[#c4b5d6]/50 text-[#6b617c] hover:text-slate-900"
                 }`}
               >
-                <p className="text-xs font-bold text-white flex items-center justify-between">
+                <p className="text-xs font-bold text-slate-900 flex items-center justify-between">
                   <span>Meta / Facebook (Oficial)</span>
-                  {whatsappProvider === "meta" && <Check size={14} className="text-[#25D366]" />}
+                  {whatsappProvider === "meta" && <Check size={14} className="text-[#15803d]" />}
                 </p>
-                <p className="text-[11px] text-[#8b90a0] mt-1">
+                <p className="text-[11px] text-[#6b617c] mt-1">
                   100% Automático. API oficial do WhatsApp Business (developers.facebook.com).
                 </p>
               </button>
@@ -328,96 +328,96 @@ export default function AlertsSettingsModal({
 
           {/* Webhook Configuration Fields */}
           {whatsappProvider === "webhook" && (
-            <div className="p-4 bg-[#1c1b1b] rounded-2xl border border-[#353534]/50 space-y-3 animate-fade-in">
+            <div className="p-4 bg-[#f8f6fc] rounded-2xl border border-[#c4b5d6]/50 space-y-3 animate-fade-in">
               <div className="space-y-1">
-                <label className="text-xs font-bold text-white">URL do Webhook (Make.com, n8n ou Zapier)</label>
+                <label className="text-xs font-bold text-slate-900">URL do Webhook (Make.com, n8n ou Zapier)</label>
                 <input
                   type="url"
                   placeholder="https://hook.eu1.make.com/sua-url-aqui"
                   value={webhookUrl}
                   onChange={(e) => setWebhookUrl(e.target.value)}
-                  className="w-full bg-[#131313] border border-[#353534]/60 rounded-xl px-3.5 py-2.5 text-xs text-white font-mono focus:border-[#25D366] outline-none"
+                  className="w-full bg-[#ffffff] border border-[#c4b5d6]/60 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 font-mono focus:border-[#25D366] outline-none"
                 />
               </div>
-              <p className="text-[11px] text-[#8b90a0] leading-relaxed">
-                💡 <strong>Como funciona</strong>: Quando uma conta estiver a 1 dia do vencimento, o servidor envia um POST com <code className="text-[#4edea3] font-mono">&#123; phone, message &#125;</code> para essa URL, disparando automaticamente no seu WhatsApp!
+              <p className="text-[11px] text-[#6b617c] leading-relaxed">
+                💡 <strong>Como funciona</strong>: Quando uma conta estiver a 1 dia do vencimento, o servidor envia um POST com <code className="text-[#15803d] font-mono">&#123; phone, message &#125;</code> para essa URL, disparando automaticamente no seu WhatsApp!
               </p>
             </div>
           )}
 
           {/* Z-API Configuration Fields */}
           {whatsappProvider === "zapi" && (
-            <div className="p-4 bg-[#1c1b1b] rounded-2xl border border-[#353534]/50 space-y-3 animate-fade-in">
+            <div className="p-4 bg-[#f8f6fc] rounded-2xl border border-[#c4b5d6]/50 space-y-3 animate-fade-in">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-white">ID da Instância Z-API</label>
+                  <label className="text-xs font-bold text-slate-900">ID da Instância Z-API</label>
                   <input
                     type="text"
                     placeholder="Ex: 3B4C5D6E7F8G"
                     value={zapiInstanceId}
                     onChange={(e) => setZapiInstanceId(e.target.value)}
-                    className="w-full bg-[#131313] border border-[#353534]/60 rounded-xl px-3.5 py-2 text-xs text-white font-mono focus:border-[#25D366] outline-none"
+                    className="w-full bg-[#ffffff] border border-[#c4b5d6]/60 rounded-xl px-3.5 py-2 text-xs text-slate-900 font-mono focus:border-[#25D366] outline-none"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-white">Token da Instância</label>
+                  <label className="text-xs font-bold text-slate-900">Token da Instância</label>
                   <input
                     type="password"
                     placeholder="Token de autenticação"
                     value={zapiToken}
                     onChange={(e) => setZapiToken(e.target.value)}
-                    className="w-full bg-[#131313] border border-[#353534]/60 rounded-xl px-3.5 py-2 text-xs text-white font-mono focus:border-[#25D366] outline-none"
+                    className="w-full bg-[#ffffff] border border-[#c4b5d6]/60 rounded-xl px-3.5 py-2 text-xs text-slate-900 font-mono focus:border-[#25D366] outline-none"
                   />
                 </div>
               </div>
               <div className="space-y-1">
-                <label className="text-xs font-bold text-white">Client Token (Opcional - Segurança Z-API)</label>
+                <label className="text-xs font-bold text-slate-900">Client Token (Opcional - Segurança Z-API)</label>
                 <input
                   type="password"
                   placeholder="Client Token (se ativado na sua conta Z-API)"
                   value={zapiClientToken}
                   onChange={(e) => setZapiClientToken(e.target.value)}
-                  className="w-full bg-[#131313] border border-[#353534]/60 rounded-xl px-3.5 py-2 text-xs text-white font-mono focus:border-[#25D366] outline-none"
+                  className="w-full bg-[#ffffff] border border-[#c4b5d6]/60 rounded-xl px-3.5 py-2 text-xs text-slate-900 font-mono focus:border-[#25D366] outline-none"
                 />
               </div>
-              <p className="text-[11px] text-[#8b90a0]">
-                💡 As mensagens são enviadas diretamente através da API da Z-API (<code className="text-[#25D366]">api.z-api.io</code>) para o seu celular.
+              <p className="text-[11px] text-[#6b617c]">
+                💡 As mensagens são enviadas diretamente através da API da Z-API (<code className="text-[#15803d]">api.z-api.io</code>) para o seu celular.
               </p>
             </div>
           )}
 
           {/* Evolution API Configuration Fields */}
           {whatsappProvider === "evolution" && (
-            <div className="p-4 bg-[#1c1b1b] rounded-2xl border border-[#353534]/50 space-y-3 animate-fade-in">
+            <div className="p-4 bg-[#f8f6fc] rounded-2xl border border-[#c4b5d6]/50 space-y-3 animate-fade-in">
               <div className="space-y-1">
-                <label className="text-xs font-bold text-white">Endpoint URL da Evolution API</label>
+                <label className="text-xs font-bold text-slate-900">Endpoint URL da Evolution API</label>
                 <input
                   type="url"
                   placeholder="https://api.seudominio.com"
                   value={evolutionEndpoint}
                   onChange={(e) => setEvolutionEndpoint(e.target.value)}
-                  className="w-full bg-[#131313] border border-[#353534]/60 rounded-xl px-3.5 py-2 text-xs text-white font-mono focus:border-[#25D366] outline-none"
+                  className="w-full bg-[#ffffff] border border-[#c4b5d6]/60 rounded-xl px-3.5 py-2 text-xs text-slate-900 font-mono focus:border-[#25D366] outline-none"
                 />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-white">Nome da Instância</label>
+                  <label className="text-xs font-bold text-slate-900">Nome da Instância</label>
                   <input
                     type="text"
                     placeholder="Ex: finance-instance"
                     value={evolutionInstance}
                     onChange={(e) => setEvolutionInstance(e.target.value)}
-                    className="w-full bg-[#131313] border border-[#353534]/60 rounded-xl px-3.5 py-2 text-xs text-white font-mono focus:border-[#25D366] outline-none"
+                    className="w-full bg-[#ffffff] border border-[#c4b5d6]/60 rounded-xl px-3.5 py-2 text-xs text-slate-900 font-mono focus:border-[#25D366] outline-none"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-white">Chave de API (apikey)</label>
+                  <label className="text-xs font-bold text-slate-900">Chave de API (apikey)</label>
                   <input
                     type="password"
                     placeholder="Sua Global ou Instance API Key"
                     value={evolutionApiKey}
                     onChange={(e) => setEvolutionApiKey(e.target.value)}
-                    className="w-full bg-[#131313] border border-[#353534]/60 rounded-xl px-3.5 py-2 text-xs text-white font-mono focus:border-[#25D366] outline-none"
+                    className="w-full bg-[#ffffff] border border-[#c4b5d6]/60 rounded-xl px-3.5 py-2 text-xs text-slate-900 font-mono focus:border-[#25D366] outline-none"
                   />
                 </div>
               </div>
@@ -426,51 +426,51 @@ export default function AlertsSettingsModal({
 
           {/* Meta / Facebook Official WhatsApp Cloud API Configuration Fields */}
           {whatsappProvider === "meta" && (
-            <div className="p-4 bg-[#1c1b1b] rounded-2xl border border-[#353534]/50 space-y-3 animate-fade-in">
+            <div className="p-4 bg-[#f8f6fc] rounded-2xl border border-[#c4b5d6]/50 space-y-3 animate-fade-in">
               <div className="space-y-1">
-                <label className="text-xs font-bold text-white">Phone Number ID</label>
+                <label className="text-xs font-bold text-slate-900">Phone Number ID</label>
                 <input
                   type="text"
                   placeholder="Ex: 109876543210987"
                   value={metaPhoneNumberId}
                   onChange={(e) => setMetaPhoneNumberId(e.target.value)}
-                  className="w-full bg-[#131313] border border-[#353534]/60 rounded-xl px-3.5 py-2 text-xs text-white font-mono focus:border-[#25D366] outline-none"
+                  className="w-full bg-[#ffffff] border border-[#c4b5d6]/60 rounded-xl px-3.5 py-2 text-xs text-slate-900 font-mono focus:border-[#25D366] outline-none"
                 />
               </div>
               <div className="space-y-1">
-                <label className="text-xs font-bold text-white">Access Token</label>
+                <label className="text-xs font-bold text-slate-900">Access Token</label>
                 <input
                   type="password"
                   placeholder="Token de acesso do app (Meta for Developers)"
                   value={metaAccessToken}
                   onChange={(e) => setMetaAccessToken(e.target.value)}
-                  className="w-full bg-[#131313] border border-[#353534]/60 rounded-xl px-3.5 py-2 text-xs text-white font-mono focus:border-[#25D366] outline-none"
+                  className="w-full bg-[#ffffff] border border-[#c4b5d6]/60 rounded-xl px-3.5 py-2 text-xs text-slate-900 font-mono focus:border-[#25D366] outline-none"
                 />
               </div>
-              <p className="text-[11px] text-[#8b90a0] leading-relaxed">
+              <p className="text-[11px] text-[#6b617c] leading-relaxed">
                 💡 Encontre os dois valores em <strong>developers.facebook.com</strong> → seu app → WhatsApp → API Setup. O token padrão expira em 24h — para uso contínuo, crie um "System User" com token permanente em Configurações do Negócio. Enquanto o app estiver em modo de desenvolvimento, a Meta só permite enviar para números cadastrados na lista "To" dessa mesma página.
               </p>
             </div>
           )}
 
           {/* Google Channels: E-mail (Gmail) & Google Agenda */}
-          <div className="space-y-2 pt-1 border-t border-[#353534]/30">
-            <label className="text-xs text-[#8b90a0] font-semibold uppercase tracking-wider flex items-center gap-1.5">
-              <Bell size={13} className="text-[#adc6ff]" />
+          <div className="space-y-2 pt-1 border-t border-[#c4b5d6]/30">
+            <label className="text-xs text-[#6b617c] font-semibold uppercase tracking-wider flex items-center gap-1.5">
+              <Bell size={13} className="text-[#7c3aed]" />
               <span>Canais Google (Enviados pelo Servidor Automaticamente)</span>
             </label>
 
-            <div className="p-4 bg-[#1c1b1b] rounded-2xl border border-[#353534]/50 space-y-3">
+            <div className="p-4 bg-[#f8f6fc] rounded-2xl border border-[#c4b5d6]/50 space-y-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-bold text-white">E-mail via Gmail</p>
-                  <p className="text-[11px] text-[#8b90a0]">Manda um e-mail formatado 1 dia antes de cada vencimento</p>
+                  <p className="text-xs font-bold text-slate-900">E-mail via Gmail</p>
+                  <p className="text-[11px] text-[#6b617c]">Manda um e-mail formatado 1 dia antes de cada vencimento</p>
                 </div>
                 <input
                   type="checkbox"
                   checked={emailEnabled}
                   onChange={(e) => setEmailEnabled(e.target.checked)}
-                  className="w-4 h-4 accent-[#adc6ff] rounded cursor-pointer shrink-0"
+                  className="w-4 h-4 accent-[#7c3aed] rounded cursor-pointer shrink-0"
                 />
               </div>
               {emailEnabled && (
@@ -479,27 +479,27 @@ export default function AlertsSettingsModal({
                   placeholder="seuemail@gmail.com"
                   value={notificationEmail}
                   onChange={(e) => setNotificationEmail(e.target.value)}
-                  className="w-full bg-[#131313] border border-[#353534]/60 rounded-xl px-3.5 py-2 text-xs text-white font-mono focus:border-[#adc6ff] outline-none"
+                  className="w-full bg-[#ffffff] border border-[#c4b5d6]/60 rounded-xl px-3.5 py-2 text-xs text-slate-900 font-mono focus:border-[#7c3aed] outline-none"
                 />
               )}
             </div>
 
-            <div className="p-4 bg-[#1c1b1b] rounded-2xl border border-[#353534]/50 space-y-1">
+            <div className="p-4 bg-[#f8f6fc] rounded-2xl border border-[#c4b5d6]/50 space-y-1">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-bold text-white">Sincronizar com Google Agenda</p>
-                  <p className="text-[11px] text-[#8b90a0]">Cria um evento mensal recorrente para cada conta fixa, com lembrete/notificação 1 dia antes</p>
+                  <p className="text-xs font-bold text-slate-900">Sincronizar com Google Agenda</p>
+                  <p className="text-[11px] text-[#6b617c]">Cria um evento mensal recorrente para cada conta fixa, com lembrete/notificação 1 dia antes</p>
                 </div>
                 <input
                   type="checkbox"
                   checked={calendarEnabled}
                   onChange={(e) => setCalendarEnabled(e.target.checked)}
-                  className="w-4 h-4 accent-[#adc6ff] rounded cursor-pointer shrink-0"
+                  className="w-4 h-4 accent-[#7c3aed] rounded cursor-pointer shrink-0"
                 />
               </div>
             </div>
 
-            <p className="text-[11px] text-[#8b90a0] leading-relaxed">
+            <p className="text-[11px] text-[#6b617c] leading-relaxed">
               💡 Esses dois canais dependem de credenciais configuradas no servidor (Senha de App do Gmail e Conta de Serviço do Google Calendar) e de uma rotina diária automática — não exigem nenhum clique seu depois de ativados aqui.
             </p>
           </div>
@@ -510,7 +510,7 @@ export default function AlertsSettingsModal({
               type="button"
               onClick={handleTestDirectWhatsapp}
               disabled={isTestingDirect}
-              className="flex-1 py-3 px-4 bg-[#25D366]/10 border border-[#25D366]/30 text-[#25D366] rounded-xl font-bold text-xs flex items-center justify-center gap-2 hover:bg-[#25D366]/20 transition-all cursor-pointer disabled:opacity-50"
+              className="flex-1 py-3 px-4 bg-[#25D366]/10 border border-[#25D366]/30 text-[#15803d] rounded-xl font-bold text-xs flex items-center justify-center gap-2 hover:bg-[#25D366]/20 transition-all cursor-pointer disabled:opacity-50"
             >
               <Send size={14} className={isTestingDirect ? "animate-spin" : ""} />
               <span>{isTestingDirect ? "Enviando Teste..." : "Testar Conexão Agora"}</span>

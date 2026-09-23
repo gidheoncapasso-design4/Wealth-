@@ -1,25 +1,29 @@
 @import "tailwindcss";
 
+:root { color-scheme: light; font-family: Inter, sans-serif; }
+button, input, select, textarea { accent-color: #7c3aed; }
+:focus-visible { outline: 2px solid #7c3aed; outline-offset: 3px; }
+
 @layer utilities {
   .glass-card {
-    background: rgba(12, 12, 12, 0.7);
+    background: rgba(255, 255, 255, 0.94);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 40px 100px -20px rgba(0, 122, 255, 0.08);
+    border: 1px solid #e8e0f2;
+    box-shadow: 0 8px 30px -12px rgba(76, 29, 149, 0.12);
   }
   
   .text-glow {
-    text-shadow: 0 0 25px rgba(173, 198, 255, 0.3);
+    text-shadow: none;
   }
 
   .text-glow-green {
-    text-shadow: 0 0 25px rgba(78, 222, 163, 0.3);
+    text-shadow: none;
   }
 
   .mesh-gradient-bg {
-    background: radial-gradient(at top left, #001a41, transparent),
-                radial-gradient(at bottom right, #002113, transparent);
+    background: radial-gradient(at top left, #ede9fe, transparent),
+                radial-gradient(at bottom right, #faf5ff, transparent);
   }
 
   .custom-scrollbar::-webkit-scrollbar {
@@ -32,12 +36,12 @@
   }
   
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #2a2a2a;
+    background: #c4b5d6;
     border-radius: 9999px;
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #3a3a3a;
+    background: #a78bba;
   }
 
   @keyframes shake {

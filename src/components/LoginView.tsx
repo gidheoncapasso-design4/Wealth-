@@ -50,28 +50,28 @@ export default function LoginView() {
   };
 
   return (
-    <div className="min-h-screen bg-black flex flex-col justify-between items-center px-6 py-12 text-[#e5e2e1] select-none animate-fade-in relative overflow-hidden">
+    <div className="min-h-screen bg-[#f7f5fb] flex flex-col justify-between items-center px-6 py-12 text-[#271d38] select-none animate-fade-in relative overflow-hidden">
 
       {/* Glow ambient background assets */}
       <div className="absolute top-1/4 -right-20 w-80 h-80 bg-blue-500/10 rounded-full blur-[120px] pointer-events-none -z-10"></div>
-      <div className="absolute bottom-1/4 -left-20 w-80 h-80 bg-[#4edea3]/5 rounded-full blur-[100px] pointer-events-none -z-10"></div>
+      <div className="absolute bottom-1/4 -left-20 w-80 h-80 bg-[#15803d]/5 rounded-full blur-[100px] pointer-events-none -z-10"></div>
 
       {/* Brand logo & title */}
       <div className="flex flex-col items-center mt-8 space-y-3">
-        <div className="w-16 h-16 rounded-3xl bg-[#adc6ff]/10 border border-[#adc6ff]/20 flex items-center justify-center text-[#adc6ff] shadow-lg shadow-[#adc6ff]/5 relative">
+        <div className="w-16 h-16 rounded-3xl bg-[#7c3aed]/10 border border-[#7c3aed]/20 flex items-center justify-center text-[#7c3aed] shadow-lg shadow-[#7c3aed]/5 relative">
           <ShieldCheck size={32} strokeWidth={1.5} />
-          <span className="absolute -top-1 -right-1 w-3 h-3 bg-[#4edea3] rounded-full"></span>
+          <span className="absolute -top-1 -right-1 w-3 h-3 bg-[#15803d] rounded-full"></span>
         </div>
         <div className="text-center">
-          <h1 className="text-3xl font-extrabold tracking-tighter text-white uppercase">Wealth</h1>
-          <p className="text-[10px] font-bold text-[#8b90a0] uppercase tracking-[0.25em] mt-1">Sovereign Management</p>
+          <h1 className="text-3xl font-extrabold tracking-tighter text-slate-900 uppercase">Wealth</h1>
+          <p className="text-[10px] font-bold text-[#6b617c] uppercase tracking-[0.25em] mt-1">Sovereign Management</p>
         </div>
       </div>
 
       {/* Google Sign-In */}
       <div className="w-full max-w-sm flex flex-col items-center space-y-4">
         {error && (
-          <div className="w-full flex items-start gap-2 p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-xs text-rose-400">
+          <div className="w-full flex items-start gap-2 p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-xs text-rose-700">
             <AlertCircle size={14} className="shrink-0 mt-0.5" />
             <span>{error}</span>
           </div>
@@ -90,11 +90,11 @@ export default function LoginView() {
 
       {/* Safety message */}
       <div className="flex flex-col items-center space-y-4 max-w-xs text-center mt-8">
-        <div className="flex items-center gap-1.5 text-xs text-[#8b90a0] font-semibold">
-          <ShieldCheck size={14} className="text-[#4edea3]" />
+        <div className="flex items-center gap-1.5 text-xs text-[#6b617c] font-semibold">
+          <ShieldCheck size={14} className="text-[#15803d]" />
           <span>Autenticado via Firebase Authentication</span>
         </div>
-        <p className="text-[10px] text-[#8b90a0]/60 leading-normal">
+        <p className="text-[10px] text-[#6b617c]/60 leading-normal">
           O acesso aos seus dados financeiros é restrito exclusivamente à sua conta.
         </p>
       </div>
